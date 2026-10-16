@@ -3174,17 +3174,26 @@ textarea#chart-raw-input:focus {
 
 /* 2. 대화창 노출용 인스타/갤러리 공유형 수호 냥이 결과 카드 */
 .guardian-cat-card-container {
-  margin: 14px 0 10px 0;
-  max-width: 420px;
+  margin: 18px auto 14px auto;
+  max-width: 440px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .guardian-cat-card {
-  background: linear-gradient(150deg, #180e36 0%, #0d071e 45%, #221045 100%);
-  border: 2px solid rgba(255, 209, 102, 0.65);
-  border-radius: 20px;
-  padding: 22px 18px 18px 18px;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.75), 0 0 25px rgba(157, 78, 221, 0.35);
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  background: #110926;
+  background-image: linear-gradient(155deg, #1b0e3b 0%, #0d071e 50%, #200f40 100%);
+  border: 2px solid rgba(255, 209, 102, 0.7);
+  border-radius: 22px;
+  padding: 22px 20px 20px 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 30px rgba(157, 78, 221, 0.3);
   position: relative;
   overflow: hidden;
   color: #f0ecfc;
@@ -3227,41 +3236,46 @@ textarea#chart-raw-input:focus {
   margin-bottom: 14px;
 }
 
+/* 고양이 이미지 3배 확대 & 귀여운 전신 쇼케이스 */
 .gcc-avatar-orb {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 10px auto;
-  border-radius: 50%;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 14px auto;
+  border-radius: 24px;
   position: relative;
-  background: radial-gradient(circle, #3a1c6e 0%, #100826 100%);
-  border: 3px solid rgba(255, 209, 102, 0.85);
-  box-shadow: 0 0 20px rgba(255, 209, 102, 0.45);
+  background: radial-gradient(circle at 50% 45%, rgba(65, 32, 120, 0.45) 0%, rgba(13, 7, 30, 0.9) 100%);
+  border: 2px solid rgba(255, 209, 102, 0.55);
+  box-shadow: 0 0 25px rgba(255, 209, 102, 0.25), inset 0 0 20px rgba(157, 78, 221, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  padding: 6px;
 }
 
 .gcc-avatar-img {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
+  border-radius: 18px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5));
 }
 
 .gcc-emoji-tag {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
+  bottom: 8px;
+  right: 8px;
   background: #0c0919;
-  border: 1px solid var(--accent-gold);
+  border: 1.5px solid var(--accent-gold);
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 15px;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  z-index: 2;
 }
 
 .gcc-type-label {
@@ -3273,12 +3287,15 @@ textarea#chart-raw-input:focus {
   margin-bottom: 4px;
 }
 
+/* 카드 이미지 저장 시에도 선명하게 보이도록 그라데이션 제거 및 또렷한 솔리드 골드 컬러 적용 */
 .gcc-cat-name {
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 800;
-  background: linear-gradient(135deg, #ffffff 0%, #ffd166 60%, #fca311 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ffd166;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: #ffd166;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 209, 102, 0.35);
   line-height: 1.35;
   margin-bottom: 6px;
 }
@@ -3365,12 +3382,24 @@ textarea#chart-raw-input:focus {
   color: #ffd166;
 }
 
-/* 3. 공유 및 저장 액션 버튼 바 */
+/* 3. 공유 및 저장 액션 버튼 바 (중앙 정렬) */
 .gcc-actions-bar {
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 10px;
+  margin: 12px auto 0 auto;
+  width: 100%;
+  max-width: 440px;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
+}
+
+.text-result-actions {
+  margin: 16px auto 6px auto;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 440px;
 }
 
 .btn-card-action {
@@ -3610,6 +3639,11 @@ textarea#chart-raw-input:focus {
   .cat-avatar-wrapper {
     width: 140px;
     height: 140px;
+  }
+
+  .gcc-avatar-orb {
+    width: 190px;
+    height: 190px;
   }
 
   .chat-panel {
