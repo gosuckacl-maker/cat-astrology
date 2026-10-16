@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>고양이 점성술사 루나 - Astro-Seek 정밀 점성술 상담소</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- html2pdf.js 클라이언트 사이드 PDF 생성 라이브러리 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <!-- 배경 별빛 캔버스 -->
+  <canvas id="starfield"></canvas>
+
+  <div class="app-container">
+    <!-- 헤더 영역 -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="mystic-icon">✨🐾</div>
+        <div>
+          <h1>별빛 냥성술 상담소</h1>
+          <p class="subtitle">생년월일시 기반 Astro-Seek 정밀 천체 차트 & 대점성술사 루나 13세</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- 🔮 남은 질문 횟수 뱃지 (Vercel Serverless 유저 쿼터 연동) -->
+        <div class="user-quota-badge" id="quota-badge" title="남은 무료 질문 횟수 (소진 시 광고 시청으로 충전 가능)">
+          <span class="quota-icon">🔮</span>
+          <span class="quota-text">남은 질문: <span id="user-credits">3</span>회</span>
+          <button id="btn-recharge-quota" class="quota-recharge-btn" title="10초 츄르 광고 보고 질문 +2회 충전하기">+ 충전 🎬</button>
+        </div>
+
+        <button id="btn-open-pdf-top" class="icon-btn gold-btn" title="나만의 우주 지문 맞춤 PDF 평생 소장서">
+          <span class="btn-icon">📖</span>
+          <span>PDF 소장서</span>
+        </button>
+
+        <button id="btn-chart-modal" class="icon-btn highlight-btn" title="생년월일시로 점성술 차트 자동 계산">
+          <span class="btn-icon">🌌</span>
+          <span id="header-chart-status">생년월일시 차트 계산</span>
+        </button>
+
+        <button id="btn-sound-toggle" class="icon-btn" title="신비로운 효과음 켜기/끄기">
+          <span class="btn-icon">🔔</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 메인 레이아웃 -->
+    <main class="main-content">
+      <!-- 좌측: 고양이 점성술사 인터랙션 패널 -->
+      <section class="astrologer-panel">
+        <div class="cat-stage">
+          <!-- 냥성술사 SVG 아바타 -->
+          <div class="cat-avatar-wrapper" id="cat-avatar" title="루나를 쓰다듬어 보세요!">
+            <svg viewBox="0 0 200 220" class="cat-svg">
+              <defs>
+                <linearGradient id="hatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#4a154b" />
+                  <stop offset="50%" stop-color="#2d1154" />
+                  <stop offset="100%" stop-color="#190730" />
+                </linearGradient>
+                <linearGradient id="orbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#d4b5ff" />
+                  <stop offset="50%" stop-color="#8a5cf6" />
+                  <stop offset="100%" stop-color="#2c1a6d" />
+                </linearGradient>
+                <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="6" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+
+              <!-- 배경 후광 -->
+              <circle cx="100" cy="115" r="75" fill="#ffd166" opacity="0.12" filter="url(#glow)"/>
+
+              <!-- 꼬리 -->
+              <path class="cat-tail" d="M 45 180 Q 20 150 25 120 Q 30 110 38 125" fill="none" stroke="#2a273b" stroke-width="12" stroke-linecap="round"/>
+
+              <!-- 몸통 -->
+              <path d="M 55 200 C 55 140, 145 140, 145 200 Z" fill="#2a273b"/>
+              <!-- 로브/망토 -->
+              <path d="M 60 200 C 60 150, 140 150, 140 200 Z" fill="#3b2063" stroke="#ffd166" stroke-width="1.5"/>
+              <circle cx="100" cy="155" r="4" fill="#ffd166"/>
+              <path d="M 100 159 L 100 175" stroke="#ffd166" stroke-width="1"/>
+
+              <!-- 고양이 귀 -->
+              <polygon points="60,85 75,40 95,75" fill="#2a273b"/>
+              <polygon points="65,80 75,50 90,75" fill="#ffb4a2"/>
+              <polygon points="105,75 125,40 140,85" fill="#2a273b"/>
+              <polygon points="110,75 125,50 135,80" fill="#ffb4a2"/>
+
+              <!-- 고양이 얼굴 -->
+              <circle cx="100" cy="100" r="42" fill="#2a273b"/>
+
+              <!-- 이마의 초승달 문양 -->
+              <path d="M 97 72 A 7 7 0 0 0 103 84 A 6 6 0 0 1 97 72" fill="#ffd166" filter="url(#glow)"/>
+
+              <!-- 신비로운 눈동자 -->
+              <g class="cat-eyes">
+                <ellipse cx="84" cy="98" rx="8" ry="9" fill="#06d6a0"/>
+                <ellipse cx="84" cy="98" rx="2.5" ry="8" fill="#111" class="cat-pupil"/>
+                <circle cx="86" cy="94" r="2.5" fill="#ffffff"/>
+
+                <ellipse cx="116" cy="98" rx="8" ry="9" fill="#06d6a0"/>
+                <ellipse cx="116" cy="98" rx="2.5" ry="8" fill="#111" class="cat-pupil"/>
+                <circle cx="118" cy="94" r="2.5" fill="#ffffff"/>
+              </g>
+
+              <!-- 코와 입 -->
+              <polygon points="98,107 102,107 100,110" fill="#ffb4a2"/>
+              <path d="M 96 112 Q 100 115 100 110 Q 100 115 104 112" fill="none" stroke="#ffb4a2" stroke-width="1.8" stroke-linecap="round"/>
+
+              <!-- 볼터치 -->
+              <circle cx="75" cy="108" r="5" fill="#ff70a6" opacity="0.4"/>
+              <circle cx="125" cy="108" r="5" fill="#ff70a6" opacity="0.4"/>
+
+              <!-- 수염 -->
+              <line x1="55" y1="105" x2="72" y2="107" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="53" y1="113" x2="71" y2="112" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="145" y1="105" x2="128" y2="107" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="147" y1="113" x2="129" y2="112" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
+
+              <!-- 마법 모자 -->
+              <path d="M 60 70 Q 100 78 140 70 Q 100 62 60 70 Z" fill="#ffd166"/>
+              <path d="M 70 68 L 100 8 L 130 68 Z" fill="url(#hatGrad)"/>
+              <polygon points="100,6 97,14 105,11 95,11 103,14" fill="#ffd166" filter="url(#glow)"/>
+              <circle cx="100" cy="8" r="3" fill="#ffd166"/>
+
+              <!-- 발 앞 모으기 -->
+              <ellipse cx="88" cy="188" rx="8" ry="6" fill="#ffffff"/>
+              <ellipse cx="112" cy="188" rx="8" ry="6" fill="#ffffff"/>
+
+              <!-- 마법 수정구슬 테이블 & 구슬 -->
+              <ellipse cx="100" cy="210" rx="45" ry="12" fill="#1b122e" stroke="#ffd166" stroke-width="1"/>
+              <!-- 신비로운 수정구슬 -->
+              <circle id="crystal-orb" cx="100" cy="188" r="24" fill="url(#orbGrad)" filter="url(#glow)" opacity="0.95"/>
+              <circle cx="93" cy="180" r="7" fill="#ffffff" opacity="0.45"/>
+              <circle cx="90" cy="177" r="3" fill="#ffffff" opacity="0.75"/>
+            </svg>
+          </div>
+
+          <!-- 기분 말풍선/상태 -->
+          <div class="cat-status-badge" id="cat-mood">
+            <span class="status-dot"></span>
+            <span id="cat-mood-text">별들의 기운을 명상 중... 냥!</span>
+          </div>
+        </div>
+
+        <!-- 점성술 출생 차트 요약 카드 -->
+        <div class="chart-summary-card" id="chart-summary-card">
+          <div class="card-top-row">
+            <span class="chart-tag-badge">🌌 집사의 우주 지문</span>
+            <button id="btn-edit-chart" class="mini-btn" title="차트 다시 입력하기">수정 ✏️</button>
+          </div>
+          <div class="big3-container" id="big3-display">
+            <!-- 기본 상태: 미등록 안내 -->
+            <div class="chart-empty-state" id="chart-empty-state">
+              <p>아직 점성술 차트가 없습니다.</p>
+              <button id="btn-open-chart-quick" class="btn-chart-prompt">
+                ✨ 생년월일시 입력으로 Astro-Seek 차트 즉시 계산하기
+              </button>
+            </div>
+            <!-- 등록 후 표시될 Big 3 그리드 -->
+            <div class="big3-grid hidden" id="big3-grid">
+              <div class="big3-item">
+                <span class="big3-label">☀️ 태양 (본질)</span>
+                <span class="big3-val" id="val-sun">-</span>
+              </div>
+              <div class="big3-item">
+                <span class="big3-label">🌙 달 (내면/감정)</span>
+                <span class="big3-val" id="val-moon">-</span>
+              </div>
+              <div class="big3-item">
+                <span class="big3-label">⬆️ 상승궁 (첫인상)</span>
+                <span class="big3-val" id="val-asc">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 👑 유료 심층 리포트 & 소장서 마이크로 결제 섹션 -->
+        <div class="premium-services-box">
+          <div class="premium-header">
+            <span>👑 프리미엄 심층 리포트</span>
+            <span class="premium-badge-hot">HIT</span>
+          </div>
+          <div class="premium-list">
+            <button class="btn-premium-item" id="btn-service-future" data-price="990" data-title="2026 하반기 연애/재물 대운 집중 리포트">
+              <div class="item-info">
+                <span class="item-title">💖 2026 하반기 대운 집중 리포트</span>
+                <span class="item-desc">목성/토성 트랜짓 기반 월별 세부 운세</span>
+              </div>
+              <span class="item-price">990원</span>
+            </button>
+            <button class="btn-premium-item" id="btn-service-synastry" data-price="1900" data-title="상대방과 나의 시나스트리(궁합) 심층 분석">
+              <div class="item-info">
+                <span class="item-title">🔮 시나스트리(궁합) 심층 분석</span>
+                <span class="item-desc">상대방 차트와 교차 각도 & 케미 점수</span>
+              </div>
+              <span class="item-price">1,900원</span>
+            </button>
+            <button class="btn-premium-item" id="btn-service-pdf" data-price="9900" data-title="나만의 우주 지문 맞춤 PDF 평생 소장서">
+              <div class="item-info">
+                <span class="item-title">📖 나만의 우주 지문 평생 소장서 (1.5만자+)</span>
+                <span class="item-desc">Big 3 + 10대 행성 + 12하우스 + 4계절 트랜짓 (1.5만자 완결본)</span>
+              </div>
+              <span class="item-price">9,900원</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 복채(츄르 바치기) 위젯 -->
+        <div class="tribute-box">
+          <div class="tribute-header">
+            <span>🐾 복채 공양하기</span>
+            <span class="tribute-hint">냥성술사의 영력을 깨워보라냥!</span>
+          </div>
+          <div class="tribute-buttons">
+            <button class="btn-tribute" data-gift="churu" title="츄르 바치기">
+              <span class="tribute-icon">🐟</span>
+              <span class="tribute-label">황금 츄르</span>
+            </button>
+            <button class="btn-tribute" data-gift="catnip" title="캣닢 바치기">
+              <span class="tribute-icon">🌿</span>
+              <span class="tribute-label">신비의 캣닢</span>
+            </button>
+            <button class="btn-tribute" data-gift="feather" title="깃털 바치기">
+              <span class="tribute-icon">🪶</span>
+              <span class="tribute-label">은하수 깃털</span>
+            </button>
+          </div>
+          <div id="tribute-reaction" class="tribute-reaction-text"></div>
+        </div>
+
+        <!-- 오늘의 냥성 카드 보기 버튼 -->
+        <button id="btn-draw-card" class="btn-primary-action">
+          <span>🔮 오늘의 냥성술 부적 뽑기</span>
+        </button>
+
+        <!-- 좌측 사이드바 하단 여백: 디스플레이 광고 배너 (채팅 흐름 방해 없음) -->
+        <div class="sidebar-display-ad-card">
+          <div class="ad-slot-header">
+            <span class="ad-badge-tag">AD</span>
+            <span class="ad-slot-title">스폰서 추천 굿즈</span>
+          </div>
+          <!-- Google AdSense 공식 슬롯 구조 -->
+          <div class="adsense-slot-wrapper">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <!-- AdSense 승인 전/개발 환경용 프리미엄 네이티브 디스플레이 목업 -->
+            <div class="native-ad-content">
+              <div class="native-ad-icon">🔮✨</div>
+              <div class="native-ad-text">
+                <div class="native-ad-heading">묘성 은하 탄생석 & 크리스털 주얼리</div>
+                <div class="native-ad-description">내 별자리 기운을 증폭하는 1:1 맞춤 원석 수호 부적</div>
+              </div>
+            </div>
+            <a href="#" class="native-ad-cta-btn" onclick="event.preventDefault(); alert('스폰서 스토어로 이동합니다!');">
+              스토어 구경하기 ➔
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 우측: 대화형 상담소 채팅창 -->
+      <section class="chat-panel">
+        <!-- 채팅창 최상단 가로 디스플레이 광고 배너 (채팅 흐름 비간섭) -->
+        <div class="chat-top-ad-banner">
+          <div class="chat-ad-header">
+            <span class="chat-ad-pill">AD</span>
+            <span class="chat-ad-sponsor-label">공식 스폰서</span>
+          </div>
+          <div class="chat-ad-body">
+            <div class="chat-ad-icon">🌟🪐✨</div>
+            <div class="chat-ad-text-group">
+              <span class="chat-ad-title">2026 나의 수호 행성 원석 펜던트 기획전</span>
+              <span class="chat-ad-sub">내 출생 별자리의 기운을 증폭시키는 1:1 맞춤 우주 원석 부적</span>
+            </div>
+            <a href="#" class="chat-ad-btn" onclick="event.preventDefault(); alert('스폰서 스토어로 이동합니다!');">특가 보기 ➔</a>
+          </div>
+        </div>
+
+        <!-- 추천 질문 및 유료 서비스 칩 -->
+        <div class="quick-chips-wrapper">
+          <span class="chips-label">✨ 추천 질문:</span>
+          <div class="quick-chips">
+            <!-- 무료 추천 질문 칩 -->
+            <button class="chip chip-free" data-query="내 출생 차트를 바탕으로 나의 Big 3(태양·달·상승궁)와 타고난 영혼의 본질을 분석해줘냥!">🪐 [무료] Big 3 본질 분석</button>
+            <button class="chip chip-free" data-query="올해 나의 금전운과 재물운 흐름, 지갑을 지키는 비법을 내 차트 2하우스 기반으로 알려줘옹!">🪙 [무료] 올해 재물·금전운</button>
+            <button class="chip chip-free" data-query="내 점성술 차트의 금성(Venus)과 화성(Mars)을 보고 나의 숨겨진 연애 매력과 어울리는 인연을 알려줘냥!">💖 [무료] 금성·화성 연애운</button>
+            <button class="chip chip-free" data-query="내 차트의 10하우스(커리어)와 6하우스(실무)를 분석해서 나의 천직과 성공 방향을 짚어줘옹!">🐾 [무료] 천직 & 직업 적성</button>
+            <button class="chip chip-free" data-query="오늘 내 별자리 기운에 맞는 따뜻한 힐링 조언과 오늘의 행운 팁을 전해달라냥!">🌿 [무료] 오늘의 힐링 조언</button>
+            <button class="chip chip-free" data-query="이번 달 천체 이동(트랜짓)에서 내가 특히 조심해야 할 점이나 주의할 날이 있을까옹?">⚡ [무료] 이달의 주의사항</button>
+
+            <!-- 유료 심층 서비스 칩 -->
+            <button class="chip chip-gold" id="chip-future">💖 990원 하반기 대운</button>
+            <button class="chip chip-gold" id="chip-synastry">🔮 1,900원 궁합 분석</button>
+            <button class="chip chip-gold" id="chip-pdf">📖 9,900원 소장용 PDF (1.5만자+)</button>
+          </div>
+        </div>
+
+        <!-- 채팅 메시지 리스트 -->
+        <div class="chat-messages" id="chat-messages">
+          <!-- 환영 메시지 -->
+          <div class="message-row astrologer-row">
+            <div class="avatar-mini">🐾</div>
+            <div class="message-bubble astrologer-bubble">
+              <div class="speaker-name">대점성술사 루나</div>
+              <div class="message-text">
+                어서오라냥, 고단한 속세의 별을 품고 온 집사여! 🌌<br><br>
+                나는 저 머나먼 묘성(猫星) 은하에서 온 <strong>점성술사 루나</strong>라옹.<br>
+                집사의 <strong>생년월일과 태어난 시간</strong>만 알려주면, 내장된 천체 궤도 엔진이 <strong>Astro-Seek 점성술 차트를 0.1초 만에 알아서 계산</strong>해준다냥!<br><br>
+                대화창에 <em>"나 98년 5월 15일 14:30 서울에서 태어났어"</em>처럼 편하게 말하거나, 아래 카드에서 바로 버튼을 눌러보라옹! 🔮✨
+
+                <div class="inline-chart-box" id="welcome-inline-box">
+                  <div class="inline-chart-title">✨ 집사의 생년월일시로 차트 즉시 계산하기</div>
+                  <div class="inline-chart-grid">
+                    <div class="inline-field">
+                      <label>생년월일</label>
+                      <input type="date" class="input-inline-date" value="1998-05-15">
+                    </div>
+                    <div class="inline-field">
+                      <label>태어난 시간</label>
+                      <input type="time" class="input-inline-time" value="14:30">
+                    </div>
+                    <div class="inline-field">
+                      <label>출생 도시</label>
+                      <select class="select-inline-city">
+                        <option value="Seoul">서울 (Seoul)</option>
+                        <option value="Busan">부산 (Busan)</option>
+                        <option value="Incheon">인천 (Incheon)</option>
+                        <option value="Daegu">대구 (Daegu)</option>
+                        <option value="Daejeon">대전 (Daejeon)</option>
+                        <option value="Gwangju">광주 (Gwangju)</option>
+                        <option value="Jeju">제주 (Jeju)</option>
+                        <option value="Other">기타/해외</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button class="btn-inline-calc">🔮 내 차트 알아서 계산하기</button>
+                </div>
+              </div>
+              <div class="message-time">방금 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 냥성술사가 점치는 중 애니메이션 인디케이터 -->
+        <div class="typing-indicator-container hidden" id="typing-indicator">
+          <div class="avatar-mini">🐾</div>
+          <div class="typing-indicator-bubble">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-desc" id="typing-desc">루나가 수정구슬 속 묘성을 들여다보는 중이다냥... 🔮</span>
+          </div>
+        </div>
+
+        <!-- 입력 영역 -->
+        <div class="chat-input-area">
+          <form id="chat-form" class="chat-form">
+            <input 
+              type="text" 
+              id="user-input" 
+              placeholder="질문을 입력하거나 '나 98년 5월 15일 14:30 서울'처럼 말하라냥..." 
+              autocomplete="off"
+              required
+            >
+            <button type="submit" id="btn-send" class="btn-send" title="질문 전송">
+              <span>전송</span>
+              <span class="send-arrow">➔</span>
+            </button>
+          </form>
+          <div class="input-footer">
+            <span>🐾 1회 질문 시 발바닥 에너지가 1씩 차감됩니다. (소진 시 🎬 15초 광고를 보고 무료 충전 가능)</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 모달 1: 토스/카카오페이 마이크로 결제창 -->
+    <div class="modal-overlay hidden" id="payment-modal">
+      <div class="modal-card checkout-modal-card">
+        <div class="modal-header">
+          <h3>💳 간편 마이크로 결제</h3>
+          <button class="modal-close" id="btn-close-payment">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="checkout-summary">
+            <div class="checkout-item-title" id="checkout-item-name">2026 하반기 대운 집중 리포트</div>
+            <div class="checkout-price-box">
+              <span class="price-label">결제 금액</span>
+              <span class="price-val" id="checkout-item-price">990원</span>
+            </div>
+          </div>
+
+          <div class="pay-method-section">
+            <label class="pay-label">간편 결제 수단 선택</label>
+            <div class="pay-methods">
+              <button class="pay-btn active" data-method="toss">
+                <span class="pay-logo toss-logo">toss</span>
+                <span>토스페이</span>
+              </button>
+              <button class="pay-btn" data-method="kakao">
+                <span class="pay-logo kakao-logo">kakao</span>
+                <span>카카오페이</span>
+              </button>
+              <button class="pay-btn" data-method="naver">
+                <span class="pay-logo naver-logo">N</span>
+                <span>네이버페이</span>
+              </button>
+              <button class="pay-btn" data-method="card">
+                <span class="pay-logo card-logo">💳</span>
+                <span>신용/체크카드</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="checkout-notice">
+            <span>✨ 1회 결제 즉시 AI가 생성한 고품질 점성학 분석 리포트가 대화창에 실시간 해금됩니다.</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-cancel-pay" class="btn-secondary">취소</button>
+          <button id="btn-submit-pay" class="btn-primary pay-submit-btn">
+            <span id="btn-pay-text">990원 간편 결제하기</span> ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달 2: 시나스트리(궁합) 상대방 정보 입력 -->
+    <div class="modal-overlay hidden" id="synastry-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>🔮 상대방과 나의 시나스트리(궁합) 입력</h3>
+          <button class="modal-close" id="btn-close-synastry">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-desc">
+            상대방의 생년월일과 태어난 시간을 입력하면, 두 사람의 천체 궤도를 교차 분석하여 <strong>소름 돋는 묘성 궁합 점수</strong>와 케미스트리를 풀어드립니다!
+          </p>
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="partner-birth-date">상대방 생년월일 (양력) <span class="required-star">*</span></label>
+              <input type="date" id="partner-birth-date" value="1999-11-20">
+            </div>
+            <div class="form-group flex-1">
+              <label for="partner-birth-time">태어난 시간</label>
+              <input type="time" id="partner-birth-time" value="10:00">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="partner-birth-city">상대방 출생 도시</label>
+              <select id="partner-birth-city">
+                <option value="Seoul">서울 (Seoul)</option>
+                <option value="Busan">부산 (Busan)</option>
+                <option value="Incheon">인천 (Incheon)</option>
+                <option value="Daegu">대구 (Daegu)</option>
+                <option value="Daejeon">대전 (Daejeon)</option>
+                <option value="Gwangju">광주 (Gwangju)</option>
+                <option value="Jeju">제주 (Jeju)</option>
+                <option value="Other">기타/해외</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="partner-name">상대방 별명/이름</label>
+              <input type="text" id="partner-name" placeholder="예: 썸남, 연인, 친구" value="소중한 그 사람">
+            </div>
+          </div>
+
+          <!-- 궁합 모달 하단 디스플레이 배너 광고 (채팅 흐름 방해 없음) -->
+          <div class="modal-display-ad-slot synastry-ad-slot">
+            <div class="ad-slot-header">
+              <span class="ad-badge-tag">AD</span>
+              <span class="ad-slot-title">연애운 공식 후원사</span>
+            </div>
+            <div class="modal-ad-box">
+              <div class="modal-ad-left">
+                <span class="modal-ad-emoji">💖🌹</span>
+                <div>
+                  <div class="modal-ad-headline">2026 연애운 극대화 인연 유치 페로몬 향수</div>
+                  <div class="modal-ad-subtext">금성의 끌림 주파수를 깨우는 은은한 플로럴 아로마</div>
+                </div>
+              </div>
+              <a href="#" class="modal-ad-link-btn" onclick="event.preventDefault(); alert('연애운 기획전으로 이동합니다!');">특가 보기 ➔</a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-cancel-synastry" class="btn-secondary">닫기</button>
+          <button id="btn-submit-synastry" class="btn-primary">1,900원 결제하고 궁합 보기 ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달: 마력(질문 횟수) 소진 안내 팝업 -->
+    <div class="modal-overlay hidden" id="quota-modal">
+      <div class="modal-card quota-modal-card">
+        <div class="modal-header">
+          <h3>🐟 루나의 마력 소진 안내</h3>
+          <button class="modal-close" id="btn-close-quota">&times;</button>
+        </div>
+        <div class="modal-body text-center quota-modal-body">
+          <div class="quota-alert-icon">😿🐟✨</div>
+          <h2 class="quota-alert-title">루나의 마력이 소진되었다냥!</h2>
+          <p class="quota-alert-desc">
+            츄르 광고(10초)를 시청하면 대점성술사 루나의 질문 마력이 <strong>즉시 +2회 무료 충전</strong>된다옹! 🐾
+          </p>
+          <div class="quota-perk-box">
+            <span>✨ 10초 시청 완료 시: <strong>질문권 +2회 즉시 지급</strong></span>
+          </div>
+        </div>
+        <div class="modal-footer justify-center">
+          <button id="btn-cancel-quota" class="btn-secondary">나중에 하기</button>
+          <button id="btn-start-reward-from-modal" class="btn-primary highlight-pulse-btn">
+            🎬 츄르 광고(10초) 보고 충전하기 ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달: 웹용 10초 보상형 광고 레이어 (#ad-reward-modal) -->
+    <div class="modal-overlay hidden" id="ad-reward-modal" data-alt-id="reward-ad-modal">
+      <div class="modal-card ad-modal-card">
+        <div class="ad-top-bar">
+          <span class="ad-badge">스폰서 보상형 광고</span>
+          <div class="ad-timer-badge">
+            <span id="ad-timer-text">보상까지 10초...</span>
+          </div>
+          <button class="ad-skip-btn hidden" id="btn-skip-reward-ad">보상 받고 닫기 ✕</button>
+        </div>
+        <div class="ad-video-mockup">
+          <div class="ad-content-box">
+            <div class="ad-sponsor-icon">🐟🌿✨</div>
+            <h2 class="ad-sponsor-title">묘성 은하 유기농 캣닢 & 황금 츄르</h2>
+            <p class="ad-sponsor-desc">
+              "루나의 마력을 깨우는 최고의 영양 간식! 지금 첫 구매 시 50% 할인 혜택을 드립니다."
+            </p>
+            <div class="ad-progress-bar">
+              <div class="ad-progress-fill" id="ad-progress-fill"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ad-footer-reward">
+          <span id="ad-reward-purpose">🐟 루나의 마력이 소진되었다냥! 츄르 광고(10초)를 보고 마력을 충전하라옹 🐟</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달 4: 고품질 PDF 평생 소장서 미리보기 및 다운로드 -->
+    <div class="modal-overlay hidden" id="pdf-modal">
+      <div class="modal-card pdf-modal-card">
+        <div class="modal-header">
+          <h3>📖 나만의 우주 지문 평생 소장서 (총 15,000자+ 심층 분석본)</h3>
+          <button class="modal-close" id="btn-close-pdf">&times;</button>
+        </div>
+        <div class="modal-body pdf-modal-body">
+          <div class="pdf-action-banner">
+            <div>
+              <strong>📖 나만의 우주 지문 평생 소장서 (총 15,000자+ 압도적 볼륨 완결판)</strong>
+              <p>대점성술사 루나 13세가 10대 행성과 12하우스, 4계절 트랜짓을 정밀하게 해독한 최고급 평생 소장용 분석서입니다.</p>
+            </div>
+            <div class="pdf-btn-group">
+              <button id="btn-print-pdf" class="btn-secondary">인쇄하기 🖨️</button>
+              <button id="btn-download-pdf" class="btn-primary">PDF 파일 다운로드 📥</button>
+            </div>
+          </div>
+
+          <!-- 실제 PDF로 출력될 스타일링 문서 영역 -->
+          <div class="pdf-document-paper" id="pdf-printable-area">
+            <!-- 표지 (Cover) -->
+            <div class="pdf-page pdf-cover">
+              <div class="pdf-cover-border">
+                <div class="pdf-emblem">✨🐾 묘성 은하 점성학 연구소 🐾✨</div>
+                <div class="pdf-cat-art">🧙‍♂️🐱🔮</div>
+                <h1 class="pdf-title">우주 지문 점성학 평생 소장서</h1>
+                <p class="pdf-subtitle">대점성술사 루나 13세가 풀어낸 개인 출생 천체 분석록</p>
+                
+                <div class="pdf-owner-box">
+                  <div class="owner-row"><span>소장 집사:</span> <strong id="pdf-user-name">특별한 집사님</strong></div>
+                  <div class="owner-row"><span>출생 일시:</span> <span id="pdf-birth-datetime">-</span></div>
+                  <div class="owner-row"><span>출생 도시:</span> <span id="pdf-birth-city">-</span></div>
+                  <div class="owner-row"><span>하우스 체계:</span> <span>Whole Sign (서양 점성술 정밀 규격)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1장: Big 3 본질 자아 해체 -->
+            <div class="pdf-page">
+              <h2 class="pdf-chapter-title">제1장. 삼위일체 Big 3: 나의 본질 자아와 영혼의 지도</h2>
+              <div class="pdf-big3-section">
+                <div class="pdf-card-box">
+                  <h3 id="pdf-sun-title">☀️ 태양 (Sun): 타고난 의식과 인생의 목적</h3>
+                  <p id="pdf-sun-desc">집사의 영혼의 알맹이는 빛나는 태양의 기운을 담고 있습니다.</p>
+                </div>
+                <div class="pdf-card-box">
+                  <h3 id="pdf-moon-title">🌙 달 (Moon): 무의식과 내면의 정서적 안식처</h3>
+                  <p id="pdf-moon-desc">아무에게도 말하지 못하는 은밀한 감정의 굴곡과 힐링 처방입니다.</p>
+                </div>
+                <div class="pdf-card-box">
+                  <h3 id="pdf-asc-title">⬆️ 상승궁 (Ascendant): 세상 사람들이 나를 처음 보았을 때의 아우라</h3>
+                  <p id="pdf-asc-desc">사회적 가면과 대외적 인상, 첫눈에 풍기는 매력입니다.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2장: 사랑과 사냥 (금성 & 화성) 및 하우스 배치 -->
+            <div class="pdf-page">
+              <h2 class="pdf-chapter-title">제2장. 사랑과 사냥의 궤도: 금성·화성 & 12하우스</h2>
+              <div class="pdf-planets-table">
+                <div class="pdf-planet-row">
+                  <span class="p-name">💖 금성 (Venus)</span>
+                  <span class="p-val" id="pdf-venus-val">-</span>
+                  <span class="p-desc">연애관, 이성을 끌어당기는 치명적 매력과 심미안</span>
+                </div>
+                <div class="pdf-planet-row">
+                  <span class="p-name">⚔️ 화성 (Mars)</span>
+                  <span class="p-val" id="pdf-mars-val">-</span>
+                  <span class="p-desc">목표를 향한 행동력, 투지와 열정, 사냥 본능</span>
+                </div>
+                <div class="pdf-planet-row">
+                  <span class="p-name">🪙 목성 (Jupiter)</span>
+                  <span class="p-val" id="pdf-jupiter-val">-</span>
+                  <span class="p-desc">인생의 대운, 확장과 행운이 쏟아지는 영역</span>
+                </div>
+                <div class="pdf-planet-row">
+                  <span class="p-name">🪐 토성 (Saturn)</span>
+                  <span class="p-val" id="pdf-saturn-val">-</span>
+                  <span class="p-desc">인생의 과업과 훈련, 결국 성공으로 이어질 인내</span>
+                </div>
+              </div>
+              <div class="pdf-house-notes">
+                <h3>🏛️ 12하우스 주요 인생 영역 해석</h3>
+                <p id="pdf-house-summary">집사의 차트에서 2하우스(재물)와 10하우스(커리어)는 탁월한 성취의 에너지를 형성하고 있습니다.</p>
+              </div>
+            </div>
+
+            <!-- 3장: 향후 1년간의 트랜짓 & 묘성 부적 -->
+            <div class="pdf-page">
+              <h2 class="pdf-chapter-title">제3장. 향후 1년간의 천체 이동(트랜짓) & 루나의 수호 부적</h2>
+              <div class="pdf-transit-box">
+                <p id="pdf-transit-desc">
+                  다가오는 분기에는 목성의 순행과 함께 집사의 대인관계 및 재물 흐름에 새로운 전환점이 열립니다.
+                </p>
+              </div>
+              <div class="pdf-talisman-box">
+                <div class="talisman-stamp">🔮 묘성 수호 인장 🔮</div>
+                <h3>대점성술사 루나의 인생 치트키 처방전</h3>
+                <p>
+                  "세상이 흔들려도 고양이는 햇살이 비추는 자리를 찾아 낮잠을 즐긴다냥. 그대 안에는 이미 모든 파도를 헤쳐 나갈 유연한 발톱이 숨겨져 있다옹!"
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달: Astro-Seek 점성술 차트 자동 계산 & 등록 -->
+    <div class="modal-overlay hidden" id="chart-modal">
+      <div class="modal-card chart-modal-card">
+        <div class="modal-header">
+          <h3>🌌 Astro-Seek 점성술 차트 자동 계산 & 등록</h3>
+          <button class="modal-close" id="btn-close-chart-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <!-- 탭 선택기 -->
+          <div class="chart-tab-nav">
+            <button class="chart-tab-btn active" data-tab="tab-simple">⚡ 생년월일시 입력 (자동 계산 권장)</button>
+            <button class="chart-tab-btn" data-tab="tab-raw">📋 Astro-Seek 텍스트 직접 붙여넣기</button>
+          </div>
+
+          <!-- 탭 1: 간편 생년월일시 입력 -->
+          <div class="chart-tab-content active" id="tab-simple">
+            <div class="astro-seek-auto-banner">
+              <span class="banner-icon">🚀</span>
+              <div>
+                <strong>Astro-Seek 사이트를 따로 방문할 필요가 없습니다!</strong><br>
+                <span>생년월일과 시간만 적어주시면 내장된 NASA JPL 천체 궤도 알고리즘이 Astro-Seek의 출생 차트와 동일하게 실시간 자동 계산합니다.</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="simple-birth-date">생년월일 (양력) <span class="required-star">*</span></label>
+                <input type="date" id="simple-birth-date" value="1998-05-15">
+              </div>
+              <div class="form-group flex-1">
+                <label for="simple-birth-time">태어난 시간 (시:분) <span class="required-star">*</span></label>
+                <input type="time" id="simple-birth-time" value="14:30">
+                <span class="field-hint">* 시간을 모르면 대략적인 시간(예: 12:00)을 입력하세요.</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="simple-birth-city">태어난 도시</label>
+                <select id="simple-birth-city">
+                  <option value="Seoul">대한민국 서울 (Seoul)</option>
+                  <option value="Busan">대한민국 부산 (Busan)</option>
+                  <option value="Incheon">대한민국 인천 (Incheon)</option>
+                  <option value="Daegu">대한민국 대구 (Daegu)</option>
+                  <option value="Daejeon">대한민국 대전 (Daejeon)</option>
+                  <option value="Gwangju">대한민국 광주 (Gwangju)</option>
+                  <option value="Ulsan">대한민국 울산 (Ulsan)</option>
+                  <option value="Suwon">대한민국 수원 (Suwon)</option>
+                  <option value="Jeju">대한민국 제주 (Jeju)</option>
+                  <option value="Tokyo">일본 도쿄 (Tokyo)</option>
+                  <option value="NewYork">미국 뉴욕 (New York)</option>
+                  <option value="London">영국 런던 (London)</option>
+                  <option value="Paris">프랑스 파리 (Paris)</option>
+                  <option value="LA">미국 로스앤젤레스 (LA)</option>
+                </select>
+              </div>
+              <div class="form-group flex-1">
+                <label for="simple-concern">우선적으로 집중 상담받고 싶은 영역</label>
+                <select id="simple-concern">
+                  <option value="all">전체 인생 운세 & Big 3 본질 성향</option>
+                  <option value="love">연애운 / 이상형 / 나의 치명적 매력</option>
+                  <option value="career">직업 적성 / 사회적 성취 / 이직운</option>
+                  <option value="money">재물운 / 금전 흐름 / 투자 성향</option>
+                  <option value="healing">지친 마음 치유 & 달자리 멘탈 케어</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 탭 2: Raw 텍스트 붙여넣기 -->
+          <div class="chart-tab-content" id="tab-raw">
+            <div class="astro-seek-guide-box">
+              <div class="guide-title">
+                <span>💡 이미 복사해 둔 Astro-Seek 데이터가 있다면 붙여넣기</span>
+                <a href="https://www.astro-seek.com/" target="_blank" class="link-btn">Astro-Seek 열기 ↗</a>
+              </div>
+              <p class="guide-subtext">Astro-Seek의 'AI / ChatGPT Data Export' 영문 텍스트를 그대로 붙여넣으실 수 있습니다.</p>
+            </div>
+
+            <div class="form-group">
+              <div class="textarea-header">
+                <label for="chart-raw-input">Astro-Seek Export 데이터 텍스트</label>
+                <button type="button" id="btn-load-sample" class="mini-text-btn">✨ 샘플 데이터 채우기</button>
+              </div>
+              <textarea 
+                id="chart-raw-input" 
+                rows="7" 
+                placeholder="Sun in Taurus 24°31' (9th House)&#10;Moon in Capricorn 18°12' (5th House)..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- 차트 모달 하단 디스플레이 배너 광고 (채팅 흐름 방해 없음) -->
+          <div class="modal-display-ad-slot chart-ad-slot">
+            <div class="ad-slot-header">
+              <span class="ad-badge-tag">AD</span>
+              <span class="ad-slot-title">점성학 공식 후원사</span>
+            </div>
+            <div class="modal-ad-box">
+              <div class="modal-ad-left">
+                <span class="modal-ad-emoji">🪐📚</span>
+                <div>
+                  <div class="modal-ad-headline">정통 서양 점성학 마스터클래스 VOD</div>
+                  <div class="modal-ad-subtext">내 차트 12하우스와 아스펙트 완전 정복 7일 완성 코스</div>
+                </div>
+              </div>
+              <a href="#" class="modal-ad-link-btn" onclick="event.preventDefault(); alert('점성학 클래스 페이지로 이동합니다!');">수강 혜택 ➔</a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer space-between">
+          <button id="btn-reset-chart" class="btn-secondary">차트 초기화</button>
+          <div class="footer-right-buttons">
+            <button id="btn-cancel-chart" class="btn-secondary">닫기</button>
+            <button id="btn-save-chart" class="btn-primary">🔮 점성술 차트 자동 계산 & 분석 시작</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달: 부적/타로 카드 팝업 -->
+    <div class="modal-overlay hidden" id="card-modal">
+      <div class="modal-card card-popup">
+        <button class="modal-close" id="btn-close-card">&times;</button>
+        <div class="fortune-card" id="fortune-card-display">
+          <div class="card-border">
+            <div class="card-constellation">✨ 묘성 은하 제7궁 ✨</div>
+            <div class="card-icon" id="card-icon">🌟</div>
+            <h2 class="card-title" id="card-title">은하수 캣닢의 축복</h2>
+            <div class="card-keywords" id="card-keywords">#행운 #도약 #골골송</div>
+            <p class="card-desc" id="card-desc">
+              별들이 그대의 등 뒤에서 따뜻하게 비추고 있다냥! 움츠렸던 앞발을 뻗어 원하는 목표를 낚아채라옹.
+            </p>
+            <div class="card-lucky-items">
+              <div class="lucky-item">
+                <span class="lucky-label">행운의 색:</span>
+                <span id="lucky-color" class="lucky-val">라벤더 퍼플</span>
+              </div>
+              <div class="lucky-item">
+                <span class="lucky-label">행운의 간식:</span>
+                <span id="lucky-snack" class="lucky-val">참치맛 츄르</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 부적 팝업 하단 디스플레이 배너 광고 (채팅 흐름 방해 없음) -->
+        <div class="modal-display-ad-slot card-ad-slot">
+          <div class="ad-slot-header">
+            <span class="ad-badge-tag">AD</span>
+            <span class="ad-slot-title">집사 힐링 스폰서</span>
+          </div>
+          <div class="modal-ad-box">
+            <div class="modal-ad-left">
+              <span class="modal-ad-emoji">🌿🐟</span>
+              <div>
+                <div class="modal-ad-headline">유기농 골골송 캣닢 & 츄르 특별 선물세트</div>
+                <div class="modal-ad-subtext">냥이들의 심신 안정과 스트레스 해소를 위한 프리미엄 간식</div>
+              </div>
+            </div>
+            <a href="#" class="modal-ad-link-btn" onclick="event.preventDefault(); alert('반려묘 선물세트로 이동합니다!');">선물하기 ➔</a>
+          </div>
+        </div>
+
+        <div class="modal-footer card-actions">
+          <button id="btn-reshuffle" class="btn-secondary" title="하루 1회 무료, 이후 🎬 15초 광고 시청 후 재추첨">다시 뽑기 🔀</button>
+          <button id="btn-copy-card" class="btn-primary">부적 글귀 복사하기 📋</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 천체력 계산 엔진 및 메인 스크립트 로드 -->
+  <script src="astronomy.js"></script>
+  <script src="dossier.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

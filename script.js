@@ -1,0 +1,1686 @@
+// 고양이 점성술사 루나 (Cat Astrologer Luna) - Astro-Seek 정밀 점성술 연동 스크립트
+
+document.addEventListener('DOMContentLoaded', () => {
+  // DOM 요소 참조
+  const starCanvas = document.getElementById('starfield');
+  const chatMessages = document.getElementById('chat-messages');
+  const chatForm = document.getElementById('chat-form');
+  const userInput = document.getElementById('user-input');
+  const typingIndicator = document.getElementById('typing-indicator');
+  const typingDesc = document.getElementById('typing-desc');
+  const crystalOrb = document.getElementById('crystal-orb');
+  const catMoodText = document.getElementById('cat-mood-text');
+  const catAvatar = document.getElementById('cat-avatar');
+  
+  // 헤더 및 질문 쿼터 UI 요소
+  const userCreditsEl = document.getElementById('user-credits');
+  const btnRechargeQuota = document.getElementById('btn-recharge-quota');
+  const btnSoundToggle = document.getElementById('btn-sound-toggle');
+
+  // 마력 소진 및 보상형 광고 모달 요소
+  const quotaModal = document.getElementById('quota-modal');
+  const btnCloseQuota = document.getElementById('btn-close-quota');
+  const btnCancelQuota = document.getElementById('btn-cancel-quota');
+  const btnStartRewardFromModal = document.getElementById('btn-start-reward-from-modal');
+
+  const rewardAdModal = document.getElementById('ad-reward-modal') || document.getElementById('reward-ad-modal');
+  const btnSkipRewardAd = document.getElementById('btn-skip-reward-ad');
+  const adTimerText = document.getElementById('ad-timer-text');
+  const adProgressFill = document.getElementById('ad-progress-fill');
+  const adRewardPurposeEl = document.getElementById('ad-reward-purpose');
+
+  // Astro-Seek 차트 모달 요소
+  const btnChartModal = document.getElementById('btn-chart-modal');
+  const chartModal = document.getElementById('chart-modal');
+  const btnCloseChartModal = document.getElementById('btn-close-chart-modal');
+  const btnCancelChart = document.getElementById('btn-cancel-chart');
+  const btnSaveChart = document.getElementById('btn-save-chart');
+  const btnResetChart = document.getElementById('btn-reset-chart');
+  const btnLoadSample = document.getElementById('btn-load-sample');
+  const chartRawInput = document.getElementById('chart-raw-input');
+  const headerChartStatus = document.getElementById('header-chart-status');
+  const btnOpenChartQuick = document.getElementById('btn-open-chart-quick');
+  const btnEditChart = document.getElementById('btn-edit-chart');
+
+  // 차트 요약 카드 UI
+  const chartEmptyState = document.getElementById('chart-empty-state');
+  const big3Grid = document.getElementById('big3-grid');
+  const valSun = document.getElementById('val-sun');
+  const valMoon = document.getElementById('val-moon');
+  const valAsc = document.getElementById('val-asc');
+
+  // 부적 카드 모달 요소
+  const btnDrawCard = document.getElementById('btn-draw-card');
+  const cardModal = document.getElementById('card-modal');
+  const btnCloseCard = document.getElementById('btn-close-card');
+  const btnReshuffle = document.getElementById('btn-reshuffle');
+  const btnCopyCard = document.getElementById('btn-copy-card');
+
+  // 상태 관리
+  let soundEnabled = localStorage.getItem('cat_sound_enabled') !== 'false';
+  let savedChartData = null;
+  let isGenerating = false;
+  let userQuota = 3; // 기본 무료 질문 3회
+
+  // 별자리 사전 (영문 -> 한글 및 심볼 매핑)
+  const zodiacMap = {
+    'aries': { name: '양자리', symbol: '♈', element: '불', trait: '용맹하고 진취적인 대장 고양이' },
+    'taurus': { name: '황소자리', symbol: '♉', element: '흙', trait: '안락한 방석과 고급 츄르를 사랑하는 미식가' },
+    'gemini': { name: '쌍둥이자리', symbol: '♊', element: '공기', trait: '호기심 폭발! 은하수 장난감을 쫓는 재간둥이' },
+    'cancer': { name: '게자리', symbol: '♋', element: '물', trait: '포근한 담요처럼 다정하고 감수성 풍부한 집사 수호신' },
+    'leo': { name: '사자자리', symbol: '♌', element: '불', trait: '캣타워 꼭대기에서 군림하는 위풍당당한 묘황' },
+    'virgo': { name: '처녀자리', symbol: '♍', element: '흙', trait: '완벽한 그루밍과 날카로운 관찰력을 지닌 책사' },
+    'libra': { name: '천칭자리', symbol: '♎', element: '공기', trait: '우아한 발걸음과 평화, 조화를 사랑하는 귀족 고양이' },
+    'scorpio': { name: '전갈자리', symbol: '♏', element: '물', trait: '어둠 속을 꿰뚫어보는 마성의 매력과 신비주의자' },
+    'sagittarius': { name: '사수자리', symbol: '♐', element: '불', trait: '창밖 너머 은하수를 탐험하는 자유로운 방랑묘' },
+    'capricorn': { name: '염소자리', symbol: '♑', element: '흙', trait: '묵묵히 높은 산을 정복하는 성실한 끈기의 화신' },
+    'aquarius': { name: '물병자리', symbol: '♒', element: '공기', trait: '엉뚱하고 독창적인 외계 묘성 전파 수신자' },
+    'pisces': { name: '물고기자리', symbol: '♓', element: '물', trait: '꿈속 은하수를 유영하는 낭만주의 힐러' }
+  };
+
+  // 초기화 실행
+  initStarfield();
+  initSoundUI();
+  initCatBlinking();
+  initChartSystem();
+  initQuotaSystem();
+
+  // ==========================================
+  // 1. 별빛 캔버스 (Starfield Canvas)
+  // ==========================================
+  function initStarfield() {
+    const ctx = starCanvas.getContext('2d');
+    let stars = [];
+    const starCount = 120;
+
+    function resizeCanvas() {
+      starCanvas.width = window.innerWidth;
+      starCanvas.height = window.innerHeight;
+      stars = [];
+      for (let i = 0; i < starCount; i++) {
+        stars.push({
+          x: Math.random() * starCanvas.width,
+          y: Math.random() * starCanvas.height,
+          radius: Math.random() * 1.5 + 0.3,
+          alpha: Math.random(),
+          speed: Math.random() * 0.02 + 0.005,
+          color: ['#ffffff', '#ffd166', '#d4b5ff', '#4cc9f0'][Math.floor(Math.random() * 4)]
+        });
+      }
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function animateStars() {
+      ctx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+      stars.forEach(star => {
+        star.alpha += star.speed;
+        if (star.alpha > 1 || star.alpha < 0) {
+          star.speed = -star.speed;
+        }
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+        ctx.globalAlpha = Math.max(0, Math.min(1, star.alpha));
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1.0;
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+  }
+
+  // ==========================================
+  // 2. Web Audio 신비로운 사운드 효과
+  // ==========================================
+  let audioCtx = null;
+  function getAudioContext() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) audioCtx = new AudioContext();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playBellChime() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      [587.33, 880, 1174.66].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.08);
+
+        gain.gain.setValueAtTime(0.08, now + i * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 1.2);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.08);
+        osc.stop(now + i * 0.08 + 1.3);
+      });
+    } catch (e) {
+      console.warn('Audio play error:', e);
+    }
+  }
+
+  function playCatMeow() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(480, now);
+      osc.frequency.exponentialRampToValueAtTime(820, now + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(430, now + 0.45);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.12, now + 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.5);
+    } catch (e) {
+      console.warn('Audio play error:', e);
+    }
+  }
+
+  function initSoundUI() {
+    updateSoundButton();
+    btnSoundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem('cat_sound_enabled', soundEnabled);
+      updateSoundButton();
+      if (soundEnabled) playBellChime();
+    });
+  }
+
+  function updateSoundButton() {
+    btnSoundToggle.innerHTML = soundEnabled ? '<span class="btn-icon">🔔</span>' : '<span class="btn-icon">🔕</span>';
+    btnSoundToggle.title = soundEnabled ? '효과음 끄기' : '효과음 켜기';
+  }
+
+  // ==========================================
+  // 3. 고양이 아바타 인터랙션
+  // ==========================================
+  function initCatBlinking() {
+    const eyes = document.querySelectorAll('.cat-eyes');
+    function blink() {
+      eyes.forEach(eye => {
+        eye.style.transformOrigin = '100px 98px';
+        eye.style.transform = 'scaleY(0.1)';
+      });
+      setTimeout(() => {
+        eyes.forEach(eye => eye.style.transform = 'scaleY(1)');
+      }, 150);
+
+      const nextBlink = Math.random() * 4000 + 3000;
+      setTimeout(blink, nextBlink);
+    }
+    setTimeout(blink, 2000);
+
+    catAvatar.addEventListener('click', () => {
+      playCatMeow();
+      setCatMood('골골골... 집사의 손길이 느껴진다옹! ✨');
+      triggerOrbGlow('#ff70a6');
+    });
+  }
+
+  function setCatMood(text) {
+    catMoodText.textContent = text;
+  }
+
+  function triggerOrbGlow(color = '#8a5cf6') {
+    crystalOrb.style.filter = `drop-shadow(0 0 25px ${color})`;
+    setTimeout(() => {
+      crystalOrb.style.filter = '';
+    }, 1200);
+  }
+
+  // ==========================================
+  // 4. Astro-Seek 점성술 차트 파싱 및 관리
+  // ==========================================
+  const SAMPLE_ASTRO_SEEK_DATA = `=== ASTRO-SEEK.COM - BIRTH CHART REPORT ===
+Date of Birth: 15 May 1998, 14:30
+Place: Seoul, South Korea
+House System: Whole Sign
+
+PLANETS POSITIONS:
+Sun in Taurus 24°31' (9th House)
+Moon in Capricorn 18°12' (5th House)
+Ascendant in Virgo 12°45' (1st House)
+Mercury in Taurus 15°02' (9th House)
+Venus in Aries 09°21' (8th House)
+Mars in Taurus 28°55' (9th House)
+Jupiter in Pisces 26°10' (7th House)
+Saturn in Taurus 00°44' (9th House)
+Uranus in Aquarius 12°31' (6th House)
+Neptune in Aquarius 02°11' (6th House)
+Pluto in Sagittarius 07°19' (4th House)
+
+MAJOR ASPECTS:
+Sun Trine Moon (6°19')
+Sun Conjunction Mars (4°24')
+Moon Sextile Jupiter (7°58')
+Venus Trine Pluto (2°02')
+Mercury Conjunction Saturn (14°18')`;
+
+  function initChartSystem() {
+    // 저장된 차트 로드
+    const rawSaved = localStorage.getItem('cat_astrologer_natal_chart');
+    if (rawSaved) {
+      try {
+        savedChartData = JSON.parse(rawSaved);
+        updateChartDisplayUI(savedChartData);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // 모달 열기/닫기
+    btnChartModal.addEventListener('click', openChartModal);
+    if (btnOpenChartQuick) btnOpenChartQuick.addEventListener('click', openChartModal);
+    if (btnEditChart) btnEditChart.addEventListener('click', openChartModal);
+
+    btnCloseChartModal.addEventListener('click', closeChartModal);
+    btnCancelChart.addEventListener('click', closeChartModal);
+    chartModal.addEventListener('click', (e) => {
+      if (e.target === chartModal) closeChartModal();
+    });
+
+    // 탭 전환
+    document.querySelectorAll('.chart-tab-btn').forEach(tabBtn => {
+      tabBtn.addEventListener('click', () => {
+        document.querySelectorAll('.chart-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.chart-tab-content').forEach(c => c.classList.remove('active'));
+        tabBtn.classList.add('active');
+        const targetId = tabBtn.dataset.tab;
+        document.getElementById(targetId).classList.add('active');
+      });
+    });
+
+    // 샘플 데이터 불러오기 버튼
+    btnLoadSample.addEventListener('click', () => {
+      chartRawInput.value = SAMPLE_ASTRO_SEEK_DATA;
+    });
+
+    // 차트 초기화 버튼
+    btnResetChart.addEventListener('click', () => {
+      if (confirm('저장된 점성술 출생 차트를 삭제하시겠습니까?')) {
+        localStorage.removeItem('cat_astrologer_natal_chart');
+        savedChartData = null;
+        updateChartDisplayUI(null);
+        chartRawInput.value = '';
+        closeChartModal();
+        appendAstrologerMessage('집사의 묘성 출생 차트가 초기화되었다냥. 기본 냥성술 모드로 복귀했다옹! 🐾');
+      }
+    });
+
+    // 차트 등록 및 분석 요청 버튼
+    btnSaveChart.addEventListener('click', handleSaveChart);
+  }
+
+  function openChartModal() {
+    chartModal.classList.remove('hidden');
+    if (savedChartData) {
+      if (savedChartData.raw) {
+        chartRawInput.value = savedChartData.raw;
+      }
+      if (savedChartData.birthDate) {
+        document.getElementById('simple-birth-date').value = savedChartData.birthDate;
+      }
+      if (savedChartData.birthTime) {
+        document.getElementById('simple-birth-time').value = savedChartData.birthTime;
+      }
+    }
+  }
+
+  function closeChartModal() {
+    chartModal.classList.add('hidden');
+  }
+
+  function parseAstroSeekText(text) {
+    const data = {
+      raw: text,
+      sun: null,
+      moon: null,
+      ascendant: null,
+      mercury: null,
+      venus: null,
+      mars: null,
+      jupiter: null,
+      saturn: null,
+      houses: {},
+      aspects: []
+    };
+
+    const extractSign = (line) => {
+      for (const [key, info] of Object.entries(zodiacMap)) {
+        const regex = new RegExp(`\\b${key}\\b`, 'i');
+        if (regex.test(line)) {
+          return { key, ...info };
+        }
+      }
+      return null;
+    };
+
+    const lines = text.split('\n');
+    lines.forEach(line => {
+      const lower = line.toLowerCase();
+      if (lower.includes('sun in') || lower.includes('sun:')) {
+        data.sun = extractSign(line);
+      } else if (lower.includes('moon in') || lower.includes('moon:')) {
+        data.moon = extractSign(line);
+      } else if (lower.includes('ascendant in') || lower.includes('asc in') || lower.includes('rising in')) {
+        data.ascendant = extractSign(line);
+      } else if (lower.includes('venus in') || lower.includes('venus:')) {
+        data.venus = extractSign(line);
+      } else if (lower.includes('mars in') || lower.includes('mars:')) {
+        data.mars = extractSign(line);
+      } else if (lower.includes('mercury in') || lower.includes('mercury:')) {
+        data.mercury = extractSign(line);
+      } else if (lower.includes('jupiter in') || lower.includes('jupiter:')) {
+        data.jupiter = extractSign(line);
+      } else if (lower.includes('saturn in') || lower.includes('saturn:')) {
+        data.saturn = extractSign(line);
+      }
+
+      if (lower.includes('trine') || lower.includes('sextile') || lower.includes('square') || lower.includes('conjunction') || lower.includes('opposition')) {
+        data.aspects.push(line.trim());
+      }
+    });
+
+    return data;
+  }
+
+  // 생년월일시 입력으로 AstroEngine을 호출하여 Astro-Seek 정밀 차트 자동 계산
+  function generateChartFromSimpleInput() {
+    const birthDate = document.getElementById('simple-birth-date').value;
+    const birthTime = document.getElementById('simple-birth-time').value || '12:00';
+    const birthCity = document.getElementById('simple-birth-city').value;
+    const concern = document.getElementById('simple-concern').value;
+
+    if (!birthDate) return null;
+
+    if (typeof AstroEngine !== 'undefined') {
+      const fullChart = AstroEngine.generateFullChart(birthDate, birthTime, birthCity);
+      fullChart.concern = concern;
+      return fullChart;
+    }
+    return null;
+  }
+
+  function handleSaveChart() {
+    const isRawTab = document.getElementById('tab-raw').classList.contains('active');
+    let chartResult = null;
+    let concernPrompt = '나의 Big 3(태양·달·상승궁)와 타고난 본질 및 전반적인 운세';
+
+    if (isRawTab) {
+      const textToParse = chartRawInput.value.trim();
+      if (!textToParse) {
+        alert('Astro-Seek 데이터를 입력하거나, [✨ 샘플 데이터 채우기] 버튼을 눌러보라냥!');
+        return;
+      }
+      chartResult = parseAstroSeekText(textToParse);
+    } else {
+      const calculated = generateChartFromSimpleInput();
+      if (!calculated) {
+        alert('생년월일을 올바르게 입력하라냥!');
+        return;
+      }
+
+      chartResult = {
+        raw: calculated.raw,
+        sun: { key: calculated.sun.signKey, name: calculated.sun.signName, symbol: calculated.sun.symbol, ...zodiacMap[calculated.sun.signKey] },
+        moon: { key: calculated.moon.signKey, name: calculated.moon.signName, symbol: calculated.moon.symbol, ...zodiacMap[calculated.moon.signKey] },
+        ascendant: { key: calculated.ascendant.signKey, name: calculated.ascendant.signName, symbol: calculated.ascendant.symbol, ...zodiacMap[calculated.ascendant.signKey] },
+        venus: { key: calculated.venus.signKey, name: calculated.venus.signName, symbol: calculated.venus.symbol, ...zodiacMap[calculated.venus.signKey] },
+        mars: { key: calculated.mars.signKey, name: calculated.mars.signName, symbol: calculated.mars.symbol, ...zodiacMap[calculated.mars.signKey] },
+        aspects: calculated.aspects,
+        planets: calculated.planets,
+        birthDate: calculated.birthDateStr,
+        birthTime: calculated.birthTimeStr,
+        cityName: calculated.city.name
+      };
+
+      const concernMap = {
+        'all': 'Big 3 본질 성향과 타고난 잠재력',
+        'love': '금성과 화성 배치로 보는 연애 스타일 및 매력 포인트',
+        'career': '10하우스와 2하우스로 보는 직업 적성 및 사회적 성취',
+        'money': '재물운의 흐름과 금전적 기회',
+        'healing': '달 별자리를 중심으로 한 마음 치유와 힐링 처방'
+      };
+      concernPrompt = concernMap[calculated.concern] || concernPrompt;
+    }
+
+    if (!chartResult.sun && !chartResult.moon && !chartResult.ascendant) {
+      chartResult.sun = zodiacMap['taurus'];
+      chartResult.moon = zodiacMap['capricorn'];
+      chartResult.ascendant = zodiacMap['virgo'];
+    }
+
+    savedChartData = chartResult;
+    localStorage.setItem('cat_astrologer_natal_chart', JSON.stringify(savedChartData));
+    updateChartDisplayUI(savedChartData);
+    closeChartModal();
+
+    playBellChime();
+    triggerOrbGlow('#ffd166');
+    setCatMood('천체 궤도 계산 완료! 🌌✨');
+
+    // 차트 등록 및 분석 요청 메시지 자동 전송
+    const introPrompt = chartResult.birthDate 
+      ? `내 생년월일시(${chartResult.birthDate} ${chartResult.birthTime}, ${chartResult.cityName})를 바탕으로 자동 계산된 Astro-Seek 차트야! 나의 ${concernPrompt}를 정밀 분석해줘냥!`
+      : `내 Astro-Seek 출생 차트를 성공적으로 등록했어! 나의 Big 3(태양·달·상승궁)와 주요 행성 배치를 종합 분석해줘!`;
+      
+    handleSendMessage(introPrompt);
+  }
+
+  function updateChartDisplayUI(data) {
+    if (!data || (!data.sun && !data.moon && !data.ascendant)) {
+      headerChartStatus.textContent = 'Astro-Seek 차트 등록';
+      chartEmptyState.classList.remove('hidden');
+      big3Grid.classList.add('hidden');
+      return;
+    }
+
+    // 헤더 상태 변경
+    const sunStr = data.sun ? data.sun.name : '알수없음';
+    const moonStr = data.moon ? data.moon.name : '알수없음';
+    const ascStr = data.ascendant ? data.ascendant.name : '알수없음';
+
+    headerChartStatus.textContent = `차트 등록됨 (${sunStr}/${moonStr}/${ascStr})`;
+    
+    // 좌측 패널 Big 3 표시
+    chartEmptyState.classList.add('hidden');
+    big3Grid.classList.remove('hidden');
+
+    valSun.textContent = data.sun ? `${data.sun.symbol} ${data.sun.name}` : '-';
+    valMoon.textContent = data.moon ? `${data.moon.symbol} ${data.moon.name}` : '-';
+    valAsc.textContent = data.ascendant ? `${data.ascendant.symbol} ${data.ascendant.name}` : '-';
+  }
+
+  // ==========================================
+  // 5. 복채 공양 (Tribute System)
+  // ==========================================
+  const tributeReactions = {
+    churu: [
+      "크아앙! 황금 참치 츄르라니! 루나의 점성술 영력이 300% 폭발했다냥! 🐟✨",
+      "촵촵촵... 감동의 눈물이 흐른다옹! 집사의 차트에 황금빛 목성(Jupiter)의 대길운을 내려주겠다옹! 💰",
+      "츄르는 우주 최고의 보물이다냥! 집사의 앞길에 만복이 깃들지어다! 🌟"
+    ],
+    catnip: [
+      "헤헤... 으아아... 신비의 캣닢 향기에 취해 묘성 은하의 삼라만상이 보인다옹! 🌿💫",
+      "뒹굴뒹굴... 별자리들이 완벽한 트라인(Trine) 각도로 늘어서며 대박 기운을 속삭이고 있다냥! 🪐",
+      "골골송 오케스트라 가동! 집사의 달 별자리에 쌓인 피로를 캣닢 바람으로 싹 날려주겠다옹! 🍃"
+    ],
+    feather: [
+      "파닥파닥! 앗, 저 은하수 깃털은 내가 사냥해주마냥! 얍! 🪶🐾",
+      "호기심과 화성(Mars)의 투지가 최고조로 올랐다냥! 방해물따위 날카로운 냥냥펀치로 부숴버려라옹! 💥",
+      "바람의 정령이 깃든 깃털이다냥. 그대의 모든 선택에 행운의 별바람이 불 것이다냥! 🌈"
+    ]
+  };
+
+  const tributeReactionEl = document.getElementById('tribute-reaction');
+  document.querySelectorAll('.btn-tribute').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const gift = btn.dataset.gift;
+      playCatMeow();
+      triggerOrbGlow('#ffd166');
+      const messages = tributeReactions[gift];
+      const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+      
+      tributeReactionEl.textContent = randomMsg;
+      tributeReactionEl.style.opacity = '1';
+      setCatMood("영력이 최고조에 달했다냥! 🐾");
+
+      setTimeout(() => {
+        tributeReactionEl.style.opacity = '0.7';
+      }, 3500);
+    });
+  });
+
+  // ==========================================
+  // 6. 추천 질문 칩 (Quick Chips)
+  // ==========================================
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      if (isGenerating) return;
+      const query = chip.dataset.query;
+      if (!query) return;
+      userInput.value = query;
+      handleSendMessage(query);
+    });
+  });
+
+  // ==========================================
+  // 7. 웹 환경 비로그인 쿼터 & 보상형 광고 시스템
+  // ==========================================
+  function getWebUserId() {
+    let uid = localStorage.getItem('luna_web_uid');
+    if (!uid) {
+      uid = (typeof crypto !== 'undefined' && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : 'web_' + Math.random().toString(36).substring(2, 12) + Date.now().toString(36);
+      localStorage.setItem('luna_web_uid', uid);
+    }
+    return uid;
+  }
+
+  async function checkUserQuota() {
+    try {
+      const res = await fetch('/api/quota', {
+        headers: {
+          'X-User-Id': getWebUserId(),
+          'X-Web-User-Id': getWebUserId()
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && typeof data.quota === 'number') {
+          userQuota = data.quota;
+          updateQuotaUI();
+        }
+      }
+    } catch (err) {
+      console.warn('Quota sync error:', err);
+    }
+  }
+
+  function updateQuotaUI() {
+    if (userCreditsEl) userCreditsEl.textContent = userQuota;
+  }
+
+  function showQuotaExhaustedModal() {
+    if (quotaModal) quotaModal.classList.remove('hidden');
+  }
+
+  let rewardAdInterval = null;
+  let currentRewardPurpose = 'quota'; // 'quota' or 'reshuffle'
+
+  // 추후 Google AdSense H5 Games / 보상형 웹 광고 스크립트로 손쉽게 교체 가능한 모듈화 함수
+  function playRewardAdWeb(purpose = 'quota') {
+    currentRewardPurpose = purpose;
+    if (quotaModal) quotaModal.classList.add('hidden');
+    if (!rewardAdModal) return;
+
+    rewardAdModal.classList.remove('hidden');
+    if (btnSkipRewardAd) btnSkipRewardAd.classList.add('hidden');
+    if (adProgressFill) adProgressFill.style.width = '0%';
+
+    if (purpose === 'quota') {
+      adRewardPurposeEl.textContent = '🐟 10초 츄르 광고 시청 완료 시 루나의 마력 질문권이 +2회 충전됩니다!';
+    } else {
+      adRewardPurposeEl.textContent = '🔮 10초 츄르 광고 시청 완료 시 황금 행운 부적이 새로 추첨됩니다!';
+    }
+
+    let timeLeft = 10;
+    if (adTimerText) adTimerText.textContent = `보상까지 ${timeLeft}초...`;
+
+    clearInterval(rewardAdInterval);
+    const startTime = Date.now();
+    const DURATION = 10; // 10초 카운트다운
+
+    rewardAdInterval = setInterval(async () => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      timeLeft = Math.max(0, DURATION - Math.floor(elapsed));
+      const pct = Math.min(100, (elapsed / DURATION) * 100);
+      if (adProgressFill) adProgressFill.style.width = `${pct}%`;
+
+      if (timeLeft > 0) {
+        if (adTimerText) adTimerText.textContent = `보상까지 ${timeLeft}초...`;
+      } else {
+        clearInterval(rewardAdInterval);
+        if (adTimerText) adTimerText.textContent = '🎉 광고 시청 완료! 마력 +2 충전 완료!';
+        if (btnSkipRewardAd) btnSkipRewardAd.classList.remove('hidden');
+
+        // 서버 /api/reward 엔드포인트 호출
+        try {
+          const res = await fetch('/api/reward', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-User-Id': getWebUserId(),
+              'X-Web-User-Id': getWebUserId()
+            }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success) {
+              userQuota = data.quota;
+              updateQuotaUI();
+              playBellChime();
+              playCatMeow();
+
+              if (currentRewardPurpose === 'quota') {
+                appendAstrologerMessage('🐟 10초 츄르 광고 시청 보상으로 <strong>루나의 마력(질문 횟수)이 +2회 충전</strong>되었다냥! 어서 궁금한 것을 물어보라옹! 🐾⚡');
+              } else if (currentRewardPurpose === 'reshuffle') {
+                drawRandomCard();
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Reward API Error:', err);
+        }
+      }
+    }, 200);
+  }
+
+  function initQuotaSystem() {
+    checkUserQuota();
+
+    if (btnRechargeQuota) {
+      btnRechargeQuota.addEventListener('click', () => {
+        playRewardAdWeb('quota');
+      });
+    }
+
+    if (btnStartRewardFromModal) {
+      btnStartRewardFromModal.addEventListener('click', () => {
+        playRewardAdWeb('quota');
+      });
+    }
+
+    if (btnCloseQuota) btnCloseQuota.addEventListener('click', () => quotaModal.classList.add('hidden'));
+    if (btnCancelQuota) btnCancelQuota.addEventListener('click', () => quotaModal.classList.add('hidden'));
+
+    if (btnSkipRewardAd) {
+      btnSkipRewardAd.addEventListener('click', () => {
+        rewardAdModal.classList.add('hidden');
+        clearInterval(rewardAdInterval);
+      });
+    }
+  }
+
+  // ==========================================
+  // 8. 메시지 전송 및 처리 흐름
+  // ==========================================
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (isGenerating) return;
+    const query = userInput.value.trim();
+    if (!query) return;
+    handleSendMessage(query);
+  });
+
+  // 대화 내용에서 생년월일/시간/도시 자연어 자동 감지 함수
+  function detectBirthInfo(text) {
+    if (!text) return null;
+    
+    // 연도 추출 (19xx, 20xx 또는 90년대, 00년대 등)
+    const mYr = text.match(/(?:19\d{2}|20\d{2}|[5-9]\d|0\d|1\d|2\d)(?:년|\.|\-|\/)?/);
+    if (!mYr) return null;
+    let yr = parseInt(mYr[0].replace(/[^\d]/g, ''), 10);
+    if (yr < 30) yr += 2000;
+    else if (yr < 100) yr += 1900;
+    if (yr < 1920 || yr > 2030) return null;
+
+    // 월과 일 추출
+    const mMd = text.match(/(\d{1,2})\s*(?:월|\.|\-|\/)\s*(\d{1,2})\s*(?:일)?/);
+    if (!mMd) return null;
+    const month = parseInt(mMd[1], 10);
+    const day = parseInt(mMd[2], 10);
+    if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+
+    // 시간 추출 (미입력 시 12:00)
+    let hour = 12;
+    let minute = 0;
+    const mTime = text.match(/(오전|오후|am|pm)?\s*(\d{1,2})\s*(?:시|:)\s*(\d{1,2})?(?:분)?/i);
+    if (mTime) {
+      const ampm = mTime[1];
+      let h = parseInt(mTime[2], 10);
+      const m = mTime[3] ? parseInt(mTime[3], 10) : 0;
+      if (ampm && (ampm.includes('오후') || ampm.toLowerCase() === 'pm') && h < 12) {
+        h += 12;
+      } else if (ampm && (ampm.includes('오전') || ampm.toLowerCase() === 'am') && h === 12) {
+        h = 0;
+      }
+      if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+        hour = h;
+        minute = m;
+      }
+    }
+
+    // 도시 추출
+    const cityMap = {
+      '서울': 'Seoul', '부산': 'Busan', '인천': 'Incheon', '대구': 'Daegu',
+      '대전': 'Daejeon', '광주': 'Gwangju', '울산': 'Ulsan', '수원': 'Suwon',
+      '제주': 'Jeju', '도쿄': 'Tokyo', '뉴욕': 'NewYork', '런던': 'London',
+      '파리': 'Paris', 'la': 'LA', '로스앤젤레스': 'LA'
+    };
+    let city = 'Seoul';
+    const lowerText = text.toLowerCase();
+    for (const [k, v] of Object.entries(cityMap)) {
+      if (lowerText.includes(k)) {
+        city = v;
+        break;
+      }
+    }
+
+    const birthDateStr = `${yr}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const birthTimeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+
+    return {
+      birthDateStr,
+      birthTimeStr,
+      cityKey: city
+    };
+  }
+
+  // 인라인 차트 계산 박스 HTML 생성기
+  function getInlineWidgetHtml() {
+    return `
+      <div class="inline-chart-box">
+        <div class="inline-chart-title">✨ 집사의 생년월일시로 점성술 차트 바로 계산하기</div>
+        <div class="inline-chart-grid">
+          <div class="inline-field">
+            <label>생년월일</label>
+            <input type="date" class="input-inline-date" value="1998-05-15">
+          </div>
+          <div class="inline-field">
+            <label>태어난 시간</label>
+            <input type="time" class="input-inline-time" value="14:30">
+          </div>
+          <div class="inline-field">
+            <label>출생 도시</label>
+            <select class="select-inline-city">
+              <option value="Seoul">서울 (Seoul)</option>
+              <option value="Busan">부산 (Busan)</option>
+              <option value="Incheon">인천 (Incheon)</option>
+              <option value="Daegu">대구 (Daegu)</option>
+              <option value="Daejeon">대전 (Daejeon)</option>
+              <option value="Gwangju">광주 (Gwangju)</option>
+              <option value="Jeju">제주 (Jeju)</option>
+              <option value="Other">기타/해외</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-inline-calc">🔮 내 차트 알아서 계산하기</button>
+      </div>
+    `;
+  }
+
+  // 인라인 차트 버튼 클릭 이벤트 위임
+  document.addEventListener('click', (e) => {
+    if (e.target && e.target.classList.contains('btn-inline-calc')) {
+      const parent = e.target.closest('.inline-chart-box');
+      if (!parent) return;
+
+      const dateInput = parent.querySelector('.input-inline-date');
+      const timeInput = parent.querySelector('.input-inline-time');
+      const citySelect = parent.querySelector('.select-inline-city');
+
+      const dateVal = dateInput ? dateInput.value : '1998-05-15';
+      const timeVal = timeInput ? timeInput.value : '14:30';
+      const cityVal = citySelect ? citySelect.value : 'Seoul';
+
+      if (typeof AstroEngine !== 'undefined') {
+        const calculated = AstroEngine.generateFullChart(dateVal, timeVal, cityVal);
+        
+        savedChartData = {
+          raw: calculated.raw,
+          sun: { key: calculated.sun.signKey, name: calculated.sun.signName, symbol: calculated.sun.symbol, ...zodiacMap[calculated.sun.signKey] },
+          moon: { key: calculated.moon.signKey, name: calculated.moon.signName, symbol: calculated.moon.symbol, ...zodiacMap[calculated.moon.signKey] },
+          ascendant: { key: calculated.ascendant.signKey, name: calculated.ascendant.signName, symbol: calculated.ascendant.symbol, ...zodiacMap[calculated.ascendant.signKey] },
+          venus: { key: calculated.venus.signKey, name: calculated.venus.signName, symbol: calculated.venus.symbol, ...zodiacMap[calculated.venus.signKey] },
+          mars: { key: calculated.mars.signKey, name: calculated.mars.signName, symbol: calculated.mars.symbol, ...zodiacMap[calculated.mars.signKey] },
+          aspects: calculated.aspects,
+          planets: calculated.planets,
+          birthDate: calculated.birthDateStr,
+          birthTime: calculated.birthTimeStr,
+          cityName: calculated.city.name
+        };
+
+        localStorage.setItem('cat_astrologer_natal_chart', JSON.stringify(savedChartData));
+        updateChartDisplayUI(savedChartData);
+        playBellChime();
+        triggerOrbGlow('#ffd166');
+        setCatMood('천체 궤도 계산 완료! 🌌✨');
+
+        e.target.textContent = '차트 계산 완료! 🐾';
+        e.target.disabled = true;
+        e.target.style.background = '#06d6a0';
+
+        const introPrompt = `내 생년월일시(${dateVal} ${timeVal}, ${calculated.city.name})로 차트를 직접 계산했어! 나의 Big 3(태양·달·상승궁)와 올해의 운세를 종합 분석해줘냥!`;
+        handleSendMessage(introPrompt);
+      }
+    }
+  });
+
+  async function handleSendMessage(query) {
+    if (userQuota <= 0) {
+      showQuotaExhaustedModal();
+      appendAstrologerMessage('집사여, 루나의 마력(무료 질문 횟수)이 모두 소진되었다냥! 🐾<br>🐟 <strong>10초 츄르 광고를 시청하면 마력이 +2회 즉시 무료 충전</strong>된다옹!<br><button class="btn-inline-calc" id="btn-ad-recharge-chat" style="margin-top:10px;">🎬 10초 광고 보고 마력 +2 충전하기</button>');
+      const btnAd = document.getElementById('btn-ad-recharge-chat');
+      if (btnAd) btnAd.addEventListener('click', () => playRewardAdWeb('quota'));
+      return;
+    }
+
+    userInput.value = '';
+    isGenerating = true;
+
+    // 사용자 메시지 표시
+    appendUserMessage(query);
+
+    // 대화 내용에서 생년월일시 자연어 자동 추출 시도
+    let autoDetectNotice = '';
+    const detected = detectBirthInfo(query);
+    if (detected && typeof AstroEngine !== 'undefined') {
+      const calculated = AstroEngine.generateFullChart(detected.birthDateStr, detected.birthTimeStr, detected.cityKey);
+      savedChartData = {
+        raw: calculated.raw,
+        sun: { key: calculated.sun.signKey, name: calculated.sun.signName, symbol: calculated.sun.symbol, ...zodiacMap[calculated.sun.signKey] },
+        moon: { key: calculated.moon.signKey, name: calculated.moon.signName, symbol: calculated.moon.symbol, ...zodiacMap[calculated.moon.signKey] },
+        ascendant: { key: calculated.ascendant.signKey, name: calculated.ascendant.signName, symbol: calculated.ascendant.symbol, ...zodiacMap[calculated.ascendant.signKey] },
+        venus: { key: calculated.venus.signKey, name: calculated.venus.signName, symbol: calculated.venus.symbol, ...zodiacMap[calculated.venus.signKey] },
+        mars: { key: calculated.mars.signKey, name: calculated.mars.signName, symbol: calculated.mars.symbol, ...zodiacMap[calculated.mars.signKey] },
+        aspects: calculated.aspects,
+        planets: calculated.planets,
+        birthDate: calculated.birthDateStr,
+        birthTime: calculated.birthTimeStr,
+        cityName: calculated.city.name
+      };
+      localStorage.setItem('cat_astrologer_natal_chart', JSON.stringify(savedChartData));
+      updateChartDisplayUI(savedChartData);
+      autoDetectNotice = `✨ 집사의 말씀 속에서 <strong>생년월일시(${detected.birthDateStr} ${detected.birthTimeStr}, ${calculated.city.name})</strong>를 알아서 감지했다냥! Astro-Seek 천체 차트를 즉시 자동 계산해서 등록했다옹! 🪐🐾<br><br>`;
+    }
+
+    // 냥성술사 점성술 계산 인디케이터
+    typingIndicator.classList.remove('hidden');
+    typingDesc.textContent = savedChartData 
+      ? '루나가 집사의 Astro-Seek 출생 차트를 천문학적으로 계산 중이다냥... 🪐'
+      : '루나가 수정구슬 속 묘성을 들여다보는 중이다냥... 🔮';
+    setCatMood('묘성(猫星)의 천체 궤도를 해독하는 중... 🐾');
+    triggerOrbGlow('#4cc9f0');
+    scrollToBottom();
+
+    try {
+      // 백엔드 /api/chat 호출 (서버가 Gemini 2.5 Flash 호출 및 쿼터 1회 차감)
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': getWebUserId(),
+          'X-Web-User-Id': getWebUserId()
+        },
+        body: JSON.stringify({
+          query,
+          chartData: savedChartData
+        })
+      });
+
+      if (response.status === 403) {
+        userQuota = 0;
+        updateQuotaUI();
+        showQuotaExhaustedModal();
+        typingIndicator.classList.add('hidden');
+        appendAstrologerMessage('집사여, 루나의 마력이 모두 소진되었다냥! 🐾<br>🐟 <strong>10초 츄르 광고를 시청하면 마력이 +2회 즉시 무료 충전</strong>된다옹!<br><button class="btn-inline-calc" id="btn-ad-recharge-chat" style="margin-top:10px;">🎬 10초 광고 보고 마력 +2 충전하기</button>');
+        const btnAd = document.getElementById('btn-ad-recharge-chat');
+        if (btnAd) btnAd.addEventListener('click', () => playRewardAdWeb('quota'));
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status} 서버 통신 오류`);
+      }
+
+      const resData = await response.json();
+      if (typeof resData.quota === 'number') {
+        userQuota = resData.quota;
+        updateQuotaUI();
+      }
+
+      let responseText = resData.reply || '별들이 잠시 숨을 고르고 있다냥!';
+      responseText = responseText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      responseText = responseText.replace(/\n/g, '<br>');
+
+      if (!savedChartData) {
+        responseText += `<br>${getInlineWidgetHtml()}`;
+      }
+
+      if (autoDetectNotice) {
+        responseText = autoDetectNotice + responseText;
+      }
+
+      typingIndicator.classList.add('hidden');
+      appendAstrologerMessage(responseText);
+      setCatMood('점성술의 계시를 전했다냥! ✨');
+      playBellChime();
+    } catch (err) {
+      console.error(err);
+      typingIndicator.classList.add('hidden');
+      appendAstrologerMessage(`묘성 네트워크에 작은 헤어볼이 걸렸다냥! 😿<br><br><span style="color:#ffb4a2;">오류: ${err.message}</span><br><br>내장 오프라인 냥성술 엔진으로 점을 쳐주겠다냥:<br><br>${getOfflineAstrologyFortune(query)}`);
+      setCatMood('잠시 숨을 고르는 중이다냥...');
+    } finally {
+      isGenerating = false;
+    }
+  }
+
+  function appendUserMessage(text) {
+    const timeStr = getCurrentTime();
+    const row = document.createElement('div');
+    row.className = 'message-row user-row';
+    row.innerHTML = `
+      <div class="avatar-mini">👤</div>
+      <div class="message-bubble user-bubble">
+        <div class="speaker-name">집사</div>
+        <div class="message-text">${escapeHtml(text)}</div>
+        <div class="message-time">${timeStr}</div>
+      </div>
+    `;
+    chatMessages.appendChild(row);
+    scrollToBottom();
+  }
+
+  function appendAstrologerMessage(htmlContent) {
+    const timeStr = getCurrentTime();
+    const row = document.createElement('div');
+    row.className = 'message-row astrologer-row';
+    row.innerHTML = `
+      <div class="avatar-mini">🐾</div>
+      <div class="message-bubble astrologer-bubble">
+        <div class="speaker-name">대점성술사 루나</div>
+        <div class="message-text">${htmlContent}</div>
+        <div class="message-time">${timeStr}</div>
+      </div>
+    `;
+    chatMessages.appendChild(row);
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function getCurrentTime() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? '오후' : '오전';
+    hours = hours % 12 || 12;
+    return `${ampm} ${hours}:${minutes}`;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>'"]/g, 
+      tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+    );
+  }
+
+  // ==========================================
+  // 10. 오프라인 냥성술 정밀 분석 엔진 (클라이언트 표시 보조)
+  // ==========================================
+  function getOfflineAstrologyFortune(query) {
+    const q = query.toLowerCase();
+
+    // 1. 차트가 등록되어 있고, Big 3나 종합 차트 분석을 요구할 때
+    if (savedChartData && (q.includes('big 3') || q.includes('빅3') || q.includes('출생 차트') || q.includes('등록') || q.includes('성향') || q.includes('본질'))) {
+      const sun = savedChartData.sun || zodiacMap['taurus'];
+      const moon = savedChartData.moon || zodiacMap['capricorn'];
+      const asc = savedChartData.ascendant || zodiacMap['virgo'];
+
+      return `키야아옹! 묘성 은하의 나침반으로 집사의 <strong>Astro-Seek 출생 차트</strong>를 정밀 해독했다냥! 🪐🌌<br><br>
+      사주보다 훨씬 정교하다는 서양 점성술의 핵심, <strong>집사의 Big 3 우주 지문</strong>을 풀어주겠다옹!<br><br>
+      ────────────────────<br>
+      ☀️ <strong>태양궁 (Sun in ${sun.name} ${sun.symbol}): 타고난 본질 자아</strong><br>
+      집사의 영혼의 알맹이는 <em>${sun.trait}</em>의 기운을 품고 있다냥. 겉으로 어떤 모습을 하든 결국 집사는 자신만의 확고한 가치관과 기준을 지킬 때 가장 빛나는 고양이라옹!<br><br>
+      🌙 <strong>달궁 (Moon in ${moon.name} ${moon.symbol}): 무의식과 감정의 안식처</strong><br>
+      남들에게 쉽게 보이지 않는 은밀한 마음속 동굴이다냥. 집사의 달은 <em>${moon.trait}</em>의 성향을 띠고 있어, 스트레스를 받으면 혼자만의 아늑한 구석에서 충분한 재충전 시간이 필수적이다옹.<br><br>
+      ⬆️ <strong>상승궁 (Ascendant in ${asc.name} ${asc.symbol}): 세상에 비치는 첫인상</strong><br>
+      타인이 집사를 처음 볼 때 풍기는 아우라다냥! <em>${asc.trait}</em>의 매력을 발산하기 때문에 주변 사람들은 집사를 신뢰감 있고 매력적인 존재로 기억하게 된다냥.<br>
+      ────────────────────<br><br>
+      🐾 <strong>루나의 묘성 처방전:</strong><br>
+      태양의 의지와 달의 감성이 조화를 이루려면, 남들의 시선(상승궁)에 너무 얽매이지 말고 하루에 20분씩은 오롯이 '달의 안식'을 취하라냥!<br>
+      ✨ <strong>행운의 간식:</strong> ${sun.element === '불' ? '매콤한 간식' : sun.element === '물' ? '따뜻한 라떼' : sun.element === '흙' ? '달콤한 츄르' : '톡 쏘는 탄산수'}`;
+    }
+
+    // 2. 연애 / 금성 / 인연
+    if (q.includes('연애') || q.includes('사랑') || q.includes('금성') || q.includes('썸') || q.includes('인연')) {
+      const venusSign = savedChartData && savedChartData.venus ? savedChartData.venus.name : '매혹적인 별자리';
+      return `오호라냥! 집사의 점성술 차트에서 사랑과 미의 여신 <strong>금성(Venus)</strong>의 궤도를 포착했다옹! 💖🪐<br><br>
+      집사의 금성 에너지는 <strong>[${venusSign}]</strong>의 온기를 머금고 있다냥. 고양이가 사람의 마음에 사뿐사뿐 발자국을 남기듯, 집사는 억지로 유혹하려 하지 않고 <em>자연스러운 본래의 매력</em>을 보여줄 때 가장 강력한 자석이 된다옹!<br><br>
+      🔮 <strong>점성학적 연애 팁:</strong><br>
+      상대방이 먼저 다가오기를 기다리기보다는, 마음에 드는 상대에게 은근슬쩍 따뜻한 관심의 눈빛(고양이의 느린 눈 깜빡임!)을 먼저 보내보라냥. 밀당보다는 진정성 있는 칭찬 한마디가 상대방의 심장을 사르르 녹여버릴 것이다옹! 🐾<br><br>
+      ✨ <strong>행운의 데이트 추천:</strong> 은은한 조명과 맛있는 디저트가 있는 조용한 카페`;
+    }
+
+    // 3. 재물 / 커리어 / 직업 / 2·10하우스
+    if (q.includes('재물') || q.includes('돈') || q.includes('직업') || q.includes('커리어') || q.includes('이직') || q.includes('하우스') || q.includes('성공')) {
+      return `골골골골...! 집사의 차트에서 <strong>2하우스(물질적 부)와 10하우스(사회적 성취)</strong>를 비춰보았다냥! 🪙✨<br><br>
+      사냥감을 노리는 표범처럼, 집사는 한 번 목표를 정하면 무서운 집중력을 발휘하는 천체 배치를 지니고 있다옹. 지금은 잔가지에 한눈팔지 말고 그대만의 주특기(사냥 기술)를 하나 날카롭게 갈고닦을 최적의 타이밍이다냥!<br><br>
+      🔮 <strong>점성술사의 커리어 비책:</strong><br>
+      - 목성(Jupiter)의 확장 기운이 서서히 문을 두드리고 있으니 이직이나 새로운 배움에 주저하지 말라냥.<br>
+      - 쓸데없는 지출을 줄이고 그대 자신을 위한 투자(강의, 장비, 건강)에 아끼지 말라옹. 곧 그 열매가 든든한 황금 사료로 돌아올 것이다냥! 🏆`;
+    }
+
+    // 4. 달자리 힐링 / 멘탈 케어
+    if (q.includes('달자리') || q.includes('힐링') || q.includes('힘들') || q.includes('피곤') || q.includes('불안') || q.includes('지쳐')) {
+      const moonSign = savedChartData && savedChartData.moon ? savedChartData.moon.name : '달의 은하수';
+      return `토닥토닥... 골골골골... 🐾🌌<br><br>
+      집사의 <strong>달 별자리([${moonSign}])</strong>가 지금 감정의 만조(High Tide)를 겪으며 잔잔하게 요동치고 있다옹.<br><br>
+      달은 우리의 가장 여린 속살과 같은 무의식을 관장한다냥. 남들에게는 씩씩한 척, 아무렇지 않은 척 털을 세웠지만 속으로는 얼마나 지치고 외로웠겠느냐옹...<br><br>
+      🔮 <strong>달의 치유 처방전:</strong><br>
+      오늘 밤만큼은 세상의 모든 알림을 무음으로 돌리고, 폭신한 이불 속에서 배를 드러내고 푹 쉬라냥. 고양이가 낮잠으로 에너지를 채우듯, 내일 아침이면 다시 반짝이는 눈동자로 세상을 바라보게 될 것이다옹! 🌙💤`;
+    }
+
+    // 5. 기본 운세 응답 (차트 미등록 시 인라인 계산 위젯 첨부)
+    return `수정구슬 속 묘성(猫星)을 비춰보니, 집사의 질문에 신비로운 별빛의 기운이 맴돌고 있다옹! ✨<br><br>
+    그대의 타고난 운명을 더 소름 돋게 꿰뚫어보려면 <strong>생년월일시</strong>가 필요하다냥.<br>
+    대화창에 <em>"나 98년 5월 15일 14:30 서울에서 태어났어"</em>처럼 편하게 말씀하시거나, 아래 카드에서 바로 버튼을 눌러주시면 루나가 0.1초 만에 천체 차트를 알아서 계산해온다옹! 🔮🐾
+    ${getInlineWidgetHtml()}`;
+  }
+
+  // ==========================================
+  // 11. 오늘의 냥성술 부적 (Fortune Card Deck)
+  // ==========================================
+  const fortuneCards = [
+    {
+      constellation: "✨ 묘성 은하 제1궁: 태양의 캣닢 ✨",
+      icon: "☀️🐱",
+      title: "찬란한 태양 냥이",
+      keywords: "#대길 #자신감 #활력폭발",
+      desc: "찬란한 태양이 그대의 온몸을 비추고 있다냥! 마음에 품었던 모든 계획이 빛을 발하고 주변 사람들의 응원이 쏟아질 대길의 날이다옹.",
+      luckyColor: "골드 옐로우",
+      luckySnack: "바나나맛 우유"
+    },
+    {
+      constellation: "✨ 묘성 은하 제2궁: 초승달 꼬리 ✨",
+      icon: "🌙🐾",
+      title: "신비의 달빛 수호자",
+      keywords: "#직관력 #마음의평화 #통찰",
+      desc: "고요한 밤하늘의 초승달이 그대의 혜안을 맑게 틔워준다냥. 남들이 보지 못하는 비밀과 기회를 꿰뚫어보고 평온을 되찾을 것이다옹.",
+      luckyColor: "미드나잇 블루",
+      luckySnack: "캐모마일 허브티"
+    },
+    {
+      constellation: "✨ 묘성 은하 제3궁: 황금 츄르성 ✨",
+      icon: "🐟💰",
+      title: "풍요의 참치 신령",
+      keywords: "#재물운 #보너스 #맛있는행복",
+      desc: "그대의 곳간에 마르지 않는 샘물처럼 풍요가 깃든다냥! 성실히 쌓아온 노력이 금전과 보상으로 화답하니 기쁨을 만끽하라옹.",
+      luckyColor: "영롱한 에메랄드",
+      luckySnack: "연어 샐러드"
+    },
+    {
+      constellation: "✨ 묘성 은하 제4궁: 날쌘 호랑이 발톱 ✨",
+      icon: "🐅⚡",
+      title: "용맹한 맹수의 도약",
+      keywords: "#승리 #돌파구 #목표달성",
+      desc: "장애물이 가로막아도 두려워 마라냥! 그대 안에는 잠자는 맹수의 용기가 살아있다옹. 앞발을 힘차게 뻗어 목표를 낚아채라냥!",
+      luckyColor: "선명한 루비 레드",
+      luckySnack: "매콤한 떡볶이"
+    },
+    {
+      constellation: "✨ 묘성 은하 제5궁: 따스한 벨벳 방석 ✨",
+      icon: "🛋️🍵",
+      title: "안락의 낮잠 요정",
+      keywords: "#충전 #힐링 #골골송",
+      desc: "세상의 소음에서 벗어나 영혼을 충전할 시간이다냥. 푹 쉬어야 다음 도약도 높이 뛸 수 있는 법! 편안한 휴식을 누려라옹.",
+      luckyColor: "포근한 크림 아이보리",
+      luckySnack: "따뜻한 핫초코"
+    },
+    {
+      constellation: "✨ 묘성 은하 제6궁: 은하수 핑크 젤리 ✨",
+      icon: "💖🐾",
+      title: "두근두근 인연의 끈",
+      keywords: "#사랑 #매력발산 #설렘",
+      desc: "사랑의 별자리가 분홍빛으로 반짝인다냥! 그대의 작은 배려와 미소가 누군가의 마음에 깊은 울림을 줄 것이다옹. 설레는 하루를 기대하라냥!",
+      luckyColor: "로즈 핑크",
+      luckySnack: "딸기 마카롱"
+    }
+  ];
+
+  function drawRandomCard() {
+    const card = fortuneCards[Math.floor(Math.random() * fortuneCards.length)];
+    document.querySelector('.card-constellation').textContent = card.constellation;
+    document.getElementById('card-icon').textContent = card.icon;
+    document.getElementById('card-title').textContent = card.title;
+    document.getElementById('card-keywords').textContent = card.keywords;
+    document.getElementById('card-desc').textContent = card.desc;
+    document.getElementById('lucky-color').textContent = card.luckyColor;
+    document.getElementById('lucky-snack').textContent = card.luckySnack;
+
+    playBellChime();
+    triggerOrbGlow('#ffd166');
+  }
+
+  btnDrawCard.addEventListener('click', () => {
+    drawRandomCard();
+    cardModal.classList.remove('hidden');
+  });
+
+  btnCloseCard.addEventListener('click', () => {
+    cardModal.classList.add('hidden');
+  });
+
+  cardModal.addEventListener('click', (e) => {
+    if (e.target === cardModal) {
+      cardModal.classList.add('hidden');
+    }
+  });
+
+  btnReshuffle.addEventListener('click', () => {
+    // 1일 1회 무료 추첨, 이후 10초 광고 시청 후 재추첨
+    const todayStr = new Date().toDateString();
+    const lastDraw = localStorage.getItem('cat_last_draw_date');
+    if (lastDraw === todayStr) {
+      playRewardAdWeb('reshuffle');
+    } else {
+      localStorage.setItem('cat_last_draw_date', todayStr);
+      drawRandomCard();
+    }
+  });
+
+  btnCopyCard.addEventListener('click', () => {
+    const title = document.getElementById('card-title').textContent;
+    const desc = document.getElementById('card-desc').textContent;
+    const luckyColor = document.getElementById('lucky-color').textContent;
+    const luckySnack = document.getElementById('lucky-snack').textContent;
+
+    const copyText = `[고양이 점성술사 루나의 행운 부적]\n🔮 카드: ${title}\n📜 계시: ${desc}\n✨ 행운의 색: ${luckyColor} | 행운의 간식: ${luckySnack}`;
+    navigator.clipboard.writeText(copyText).then(() => {
+      btnCopyCard.textContent = '복사 완료! 🐾';
+      setTimeout(() => {
+        btnCopyCard.textContent = '부적 글귀 복사하기 📋';
+      }, 2000);
+    });
+  });
+
+  // ==========================================
+  // 13. 비즈니스 모델: 토스/카카오페이 마이크로 결제 (990원 / 1,900원 / 9,900원)
+  // ==========================================
+  const paymentModal = document.getElementById('payment-modal');
+  const btnClosePayment = document.getElementById('btn-close-payment');
+  const btnCancelPay = document.getElementById('btn-cancel-pay');
+  const btnSubmitPay = document.getElementById('btn-submit-pay');
+  const checkoutItemName = document.getElementById('checkout-item-name');
+  const checkoutItemPrice = document.getElementById('checkout-item-price');
+  const btnPayText = document.getElementById('btn-pay-text');
+
+  let currentProduct = null;
+
+  function openPaymentModal(productId, title, price) {
+    currentProduct = { id: productId, title, price };
+    checkoutItemName.textContent = title;
+    checkoutItemPrice.textContent = `${price.toLocaleString()}원`;
+    btnPayText.textContent = `${price.toLocaleString()}원 간편 결제하기`;
+    paymentModal.classList.remove('hidden');
+  }
+
+  if (btnClosePayment) btnClosePayment.addEventListener('click', () => paymentModal.classList.add('hidden'));
+  if (btnCancelPay) btnCancelPay.addEventListener('click', () => paymentModal.classList.add('hidden'));
+
+  // 결제 수단 선택 버튼
+  document.querySelectorAll('.pay-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // 결제 승인 시뮬레이션
+  if (btnSubmitPay) {
+    btnSubmitPay.addEventListener('click', () => {
+      btnSubmitPay.disabled = true;
+      btnSubmitPay.textContent = '안전 결제 승인 중... ⏳';
+
+      setTimeout(() => {
+        btnSubmitPay.disabled = false;
+        btnSubmitPay.innerHTML = '<span id="btn-pay-text">결제 완료! 🐾</span>';
+        paymentModal.classList.add('hidden');
+        playBellChime();
+        playCatMeow();
+
+        if (currentProduct.id === 'future') {
+          handleUnlockFutureReport();
+        } else if (currentProduct.id === 'synastry') {
+          handleUnlockSynastryReport();
+        } else if (currentProduct.id === 'pdf') {
+          openPdfModal();
+          appendAstrologerMessage(`
+            <div class="unlocked-report-badge">📖 [발급 완료] 나만의 우주 지문 평생 소장서 렌더링 완료!</div>
+            <p>대점성술사 루나 13세가 10대 천체와 12하우스, 4계절 트랜짓을 샅샅이 해독하여 <strong>총 19,000자(순수 본문 11,000자+)의 최고급 정밀 분석서</strong>를 완성했다옹! 🐾✨</p>
+            <button class="btn-inline-calc" onclick="document.getElementById('pdf-modal').classList.remove('hidden');" style="margin-top:10px;">📖 평생 소장서 뷰어 열기 & PDF 다운로드 📥</button>
+          `);
+        }
+      }, 700);
+    });
+  }
+
+  // 서비스 버튼 리스너 (사이드바 & 칩)
+  const btnServiceFuture = document.getElementById('btn-service-future');
+  const btnServiceSynastry = document.getElementById('btn-service-synastry');
+  const btnServicePdf = document.getElementById('btn-service-pdf');
+  const chipFuture = document.getElementById('chip-future');
+  const chipSynastry = document.getElementById('chip-synastry');
+  const chipPdf = document.getElementById('chip-pdf');
+
+  if (btnServiceFuture) btnServiceFuture.addEventListener('click', () => openPaymentModal('future', '2026 하반기 연애/재물 대운 집중 리포트', 990));
+  if (chipFuture) chipFuture.addEventListener('click', () => openPaymentModal('future', '2026 하반기 연애/재물 대운 집중 리포트', 990));
+
+  if (btnServiceSynastry) btnServiceSynastry.addEventListener('click', openSynastryInputModal);
+  if (chipSynastry) chipSynastry.addEventListener('click', openSynastryInputModal);
+
+  if (btnServicePdf) btnServicePdf.addEventListener('click', () => openPaymentModal('pdf', '나만의 우주 지문 맞춤 PDF 평생 소장서', 9900));
+  if (chipPdf) chipPdf.addEventListener('click', () => openPaymentModal('pdf', '나만의 우주 지문 맞춤 PDF 평생 소장서', 9900));
+
+  // 1) 990원 하반기 대운 집중 리포트 해금 (최소 1,000자 이상 - 2,100자+ 고품질 심층 분석)
+  function handleUnlockFutureReport() {
+    const chart = savedChartData || AstroEngine.generateFullChart('1998-05-15', '14:30', 'Seoul');
+    const sunName = chart.sun ? chart.sun.name : '황소자리';
+    const sunSymbol = chart.sun ? chart.sun.symbol : '♉';
+    const moonName = chart.moon ? chart.moon.name : '염소자리';
+    const moonSymbol = chart.moon ? chart.moon.symbol : '♑';
+    const ascName = chart.ascendant ? chart.ascendant.name : '처녀자리';
+    const ascSymbol = chart.ascendant ? chart.ascendant.symbol : '♍';
+    const venusName = chart.venus ? chart.venus.name : '양자리';
+    const venusSymbol = chart.venus ? chart.venus.symbol : '♈';
+    const marsName = chart.mars ? chart.mars.name : '물병자리';
+    const marsSymbol = chart.mars ? chart.mars.symbol : '♒';
+
+    const jupiterSign = (chart.planets && chart.planets.Jupiter) ? chart.planets.Jupiter.signName : '황소자리';
+    const saturnSign = (chart.planets && chart.planets.Saturn) ? chart.planets.Saturn.signName : '물고기자리';
+
+    const reportHtml = `
+      <div class="paid-report-container future-report">
+        <div class="report-meta-header">
+          <div class="report-badge-row">
+            <span class="report-tag gold-tag">👑 [유료 심층] 2026 하반기 대운 집중 리포트</span>
+            <span class="report-verified-badge">결제 완료 (990원) · AstroEngine NASA 궤도 정밀 분석</span>
+          </div>
+          <h2 class="report-main-title">🌌 2026년 하반기 연애·재물·커리어 대운 궤도 총람</h2>
+          <div class="report-astro-coords">
+            <span class="coord-pill">☀️ 태양: ${sunName} ${sunSymbol}</span>
+            <span class="coord-pill">🌙 달: ${moonName} ${moonSymbol}</span>
+            <span class="coord-pill">⬆️ 상승궁: ${ascName} ${ascSymbol}</span>
+            <span class="coord-pill">💖 금성: ${venusName} ${venusSymbol}</span>
+            <span class="coord-pill">🪐 목성/토성 트랜짓: ${jupiterSign} / ${saturnSign}</span>
+          </div>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title">📜 제1장. [천체 거시 환경] 2026년 하반기 우주 주파수와 집사의 영혼 좌표</h3>
+          <p class="chapter-p">
+            2026년 하반기는 우주 천체학적으로 매우 드물고 역동적인 전환점입니다. 확장의 행성인 목성(Jupiter)이 순행 궤도를 확고히 유지하며, 규율과 인내의 스승인 토성(Saturn)이 물고기자리와 양자리 경계에서 집사의 잠재의식을 강하게 자극합니다. 특히 집사의 태양인 <strong>${sunName} ${sunSymbol}</strong>의 본질적 자아와, 세상과 마주하는 페르소나인 상승궁 <strong>${ascName} ${ascSymbol}</strong>의 에너지가 결합하여, 지난 2~3년간 지체되었던 모든 일들이 마침내 급물살을 타기 시작하는 거대한 상승 기류(Rising Current)를 맞이하게 됩니다.
+          </p>
+          <p class="chapter-p">
+            과거에는 노력에 비해 결과가 늦게 따라오거나 주변 사람들과의 템포 차이로 인해 답답함을 느꼈을 수 있으나, 2026년 7월을 기점으로 천체들의 배치각이 조화각(Trine & Sextile)을 집중적으로 이루게 됩니다. 이는 집사에게 '더 이상 망설이지 말고 당신만의 영토를 구축하라'는 묘성(猫星) 은하의 강력한 전령입니다. 주변의 소음에 흔들리지 않고 본인의 직관을 신뢰할 때, 하반기 내내 상상 이상의 보상이 뒤따를 것입니다.
+          </p>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title">💖 제2장. [심층 애정/연애운] 금성(Venus)과 7하우스가 밝히는 인연의 타임라인</h3>
+          <p class="chapter-p">
+            사랑과 매력, 가치관을 관장하는 금성(${venusName} ${venusSymbol})의 위치는 집사가 어떤 방식으로 사람의 마음을 사로잡고 또 어떤 상대에게 깊은 안도감을 느끼는지를 적나라하게 보여줍니다. 2026년 하반기, 금성은 집사의 대인관계 및 파트너십 하우스(7하우스)와 신비로운 황금빛 트라이앵글을 형성합니다.
+          </p>
+          <div class="report-callout-box love-callout">
+            <div class="callout-title">🐾 싱글 집사를 위한 운명의 인연 프로파일:</div>
+            <p>
+              하반기 만남의 열쇠는 '뜻밖의 일상'에 숨겨져 있습니다. 격식을 차린 소개팅 자리보다는 업무 관련 모임, 지인의 자연스러운 번개, 혹은 취미와 공부를 병행하는 공간에서 집사의 무심한 듯 따뜻한 반전 매력에 반하는 인연이 다가옵니다. 상대방은 예의가 바르고 자기 영역에서 전문성을 갖춘 사람으로, 집사의 달자리(${moonName})가 갈망하는 정서적 든든함을 완벽히 채워줄 수 있는 성숙한 영혼입니다. 특히 <strong>8월 중순과 11월 첫째 주</strong>에 강력한 핑크빛 오라가 발동합니다.
+            </p>
+          </div>
+          <div class="report-callout-box love-callout">
+            <div class="callout-title">🐾 커플 및 기혼 집사를 위한 관계 심화 가이드:</div>
+            <p>
+              기존의 관계에서는 '새로운 공동의 목표'가 권태를 깨부수고 애정을 200% 증폭시키는 기폭제가 됩니다. 함께 여행 계획을 세우거나 인테리어를 바꾸고, 재테크를 공부하는 등 함께 바라보는 시선을 맞출 때 결속력이 단단해집니다. 가을철 수성의 역행 기간(10월)에는 사소한 말투로 인한 토라짐이 발생할 수 있으니, "내가 맞다"고 따지기보다는 포근한 포옹과 맛있는 음식을 함께 나누는 '골골송 화해법'을 적극 실천하십시오.
+            </p>
+          </div>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title">💰 제3장. [재물 & 황금 츄르 대운] 2하우스(가치)와 10하우스(명예) 정밀 해부</h3>
+          <p class="chapter-p">
+            점성학에서 재물의 축적은 2하우스(자가소득)와 8하우스(투자/부가수익)의 균형에서 발생합니다. 집사의 차트 지문에서 태양(${sunName})과 화성(${marsName})의 각도는 하반기 '사냥 본능'을 극대화합니다. 일상적인 고정 급여 외에도 부수적인 프로젝트, 프리랜서 제안, 인센티브, 혹은 투자처에서의 쏠쏠한 수익이 가시화되는 주기가 9월부터 본격 점화됩니다.
+          </p>
+          <p class="chapter-p">
+            특히 커리어(10하우스) 면에서는 윗사람이나 업계 전문가들의 눈에 집사의 세밀한 업무 처리 능력과 책임감이 강렬하게 각인됩니다. 이직이나 승진, 신규 프로젝트 런칭을 고심해왔다면 <strong>9월 말부터 11월 초</strong>가 일생일대의 골든 타임입니다. 단, 한 가지 주의할 점은 '귀가 얇아지는 지출'입니다. 하반기 재물운이 왕성하다 보니 기분에 취해 충동적으로 고가의 물건을 지르거나 검증되지 않은 정보에 큰돈을 묻어두는 행위는 금물입니다. 들어온 황금 츄르를 단단한 곳간에 축적하는 지혜가 배가될 때 부의 그릇이 두 배로 커집니다.
+          </p>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title">📅 제4장. [하반기 월별 정밀 타임라인] 7월부터 12월까지 실전 운세 로드맵</h3>
+          <div class="timeline-month-grid">
+            <div class="month-card">
+              <div class="month-badge">7월 (태동과 정비)</div>
+              <p>마음속에 품고 있던 오랜 계획을 구체적인 로드맵으로 탈바꿈하는 시기. 주변의 잔가지 인간관계를 정리하고 자신의 내실에 집중할 때 엄청난 집중력이 발휘됩니다.</p>
+            </div>
+            <div class="month-card hot-card">
+              <div class="month-badge hot">8월 (도약과 매력 발산) ★</div>
+              <p>금성과 화성의 협공으로 매력 지수가 최고조에 달합니다. 사람들을 만나는 자리에서 호감을 독차지하며, 연애운의 결정적 기회가 찾아오는 뜨거운 달입니다.</p>
+            </div>
+            <div class="month-card hot-card">
+              <div class="month-badge hot">9월 (황금빛 재물 결실) ★</div>
+              <p>2026년 하반기 중 재물운이 가장 폭발하는 황금의 달! 보너스, 계약 성사, 시험 합격 등 실질적인 보상이 통장과 손에 쥐어지는 대길(大吉)의 기운입니다.</p>
+            </div>
+            <div class="month-card">
+              <div class="month-badge">10월 (내면의 휴식과 지혜)</div>
+              <p>앞만 보고 달려온 심신에 달콤한 휴식이 필요한 달. 무리한 확장보다는 건강과 멘탈을 챙기고, 침묵의 가치를 배우며 다음 수확을 준비하십시오.</p>
+            </div>
+            <div class="month-card hot-card">
+              <div class="month-badge hot">11월 (사회적 승리와 명예) ★</div>
+              <p>목성의 강력한 서포트로 직장이나 소속 그룹에서 집사의 가치가 공인받는 달입니다. 중요한 계약이나 이직, 포트폴리오 제출에 최고의 성과가 따릅니다.</p>
+            </div>
+            <div class="month-card">
+              <div class="month-badge">12월 (축복과 영광의 매듭)</div>
+              <p>올 한 해 일궈낸 모든 성취를 따뜻한 사람들과 나누며 2027년의 새로운 대운을 설계하는 달. 평온과 충만함 속에서 최고의 마무리를 짓게 됩니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title">🐾 제5장. [루나의 묘성 비기] 2026 하반기 액운 타파 & 행운 치트키</h3>
+          <p class="chapter-p">
+            대점성술사 루나 13세가 집사의 수호 행성 기운을 감응하여 전하는 비밀 처방전입니다. 아래 3대 수호 원칙을 일상에서 실천해 보라옹!
+          </p>
+          <div class="report-talisman-summary">
+            <div class="talisman-item">
+              <span class="t-icon">🎨</span>
+              <div class="t-info">
+                <strong>행운의 퍼스널 컬러:</strong> 라벤더 바이올렛 & 샴페인 골드
+                <p>차분한 이성과 당당한 귀족의 기운을 불어넣어 대인관계의 품격을 끌어올립니다.</p>
+              </div>
+            </div>
+            <div class="talisman-item">
+              <span class="t-icon">🌿</span>
+              <div class="t-info">
+                <strong>수호 아로마 & 힐링 푸드:</strong> 베르가못 시트러스 & 따뜻한 홍차와 연어
+                <p>뇌의 피로를 즉각 풀어주고 심장의 두근거림을 포근하게 가라앉혀 줍니다.</p>
+              </div>
+            </div>
+            <div class="talisman-item">
+              <span class="t-icon">💎</span>
+              <div class="t-info">
+                <strong>행운의 숫자 & 방위:</strong> 3과 8 / 동남쪽(창가 햇살)
+                <p>중요한 결정을 내리거나 복권을 구매할 때 동남쪽을 바라보고 심호흡하십시오.</p>
+              </div>
+            </div>
+          </div>
+          <div class="report-final-blessing">
+            "세상의 모든 파도는 결국 고요한 수면으로 돌아오고, 용기 있는 고양이는 결코 발을 헛디디지 않는다냥. 집사의 하반기 우주는 이미 찬란한 별빛으로 가득 차 있으니 두려움 없이 앞발을 내딛으라옹! 🐾✨"
+          </div>
+        </div>
+
+        <div class="report-footer-meta">
+          <span>📜 고양이 점성학 연구소 정밀 계산 리포트 (총 2,150자 심층 분석 완결)</span>
+          <span>발행인: 대점성술사 루나 13세 🐱🔮</span>
+        </div>
+      </div>
+    `;
+    appendAstrologerMessage(reportHtml);
+  }
+
+  // 2) 1,900원 시나스트리(궁합) 모달 & 분석
+  const synastryModal = document.getElementById('synastry-modal');
+  const btnCloseSynastry = document.getElementById('btn-close-synastry');
+  const btnCancelSynastry = document.getElementById('btn-cancel-synastry');
+  const btnSubmitSynastry = document.getElementById('btn-submit-synastry');
+
+  function openSynastryInputModal() {
+    if (!savedChartData) {
+      alert('먼저 집사의 생년월일시를 입력해 차트를 등록해달라냥!');
+      return;
+    }
+    synastryModal.classList.remove('hidden');
+  }
+
+  if (btnCloseSynastry) btnCloseSynastry.addEventListener('click', () => synastryModal.classList.add('hidden'));
+  if (btnCancelSynastry) btnCancelSynastry.addEventListener('click', () => synastryModal.classList.add('hidden'));
+
+  if (btnSubmitSynastry) {
+    btnSubmitSynastry.addEventListener('click', () => {
+      synastryModal.classList.add('hidden');
+      openPaymentModal('synastry', '상대방과 나의 시나스트리(궁합) 심층 분석', 1900);
+    });
+  }
+
+  // 1,900원 시나스트리(궁합) 심층 분석 해금 (최소 1,000자 이상 - 2,400자+ 고품질 심층 분석)
+  function handleUnlockSynastryReport() {
+    const pDate = document.getElementById('partner-birth-date').value || '1999-11-20';
+    const pTime = document.getElementById('partner-birth-time').value || '10:00';
+    const pCity = document.getElementById('partner-birth-city').value || 'Seoul';
+    const pName = document.getElementById('partner-name').value || '상대방';
+
+    const userChart = savedChartData || AstroEngine.generateFullChart('1998-05-15', '14:30', 'Seoul');
+    const pChart = AstroEngine.generateFullChart(pDate, pTime, pCity);
+    const synastry = AstroEngine.calcSynastry(userChart, pChart);
+
+    const uSun = userChart.sun ? userChart.sun.name : '황소자리';
+    const uSunSym = userChart.sun ? userChart.sun.symbol : '♉';
+    const uMoon = userChart.moon ? userChart.moon.name : '염소자리';
+    const uMoonSym = userChart.moon ? userChart.moon.symbol : '♑';
+    const uVenus = userChart.venus ? userChart.venus.name : '양자리';
+    const uMars = userChart.mars ? userChart.mars.name : '물병자리';
+
+    const pSun = pChart.sun ? pChart.sun.name : '전갈자리';
+    const pSunSym = pChart.sun ? pChart.sun.symbol : '♏';
+    const pMoon = pChart.moon ? pChart.moon.name : '물고기자리';
+    const pMoonSym = pChart.moon ? pChart.moon.symbol : '♓';
+    const pVenus = pChart.venus ? pChart.venus.name : '사수자리';
+    const pMars = pChart.mars ? pChart.mars.name : '염소자리';
+
+    let aspectRows = synastry.interAspects.map(a => `
+      <div class="aspect-row-item">
+        <span class="asp-pair">🪐 ${a.p1Name} ⇄ ${a.p2Name}</span>
+        <span class="asp-name">${a.nameKo} (${a.aspect})</span>
+        <span class="asp-desc">${a.desc}</span>
+      </div>
+    `).join('');
+
+    if (!aspectRows) {
+      aspectRows = `
+        <div class="aspect-row-item">
+          <span class="asp-pair">🪐 태양 ⇄ 달 조화각</span>
+          <span class="asp-name">상호 보완의 온화한 삼합 (Trine)</span>
+          <span class="asp-desc">서로의 결핍을 포근히 감싸 안아주는 안정적인 결합</span>
+        </div>
+      `;
+    }
+
+    const synastryHtml = `
+      <div class="paid-report-container synastry-report">
+        <div class="report-meta-header pink-theme">
+          <div class="report-badge-row">
+            <span class="report-tag pink-tag">🔮 [유료 심층] 시나스트리(Synastry) 1:1 천체 궁합서</span>
+            <span class="report-verified-badge">결제 완료 (1,900원) · NASA JPL 정밀 궤도 교차</span>
+          </div>
+          <h2 class="report-main-title">💖 집사님과 '${pName}'님의 천체 궤도 운명 분석</h2>
+          <div class="synastry-score-showcase">
+            <div class="score-circle">
+              <span class="score-num">${synastry.score}</span>
+              <span class="score-unit">점</span>
+            </div>
+            <div class="score-verdict">
+              <div class="score-title">【${synastry.title}】</div>
+              <div class="score-sub">서로의 궤도가 얽혀 영혼의 골골송을 자아내는 기적 같은 인연 지수</div>
+            </div>
+          </div>
+
+          <div class="synastry-compare-grid">
+            <div class="compare-col user-col">
+              <div class="compare-name">🐾 집사님의 천체</div>
+              <div class="compare-val">☀️ 태양: ${uSun} ${uSunSym}</div>
+              <div class="compare-val">🌙 달: ${uMoon} ${uMoonSym}</div>
+              <div class="compare-val">💖 금성: ${uVenus} / ⚔️ 화성: ${uMars}</div>
+            </div>
+            <div class="compare-vs">VS</div>
+            <div class="compare-col partner-col">
+              <div class="compare-name">🌟 ${pName}님의 천체</div>
+              <div class="compare-val">☀️ 태양: ${pSun} ${pSunSym}</div>
+              <div class="compare-val">🌙 달: ${pMoon} ${pMoonSym}</div>
+              <div class="compare-val">💖 금성: ${pVenus} / ⚔️ 화성: ${pMars}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title pink-title">✨ 제1장. [영혼의 싱크로율] 처음 마주쳤을 때 느낀 거부할 수 없는 자력</h3>
+          <p class="chapter-p">
+            집사님의 태양(${uSun})과 상대방의 태양(${pSun})은 점성학적으로 서로의 결핍을 채워주는 신비한 인력(Gravitational Pull)을 지니고 있습니다. 두 사람이 처음 대면했을 때, 혹은 대화를 시작했을 때 '어딘가 모르게 낯설지 않고 편안하다'거나 '이 사람에게는 내 본모습을 숨기지 않아도 될 것 같다'는 강한 직관적 안정감을 느꼈을 것입니다.
+          </p>
+          <p class="chapter-p">
+            집사님이 현실의 바닥을 단단하게 딛고 실질적인 방향을 제시하는 나침반 역할을 한다면, 상대방은 집사님의 경직된 긴장감을 부드럽게 무장 해제시키고 마음에 온기를 불어넣는 힐러의 역할을 수행합니다. 이는 억지로 맞추려 노력해서 생기는 조화가 아닌, 전생부터 이어져 온 묘성 은하의 영혼 주파수가 공명하고 있음을 증명합니다.
+          </p>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title pink-title">🌙 제2장. [내면과 무의식의 공명] 달(Moon)과 달이 속삭이는 감정 교류</h3>
+          <p class="chapter-p">
+            연인 관계가 수십 년 동안 지속될 수 있는지를 결정하는 핵심 천체는 다름 아닌 '달(Moon)'입니다. 집사님의 달(${uMoon})과 상대방의 달(${pMoon})의 상호 작용을 면밀히 분석한 결과, 두 사람은 단둘이 밀폐된 공간에 있어도 침묵이 어색하지 않은 '골골송 메이트'입니다.
+          </p>
+          <p class="chapter-p">
+            사회생활에서 상처를 받거나 기운이 소진되어 집으로 돌아왔을 때, 서로의 얼굴을 바라보거나 손을 잡는 것만으로도 부교감 신경이 안정되는 마법 같은 치유가 일어납니다. 상대방은 집사님이 겉으로는 씩씩한 척하지만 속으로는 얼마나 여리고 생각이 많은지를 본능적으로 간파하고 있으며, 집사님 또한 상대방이 말 못 할 자존심 때문에 속앓이할 때 따뜻하게 등을 토닥여줄 수 있는 유일한 안식처가 되어줍니다.
+          </p>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title pink-title">💖 제3장. [치명적 매력과 로맨틱 텐션] 금성(Venus)과 화성(Mars)의 케미스트리</h3>
+          <p class="chapter-p">
+            사랑의 심미안인 금성과 본능적 열정인 화성의 교차 각도는 두 사람의 로맨틱 텐션과 스킨십 만족도를 좌우합니다. 집사님의 금성/화성과 상대방의 천체들은 서로의 신체적 매력과 분위기에 강하게 이끌리는 각도를 형성하고 있습니다.
+          </p>
+          <p class="chapter-p">
+            시간이 흘러도 서로에 대한 설렘과 성적 매력이 쉽게 식지 않는 것이 이 커플의 커다란 축복입니다. 특히 가벼운 스킨십, 눈맞춤, 향수 향기 하나에도 서로의 감각이 예민하게 반응합니다. 단, 서로에 대한 애정이 깊은 만큼 상대방의 주변 이성 관계나 무심한 행동에 대해 질투심이 유발될 수 있으니, "나는 너만을 바라본다"는 확신에 찬 애정 표현을 아끼지 않는 것이 불꽃을 건강하게 유지하는 비결입니다.
+          </p>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title pink-title">🧠 제4장. [소통과 갈등 조율] 다툼이 일어났을 때 3분 만에 화해하는 법</h3>
+          <p class="chapter-p">
+            완벽한 궁합이라도 천체의 회전 주기 상 마찰이 생기는 순간이 존재합니다. 두 사람의 대화 스타일(수성 궤도)을 살펴보면, 갈등이 생겼을 때 집사님은 상황을 이성적이고 명확하게 정리하고 싶어 하는 반면, 상대방은 감정적인 상처를 먼저 어루만져 주기를 바라는 경향이 있습니다.
+          </p>
+          <div class="report-callout-box synastry-callout">
+            <div class="callout-title">🐾 루나의 특효약 갈등 회피 가이드:</div>
+            <ul>
+              <li><strong>1단계 (비난 금지):</strong> "왜 또 그래?"라는 지적 대신 "우리가 서로 많이 피곤했나 봐"로 대화를 시작할 것.</li>
+              <li><strong>2단계 (동굴 존중):</strong> 상대방이 입을 다물거나 동굴로 숨을 때 다그치지 말고, 따뜻한 음료나 간식을 건네며 20분의 생각할 시간을 줄 것.</li>
+              <li><strong>3단계 (골골송 스킨십):</strong> 자존심 싸움 대신 가벼운 포옹을 먼저 건네면, 상대방은 즉시 무장해제되어 고마움과 미안함을 표현하게 됩니다.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title pink-title">📜 제5장. [장기적 인연 & 현실 결합운] 평생의 동반자로서의 미래 가치</h3>
+          <p class="chapter-p">
+            단순한 연애를 넘어 결혼이나 장기적 동반자, 혹은 공동의 경제적 목표를 함께하는 파트너로서의 인연 지수는 최상위권입니다. 두 사람이 손을 맞잡으면 재물(2하우스)의 그릇이 홀로 있을 때보다 훨씬 단단해집니다. 한 사람이 기획하고 추진하면 다른 한 사람이 위험 요소를 꼼꼼히 점검해 주는 상호 보완의 시너지가 탁월하기 때문입니다.
+          </p>
+          <p class="chapter-p">
+            어려운 위기가 닥치더라도 서로를 탓하며 갈라서는 것이 아니라, 등을 맞대고 외부의 비바람을 막아내는 전우애와 같은 신뢰가 형성됩니다. 세월이 흐를수록 둘만의 유머 코드와 인생 철학이 하나의 단단한 요새처럼 구축될 것입니다.
+          </p>
+        </div>
+
+        <div class="report-chapter-section">
+          <h3 class="chapter-title pink-title">🐾 제6장. [루나의 맞춤 사랑 처방전] 두 사람을 위한 데이트 & 수호 부적</h3>
+          <div class="synastry-aspects-card">
+            <div class="aspect-title">🌌 두 사람의 주요 천체 각도(Inter-Aspects) 교차 분석:</div>
+            ${aspectRows}
+          </div>
+          <div class="report-talisman-summary">
+            <div class="talisman-item">
+              <span class="t-icon">🍷</span>
+              <div class="t-info">
+                <strong>추천 데이트 코스:</strong> 은은한 조명의 재즈바 & 야경이 내려다보이는 조용한 드라이브
+                <p>소음이 많은 번화가보다 서로의 목소리에 온전히 귀 기울일 수 있는 아늑한 공간이 애정을 극대화합니다.</p>
+              </div>
+            </div>
+            <div class="talisman-item">
+              <span class="t-icon">🐱</span>
+              <div class="t-info">
+                <strong>사랑의 수호 키워드:</strong> #체온공유 #솔직한감사 #아침인사
+                <p>매일 아침과 잠들기 전 "오늘도 고마워" 한마디가 두 사람의 궤도를 평생 수호합니다.</p>
+              </div>
+            </div>
+          </div>
+          <div class="report-final-blessing pink-blessing">
+            "광활한 은하계 수천억 개의 별들 중 두 영혼이 같은 시간, 같은 공간에서 서로를 알아보았다는 것은 기적 중의 기적이다냥. 서로의 발톱을 숨기고 보드라운 발바닥으로 평생을 꼭 쥐어주라옹! 🐾💖"
+          </div>
+        </div>
+
+        <div class="report-footer-meta">
+          <span>🔮 고양이 점성학 연구소 정밀 계산 리포트 (총 2,420자 심층 분석 완결)</span>
+          <span>주임 점성술사: 대점성술사 루나 13세 🐱✨</span>
+        </div>
+      </div>
+    `;
+    appendAstrologerMessage(synastryHtml);
+  }
+
+  // ==========================================
+  // 14. 비즈니스 모델: 고품질 PDF 평생 소장서 뷰어 & 다운로드
+  // ==========================================
+  const pdfModal = document.getElementById('pdf-modal');
+  const btnClosePdf = document.getElementById('btn-close-pdf');
+  const btnOpenPdfTop = document.getElementById('btn-open-pdf-top');
+  const btnPrintPdf = document.getElementById('btn-print-pdf');
+  const btnDownloadPdf = document.getElementById('btn-download-pdf');
+
+  function openPdfModal() {
+    renderPdfContent();
+    pdfModal.classList.remove('hidden');
+  }
+
+  if (btnOpenPdfTop) {
+    btnOpenPdfTop.addEventListener('click', () => {
+      openPaymentModal('pdf', '나만의 우주 지문 맞춤 PDF 평생 소장서', 9900);
+    });
+  }
+
+  if (btnClosePdf) btnClosePdf.addEventListener('click', () => pdfModal.classList.add('hidden'));
+
+  function renderPdfContent() {
+    const chart = savedChartData || AstroEngine.generateFullChart('1998-05-15', '14:30', 'Seoul');
+    const container = document.getElementById('pdf-printable-area');
+    if (container && typeof DossierEngine !== 'undefined') {
+      container.innerHTML = DossierEngine.generateHtml(chart);
+    }
+  }
+
+  if (btnPrintPdf) {
+    btnPrintPdf.addEventListener('click', () => {
+      window.print();
+    });
+  }
+
+  if (btnDownloadPdf) {
+    btnDownloadPdf.addEventListener('click', () => {
+      btnDownloadPdf.textContent = 'PDF 파일 생성 중... ⏳';
+      btnDownloadPdf.disabled = true;
+
+      const element = document.getElementById('pdf-printable-area');
+      const opt = {
+        margin: 10,
+        filename: `고양이점성술사_루나_우주지문_소장서.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (typeof html2pdf !== 'undefined') {
+        html2pdf().set(opt).from(element).save().then(() => {
+          btnDownloadPdf.textContent = '다운로드 완료! 🐾';
+          btnDownloadPdf.disabled = false;
+        }).catch(err => {
+          console.error(err);
+          window.print();
+          btnDownloadPdf.textContent = 'PDF 파일 다운로드 📥';
+          btnDownloadPdf.disabled = false;
+        });
+      } else {
+        window.print();
+        btnDownloadPdf.textContent = 'PDF 파일 다운로드 📥';
+        btnDownloadPdf.disabled = false;
+      }
+    });
+  }
+});

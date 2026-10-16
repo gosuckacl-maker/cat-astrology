@@ -1,0 +1,26 @@
+{
+  "name": "cat-astrologer-web",
+  "version": "1.0.0",
+  "description": "별빛 냥성술 상담소 - 순수 웹 페이지용 Node.js 백엔드 & 질문 제한/광고 보상 시스템",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "astrology",
+    "cat-astrologer",
+    "gemini-ai",
+    "express",
+    "astro-seek"
+  ],
+  "author": "Luna 13th",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
