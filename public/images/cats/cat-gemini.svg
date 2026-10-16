@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="bg-gemini" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4cc9f0"/>
+      <stop offset="100%" stop-color="#03045e"/>
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- 우주 배경 원반 -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg-gemini)" stroke="#ffd166" stroke-width="3"/>
+  <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4,6"/>
+
+  <!-- 배경 미세 별빛 -->
+  <circle cx="45" cy="45" r="1.5" fill="#fff" opacity="0.8"/>
+  <circle cx="155" cy="45" r="1.5" fill="#fff" opacity="0.8"/>
+  <circle cx="35" cy="150" r="1.2" fill="#fff" opacity="0.7"/>
+  <circle cx="165" cy="150" r="1.2" fill="#fff" opacity="0.7"/>
+
+  <!-- 고양이 귀 -->
+  <polygon points="50,90 62,38 92,72" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+  <polygon points="56,84 66,48 86,72" fill="#ffb4a2" opacity="0.8"/>
+
+  <polygon points="150,90 138,38 108,72" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+  <polygon points="144,84 134,48 114,72" fill="#ffb4a2" opacity="0.8"/>
+
+  <!-- 별자리별 시그니처 엑스트라 (뿔, 왕관, 헤일로 등) -->
+  
+      <!-- 삼색이 무늬 (오른쪽 검정, 왼쪽 주황 패치) -->
+      <path d="M 55 60 C 55 45, 75 40, 85 65 C 80 85, 60 85, 55 60 Z" fill="#e76f51" />
+      <path d="M 145 60 C 145 45, 125 40, 115 65 C 120 85, 140 85, 145 60 Z" fill="#2b2d42" />
+      <!-- 쌍둥이자리 트윈 스타 헤일로 -->
+      <path d="M 75 32 L 77 38 L 83 40 L 77 42 L 75 48 L 73 42 L 67 40 L 73 38 Z" fill="#ffd166" filter="url(#glow)"/>
+      <path d="M 125 32 L 127 38 L 133 40 L 127 42 L 125 48 L 123 42 L 117 40 L 123 38 Z" fill="#4cc9f0" filter="url(#glow)"/>
+      <path d="M 78 40 Q 100 24 122 40" fill="none" stroke="#ffd166" stroke-width="2" stroke-dasharray="3,3"/>
+    
+
+  <!-- 고양이 얼굴 본체 -->
+  <ellipse cx="100" cy="116" rx="52" ry="46" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+
+  <!-- 턱 & 볼털 포인트 -->
+  <ellipse cx="100" cy="138" rx="28" ry="18" fill="#ffffff" opacity="0.9"/>
+
+  <!-- 눈 (양쪽 기본 또는 커스텀) -->
+  
+    <ellipse cx="78" cy="112" rx="9.5" ry="11.5" fill="#48cae4"/>
+    <circle cx="81" cy="109" r="3.5" fill="#ffffff"/>
+    <circle cx="76" cy="115" r="1.5" fill="#ffffff"/>
+
+    <ellipse cx="122" cy="112" rx="9.5" ry="11.5" fill="#48cae4"/>
+    <circle cx="125" cy="109" r="3.5" fill="#ffffff"/>
+    <circle cx="120" cy="115" r="1.5" fill="#ffffff"/>
+  
+
+  <!-- 귀여운 핑크 코 -->
+  <polygon points="97,124 103,124 100,128" fill="#ff758f"/>
+
+  <!-- 입 (고양이 W 모양 미소) -->
+  <path d="M 94 130 Q 97 134 100 130 Q 103 134 106 130" fill="none" stroke="#5c4d7d" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- 수염 -->
+  <line x1="52" y1="124" x2="32" y2="120" stroke="#ffd166" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+  <line x1="50" y1="130" x2="30" y2="132" stroke="#ffd166" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+  <line x1="148" y1="124" x2="168" y2="120" stroke="#ffd166" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+  <line x1="150" y1="130" x2="170" y2="132" stroke="#ffd166" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+
+  <!-- 볼터치 (홍조) -->
+  <circle cx="64" cy="125" r="6" fill="#ff758f" opacity="0.45"/>
+  <circle cx="136" cy="125" r="6" fill="#ff758f" opacity="0.45"/>
+</svg>

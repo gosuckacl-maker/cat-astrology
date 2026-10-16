@@ -77,18 +77,13 @@
         <!-- 🔮 남은 질문 횟수 뱃지 (Vercel Serverless 유저 쿼터 연동) -->
         <div class="user-quota-badge" id="quota-badge" title="남은 무료 질문 횟수 (소진 시 광고 시청으로 충전 가능)">
           <span class="quota-icon">🔮</span>
-          <span class="quota-text">남은 질문: <span id="user-credits">3</span>회</span>
+          <span class="quota-text">남은질문횟수: <span id="user-credits">3</span>회</span>
           <button id="btn-recharge-quota" class="quota-recharge-btn" title="10초 츄르 광고 보고 질문 +2회 충전하기">+ 충전 🎬</button>
         </div>
 
-        <button id="btn-open-pdf-top" class="icon-btn gold-btn" title="나만의 우주 지문 맞춤 PDF 평생 소장서">
-          <span class="btn-icon">📖</span>
-          <span>PDF 소장서</span>
-        </button>
-
-        <button id="btn-chart-modal" class="icon-btn highlight-btn" title="생년월일시로 점성술 차트 자동 계산">
+        <button id="btn-chart-modal" class="icon-btn highlight-btn" title="생년월일 등록">
           <span class="btn-icon">🌌</span>
-          <span id="header-chart-status">생년월일시 차트 계산</span>
+          <span id="header-chart-status">생년월일 등록</span>
         </button>
 
         <button id="btn-sound-toggle" class="icon-btn" title="신비로운 효과음 켜기/끄기">
@@ -296,9 +291,9 @@
             <button class="chip chip-free" data-query="이번 달 천체 이동(트랜짓)에서 내가 특히 조심해야 할 점이나 주의할 날이 있을까옹?">⚡ [무료] 이달의 주의사항</button>
 
             <!-- 유료 심층 서비스 칩 -->
-            <button class="chip chip-gold" id="chip-future">💖 990원 하반기 대운</button>
-            <button class="chip chip-gold" id="chip-synastry">🔮 1,900원 궁합 분석</button>
-            <button class="chip chip-gold" id="chip-pdf">📖 9,900원 소장용 PDF (1.5만자+)</button>
+            <button class="chip chip-gold" id="chip-future"><span class="chip-title">💖 2026 하반기 대운 집중 리포트</span><span class="chip-mini-price">990원</span></button>
+            <button class="chip chip-gold" id="chip-synastry"><span class="chip-title">🔮 시나스트리(궁합) 심층 분석</span><span class="chip-mini-price">1,900원</span></button>
+            <button class="chip chip-gold" id="chip-pdf"><span class="chip-title">📖 나만의 우주 지문 평생 소장서</span><span class="chip-mini-price">9,900원</span></button>
           </div>
         </div>
 
@@ -852,7 +847,7 @@
     <div class="modal-overlay hidden" id="chart-modal">
       <div class="modal-card chart-modal-card">
         <div class="modal-header">
-          <h3>🌌 Astro-Seek 점성술 차트 자동 계산 & 등록</h3>
+          <h3>🌌 생년월일 등록 (점성술 차트 자동 계산)</h3>
           <button class="modal-close" id="btn-close-chart-modal">&times;</button>
         </div>
         <div class="modal-body">

@@ -1298,16 +1298,43 @@ textarea#chart-raw-input:focus {
 }
 
 .chip-gold {
-  background: rgba(255, 209, 102, 0.15);
-  border: 1px solid rgba(255, 209, 102, 0.4);
-  color: #ffe6a7;
-  font-weight: 600;
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.18), rgba(157, 78, 221, 0.25));
+  border: 1px solid rgba(255, 209, 102, 0.55);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 14px rgba(255, 209, 102, 0.25);
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.25s ease;
+}
+
+.chip-gold .chip-title {
+  background: linear-gradient(90deg, #ffeaa7 0%, #ffffff 40%, #ffd166 70%, #ffdf9e 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerTitle 3.5s linear infinite;
+  font-weight: 700;
+}
+
+.chip-gold .chip-mini-price {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 1px 6px;
+  border-radius: 8px;
+  margin-left: 6px;
+  -webkit-text-fill-color: initial;
 }
 
 .chip-gold:hover {
-  background: rgba(255, 209, 102, 0.3);
-  border-color: var(--accent-gold);
-  color: #fff;
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.3), rgba(157, 78, 221, 0.4));
+  border-color: #ffd166;
+  box-shadow: 0 0 18px rgba(255, 209, 102, 0.45);
+  transform: translateY(-1px);
 }
 
 /* 프리미엄 심층 리포트 박스 */
@@ -1373,9 +1400,22 @@ textarea#chart-raw-input:focus {
 }
 
 .item-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #f3ecfe;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff9e6;
+  background: linear-gradient(90deg, #ffeaa7 0%, #ffffff 40%, #ffd166 70%, #ffdf9e 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerTitle 3.5s linear infinite;
+  text-shadow: 0 0 10px rgba(255, 209, 102, 0.4);
+  letter-spacing: -0.2px;
+}
+
+@keyframes shimmerTitle {
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
 }
 
 .item-desc {
@@ -1384,10 +1424,11 @@ textarea#chart-raw-input:focus {
 }
 
 .item-price {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--accent-gold);
-  background: rgba(255, 209, 102, 0.12);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 245, 225, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 3px 8px;
   border-radius: 12px;
   white-space: nowrap;

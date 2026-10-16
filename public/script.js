@@ -89,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '화성 (Mars) - 불꽃같은 투지와 돌파력',
       luckyAdvice: '넘어지는 것을 두려워하지 말라옹. 한 번의 도약이 새로운 은하를 연다냥!',
       luckyItem: '붉은색 스카프 & 매콤한 스낵 (코랄 레드)',
-      emoji: '🦁'
+      emoji: '🦁',
+      avatar: 'images/cats/cat-aries.svg'
     },
     'taurus': {
       signKey: 'taurus',
@@ -100,7 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '금성 (Venus) - 아름다움과 풍요로운 감각',
       luckyAdvice: '조급하게 서두를 필요 없다냥. 묵묵히 다져온 집사의 기반이 곧 큰 결실을 맺는다옹!',
       luckyItem: '포근한 무릎 담요 & 로즈 골드 (에메랄드 그린)',
-      emoji: '🍰'
+      emoji: '🍰',
+      avatar: 'images/cats/cat-taurus.svg'
     },
     'gemini': {
       signKey: 'gemini',
@@ -111,7 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '수성 (Mercury) - 빛의 속도로 회전하는 지성과 소통',
       luckyAdvice: '마음속에 떠오른 흥미로운 아이디어를 주변에 속삭여보라옹. 기적 같은 기회가 찾아온다냥!',
       luckyItem: '무선 이어폰 & 비비드 옐로우 (스카이 블루)',
-      emoji: '⚡'
+      emoji: '⚡',
+      avatar: 'images/cats/cat-gemini.svg'
     },
     'cancer': {
       signKey: 'cancer',
@@ -122,7 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '달 (Moon) - 깊은 무의식과 무한한 공감 치유력',
       luckyAdvice: '지친 마음을 따스하게 그루밍해주라옹. 집사가 편안해야 세상도 빛난다냥!',
       luckyItem: '은은한 캔들 & 오팔 실버 (진주빛 화이트)',
-      emoji: '🌙'
+      emoji: '🌙',
+      avatar: 'images/cats/cat-cancer.svg'
     },
     'leo': {
       signKey: 'leo',
@@ -133,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '태양 (Sun) - 꺼지지 않는 절대 생명력과 영광',
       luckyAdvice: '스스로의 빛을 의심하지 말라옹. 당당하게 고개를 들면 우주가 집사를 따른다냥!',
       luckyItem: '볼드한 골드 링 & 선셋 앰버 (임페리얼 골드)',
-      emoji: '👑'
+      emoji: '👑',
+      avatar: 'images/cats/cat-leo.svg'
     },
     'virgo': {
       signKey: 'virgo',
@@ -144,7 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '수성 (Mercury) - 정밀한 분별력과 실용적 지혜',
       luckyAdvice: '작은 디테일에 집착하기보다 전체 그림을 보라옹. 이미 집사는 충분히 완벽하다냥!',
       luckyItem: '만년필 & 가죽 다이어리 (딥 네이비)',
-      emoji: '📜'
+      emoji: '📜',
+      avatar: 'images/cats/cat-virgo.svg'
     },
     'libra': {
       signKey: 'libra',
@@ -155,7 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '금성 (Venus) - 조화로운 관계성과 세련된 미의식',
       luckyAdvice: '선택의 기로에서 마음의 저울이 기우는 쪽을 믿으라옹. 집사의 심미안은 언제나 옳다냥!',
       luckyItem: '플로럴 향수 & 로맨틱 라벤더 (파우더 핑크)',
-      emoji: '⚖️'
+      emoji: '⚖️',
+      avatar: 'images/cats/cat-libra.svg'
     },
     'scorpio': {
       signKey: 'scorpio',
@@ -166,7 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '명왕성 (Pluto) - 파괴와 재생, 불굴의 잠재력',
       luckyAdvice: '과거의 낡은 허물을 벗어던지라옹. 집사의 진정한 부활은 지금부터 시작이다냥!',
       luckyItem: '오닉스 원석 참 & 미드나잇 블랙 (버건디 레드)',
-      emoji: '🔮'
+      emoji: '🔮',
+      avatar: 'images/cats/cat-scorpio.svg'
     },
     'sagittarius': {
       signKey: 'sagittarius',
@@ -177,7 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '목성 (Jupiter) - 무한한 확장과 천운의 축복',
       luckyAdvice: '더 넓은 시야로 미래를 바라보라옹. 사소한 걸림돌은 가볍게 뛰어넘을 수 있다냥!',
       luckyItem: '여행용 백팩 & 일렉트릭 퍼플 (사파이어 블루)',
-      emoji: '🏹'
+      emoji: '🏹',
+      avatar: 'images/cats/cat-sagittarius.svg'
     },
     'capricorn': {
       signKey: 'capricorn',
@@ -188,7 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '토성 (Saturn) - 시간과 훈련을 통해 벼려낸 진짜 실력',
       luckyAdvice: '집사가 흘린 땀방울은 단 한 방울도 헛되지 않다옹. 머지않아 압도적인 보상이 찾아온다냥!',
       luckyItem: '클래식 아날로그 시계 & 차콜 그레이 (포레스트 그린)',
-      emoji: '🏔️'
+      emoji: '🏔️',
+      avatar: 'images/cats/cat-capricorn.svg'
     },
     'aquarius': {
       signKey: 'aquarius',
@@ -199,7 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '천왕성 (Uranus) - 패러다임을 뒤흔드는 혁신과 독창성',
       luckyAdvice: '남들의 편견에 맞추려 하지 말라옹. 집사의 엉뚱함이야말로 세상을 바꿀 슈퍼 파워다냥!',
       luckyItem: '스마트 웨어러블 기기 & 네온 아쿠아 (메탈릭 실버)',
-      emoji: '🛸'
+      emoji: '🛸',
+      avatar: 'images/cats/cat-aquarius.svg'
     },
     'pisces': {
       signKey: 'pisces',
@@ -210,7 +221,8 @@ document.addEventListener('DOMContentLoaded', () => {
       planet: '해왕성 (Neptune) - 무한한 상상력과 신비로운 영감',
       luckyAdvice: '집사의 맑은 직관을 믿으라옹. 논리로 설명할 수 없는 기적이 집사를 향해 헤엄쳐오고 있다냥!',
       luckyItem: '수채화 드로잉 엽서 & 파스텔 라일락 (오션 틸)',
-      emoji: '🌊'
+      emoji: '🌊',
+      avatar: 'images/cats/cat-pisces.svg'
     }
   };
 
@@ -647,7 +659,7 @@ Mercury Conjunction Saturn (14°18')`;
   function updateChartDisplayUI(data) {
     const summaryBox = document.getElementById('guardian-cat-summary-box');
     if (!data || (!data.sun && !data.moon && !data.ascendant)) {
-      headerChartStatus.textContent = 'Astro-Seek 차트 등록';
+      headerChartStatus.textContent = '생년월일 등록';
       chartEmptyState.classList.remove('hidden');
       big3Grid.classList.add('hidden');
       if (summaryBox) summaryBox.classList.add('hidden');
@@ -659,7 +671,7 @@ Mercury Conjunction Saturn (14°18')`;
     const moonStr = data.moon ? data.moon.name : '알수없음';
     const ascStr = data.ascendant ? data.ascendant.name : '알수없음';
 
-    headerChartStatus.textContent = `차트 등록됨 (${sunStr}/${moonStr}/${ascStr})`;
+    headerChartStatus.textContent = `생년월일 입력완료 (${sunStr}/${moonStr}/${ascStr})`;
     
     // 좌측 패널 Big 3 표시
     chartEmptyState.classList.add('hidden');
@@ -1946,6 +1958,7 @@ Mercury Conjunction Saturn (14°18')`;
   // 16. 수호 냥이 성격 유형 (MBTI 스타일) & 바이럴 이미지 저장 / 카카오톡 공유
   // ==========================================
   function generateGuardianCatCardHtml(catData, cardId) {
+    const avatarSrc = catData.avatar || ('images/cats/cat-' + (catData.signKey || 'sagittarius') + '.svg');
     return `
       <div class="guardian-cat-card-container">
         <div class="guardian-cat-card" id="${cardId}" data-cat-sign="${catData.signKey}">
@@ -1955,7 +1968,7 @@ Mercury Conjunction Saturn (14°18')`;
           </div>
           <div class="gcc-character-section">
             <div class="gcc-avatar-orb">
-              <img src="images/luna-astrologer.jpg" alt="${catData.title}" class="gcc-avatar-img">
+              <img src="${avatarSrc}" alt="${catData.title}" class="gcc-avatar-img">
               <span class="gcc-emoji-tag">${catData.emoji}</span>
             </div>
             <div class="gcc-type-label">나의 수호 냥이 성격 유형</div>
@@ -2005,7 +2018,13 @@ Mercury Conjunction Saturn (14°18')`;
 
     if (!summaryBox || !catData) return;
 
-    if (iconEl) iconEl.textContent = catData.emoji;
+    if (iconEl) {
+      if (catData.avatar) {
+        iconEl.innerHTML = `<img src="${catData.avatar}" alt="${catData.title}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #ffd166; display: block;">`;
+      } else {
+        iconEl.textContent = catData.emoji;
+      }
+    }
     if (titleEl) titleEl.textContent = catData.title;
     if (subtitleEl) subtitleEl.textContent = catData.subtitle;
     if (quoteEl) quoteEl.textContent = `"${catData.summary}"`;
