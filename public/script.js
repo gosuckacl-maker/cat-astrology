@@ -78,10 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
     'pisces': { name: '물고기자리', symbol: '♓', element: '물', trait: '꿈속 은하수를 유영하는 낭만주의 힐러' }
   };
 
-  // 수호 냥이 성격 유형 (MBTI 스타일 고양이 칭호) 매핑 사전
+  // 수호 냥이 성격 유형 (MBTI 스타일 고양이 칭호) 매핑 사전 (12별자리 + 4대표 스페셜 품종)
   const guardianCatArchetypes = {
     'aries': {
       signKey: 'aries',
+      catId: 'cheese',
       signName: '양자리',
       title: '장난기 넘치는 치즈태비 화성냥',
       subtitle: 'ESTP 스타일 - 직진 본능 불도저 대장묘',
@@ -90,10 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '넘어지는 것을 두려워하지 말라옹. 한 번의 도약이 새로운 은하를 연다냥!',
       luckyItem: '붉은색 스카프 & 매콤한 스낵 (코랄 레드)',
       emoji: '🦁',
-      avatar: 'images/cats/cat-aries.svg'
+      avatar: 'images/cats/cheese.png',
+      svgFallback: 'images/cats/cat-aries.svg'
     },
     'taurus': {
       signKey: 'taurus',
+      catId: 'british',
       signName: '황소자리',
       title: '고급 츄르를 음미하는 브리티시 미식냥',
       subtitle: 'ISFP 스타일 - 안락한 방석 위의 힐링 귀족묘',
@@ -102,10 +105,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '조급하게 서두를 필요 없다냥. 묵묵히 다져온 집사의 기반이 곧 큰 결실을 맺는다옹!',
       luckyItem: '포근한 무릎 담요 & 로즈 골드 (에메랄드 그린)',
       emoji: '🍰',
-      avatar: 'images/cats/cat-taurus.svg'
+      avatar: 'images/cats/british.png',
+      svgFallback: 'images/cats/cat-taurus.svg'
     },
     'gemini': {
       signKey: 'gemini',
+      catId: 'calico',
       signName: '쌍둥이자리',
       title: '호기심 많은 삼색이 수성냥',
       subtitle: 'ENTP 스타일 - 24시간 뇌섹미 재간둥이묘',
@@ -114,10 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '마음속에 떠오른 흥미로운 아이디어를 주변에 속삭여보라옹. 기적 같은 기회가 찾아온다냥!',
       luckyItem: '무선 이어폰 & 비비드 옐로우 (스카이 블루)',
       emoji: '⚡',
-      avatar: 'images/cats/cat-gemini.svg'
+      avatar: 'images/cats/calico.png',
+      svgFallback: 'images/cats/cat-gemini.svg'
     },
     'cancer': {
       signKey: 'cancer',
+      catId: 'persian',
       signName: '게자리',
       title: '도도하고 섬세한 페르시안 달빛냥',
       subtitle: 'INFJ 스타일 - 집사 영혼의 수호천사 감성묘',
@@ -126,10 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '지친 마음을 따스하게 그루밍해주라옹. 집사가 편안해야 세상도 빛난다냥!',
       luckyItem: '은은한 캔들 & 오팔 실버 (진주빛 화이트)',
       emoji: '🌙',
-      avatar: 'images/cats/cat-cancer.svg'
+      avatar: 'images/cats/persian.png',
+      svgFallback: 'images/cats/cat-cancer.svg'
     },
     'leo': {
       signKey: 'leo',
+      catId: 'tuxedo',
       signName: '사자자리',
       title: '우주를 호령하는 턱시도 사자냥',
       subtitle: 'ENTJ 스타일 - 캣타워 꼭대기의 카리스마 묘황',
@@ -138,10 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '스스로의 빛을 의심하지 말라옹. 당당하게 고개를 들면 우주가 집사를 따른다냥!',
       luckyItem: '볼드한 골드 링 & 선셋 앰버 (임페리얼 골드)',
       emoji: '👑',
-      avatar: 'images/cats/cat-leo.svg'
+      avatar: 'images/cats/tuxedo.png',
+      svgFallback: 'images/cats/cat-leo.svg'
     },
     'virgo': {
       signKey: 'virgo',
+      catId: 'siamese',
       signName: '처녀자리',
       title: '완벽한 그루밍의 샴 고양이 책사냥',
       subtitle: 'INTJ 스타일 - 오차율 0%의 날카로운 분석묘',
@@ -150,10 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '작은 디테일에 집착하기보다 전체 그림을 보라옹. 이미 집사는 충분히 완벽하다냥!',
       luckyItem: '만년필 & 가죽 다이어리 (딥 네이비)',
       emoji: '📜',
-      avatar: 'images/cats/cat-virgo.svg'
+      avatar: 'images/cats/siamese.png',
+      svgFallback: 'images/cats/cat-virgo.svg'
     },
     'libra': {
       signKey: 'libra',
+      catId: 'russianblue',
       signName: '천칭자리',
       title: '우아한 발걸음의 러시안블루 귀족냥',
       subtitle: 'ENFJ 스타일 - 황금비율의 평화주의 조화묘',
@@ -162,10 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '선택의 기로에서 마음의 저울이 기우는 쪽을 믿으라옹. 집사의 심미안은 언제나 옳다냥!',
       luckyItem: '플로럴 향수 & 로맨틱 라벤더 (파우더 핑크)',
       emoji: '⚖️',
-      avatar: 'images/cats/cat-libra.svg'
+      avatar: 'images/cats/russianblue.png',
+      svgFallback: 'images/cats/cat-libra.svg'
     },
     'scorpio': {
       signKey: 'scorpio',
+      catId: 'blackcat',
       signName: '전갈자리',
       title: '어둠 속을 꿰뚫는 올블랙 마법냥',
       subtitle: 'INTJ 스타일 - 백발백중 육감의 신비주의 통찰묘',
@@ -174,10 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '과거의 낡은 허물을 벗어던지라옹. 집사의 진정한 부활은 지금부터 시작이다냥!',
       luckyItem: '오닉스 원석 참 & 미드나잇 블랙 (버건디 레드)',
       emoji: '🔮',
-      avatar: 'images/cats/cat-scorpio.svg'
+      avatar: 'images/cats/blackcat.png',
+      svgFallback: 'images/cats/cat-scorpio.svg'
     },
     'sagittarius': {
       signKey: 'sagittarius',
+      catId: 'bengal',
       signName: '사수자리',
       title: '은하수를 방랑하는 벵갈 탐험냥',
       subtitle: 'ENTP 스타일 - 자유로운 영혼의 우주 방랑묘',
@@ -186,10 +203,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '더 넓은 시야로 미래를 바라보라옹. 사소한 걸림돌은 가볍게 뛰어넘을 수 있다냥!',
       luckyItem: '여행용 백팩 & 일렉트릭 퍼플 (사파이어 블루)',
       emoji: '🏹',
-      avatar: 'images/cats/cat-sagittarius.svg'
+      avatar: 'images/cats/bengal.png',
+      svgFallback: 'images/cats/cat-sagittarius.svg'
     },
     'capricorn': {
       signKey: 'capricorn',
+      catId: 'norwegian',
       signName: '염소자리',
       title: '캣타워 정상에 오른 노르웨이숲 야망냥',
       subtitle: 'ISTJ 스타일 - 묵묵한 인내의 불굴 끈기묘',
@@ -198,10 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '집사가 흘린 땀방울은 단 한 방울도 헛되지 않다옹. 머지않아 압도적인 보상이 찾아온다냥!',
       luckyItem: '클래식 아날로그 시계 & 차콜 그레이 (포레스트 그린)',
       emoji: '🏔️',
-      avatar: 'images/cats/cat-capricorn.svg'
+      avatar: 'images/cats/norwegian.png',
+      svgFallback: 'images/cats/cat-capricorn.svg'
     },
     'aquarius': {
       signKey: 'aquarius',
+      catId: 'sphynx',
       signName: '물병자리',
       title: '외계 전파를 수신하는 스핑크스 외계냥',
       subtitle: 'INTP 스타일 - 4차원 천재 혁신묘',
@@ -210,10 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '남들의 편견에 맞추려 하지 말라옹. 집사의 엉뚱함이야말로 세상을 바꿀 슈퍼 파워다냥!',
       luckyItem: '스마트 웨어러블 기기 & 네온 아쿠아 (메탈릭 실버)',
       emoji: '🛸',
-      avatar: 'images/cats/cat-aquarius.svg'
+      avatar: 'images/cats/sphynx.png',
+      svgFallback: 'images/cats/cat-aquarius.svg'
     },
     'pisces': {
       signKey: 'pisces',
+      catId: 'turkish',
       signName: '물고기자리',
       title: '꿈속 은하수를 유영하는 터키시앙고라 힐러냥',
       subtitle: 'INFP 스타일 - 영혼을 적시는 낭만 예술묘',
@@ -222,18 +245,188 @@ document.addEventListener('DOMContentLoaded', () => {
       luckyAdvice: '집사의 맑은 직관을 믿으라옹. 논리로 설명할 수 없는 기적이 집사를 향해 헤엄쳐오고 있다냥!',
       luckyItem: '수채화 드로잉 엽서 & 파스텔 라일락 (오션 틸)',
       emoji: '🌊',
-      avatar: 'images/cats/cat-pisces.svg'
+      avatar: 'images/cats/turkish.png',
+      svgFallback: 'images/cats/cat-pisces.svg'
+    },
+    'munchkin': {
+      signKey: 'gemini',
+      catId: 'munchkin',
+      signName: '먼치킨',
+      title: '앙증맞은 발걸음의 먼치킨 요정냥',
+      subtitle: 'ESFP 스타일 - 숏다리 파워 초긍정 재간묘',
+      summary: '다리는 짧아도 점프력과 매력은 우주 1등이다냥! 어디서나 사랑받는 마스코트 요정!',
+      planet: '수성 (Mercury) - 발랄한 호기심과 순발력',
+      luckyAdvice: '작은 한 걸음이라도 신나게 내딛으라옹! 온 우주가 집사를 응원하고 있다냥!',
+      luckyItem: '노란 양말 & 미니 파우치 (선샤인 옐로우)',
+      emoji: '🐾',
+      avatar: 'images/cats/munchkin.png',
+      svgFallback: 'images/cats/cat-gemini.svg'
+    },
+    'ragdoll': {
+      signKey: 'pisces',
+      catId: 'ragdoll',
+      signName: '랙돌',
+      title: '솜사탕 구름에 안긴 랙돌 힐링냥',
+      subtitle: 'ISFJ 스타일 - 품에 안기면 사르르 녹는 포근묘',
+      summary: '안아주면 인형처럼 힘을 빼고 몸을 맡긴다냥. 보는 것만으로도 영혼이 정화되는 궁극의 힐러!',
+      planet: '달 (Moon) - 무한한 위로와 무조건적인 수용',
+      luckyAdvice: '오늘은 자신을 꼭 껴안아주라옹. 집사는 있는 그대로 눈부시게 사랑스럽다냥!',
+      luckyItem: '실크 수면안대 & 블루베리 티 (소프트 스카이)',
+      emoji: '🧸',
+      avatar: 'images/cats/ragdoll.png',
+      svgFallback: 'images/cats/cat-pisces.svg'
+    },
+    'mainecoon': {
+      signKey: 'leo',
+      catId: 'mainecoon',
+      signName: '메인쿤',
+      title: '위풍당당 은하의 수호신 메인쿤 거인냥',
+      subtitle: 'ENTJ 스타일 - 웅장한 체구 속 온화한 거묘',
+      summary: '거대한 몸집에 담긴 듬직함과 다정함! 그 어떤 폭풍우가 닥쳐도 든든하게 집사를 지켜주는 든든한 방패!',
+      planet: '태양 (Sun) - 웅장한 포용력과 불굴의 신뢰',
+      luckyAdvice: '넓은 품으로 세상을 바라보라옹. 집사의 그릇은 생각보다 훨씬 거대하다냥!',
+      luckyItem: '가죽 브리프케이스 & 클래식 브라운 (딥 마호가니)',
+      emoji: '🦁',
+      avatar: 'images/cats/mainecoon.png',
+      svgFallback: 'images/cats/cat-leo.svg'
+    },
+    'scottish': {
+      signKey: 'taurus',
+      catId: 'scottish',
+      signName: '스코티시폴드',
+      title: '동글동글 호기심 가득 스코티시폴드 명탐정냥',
+      subtitle: 'INTP 스타일 - 접힌 귀 뒤로 지혜를 숨긴 관찰묘',
+      summary: '동그란 눈망울로 세상을 관찰하며 조용히 답을 찾아낸다냥! 묵묵히 곁을 지키며 통찰을 건네는 파트너!',
+      planet: '목성 (Jupiter) - 숨은 행운과 슬기로운 지혜',
+      luckyAdvice: '조용히 기다리면 때가 온다옹. 서두르지 않는 자가 가장 달콤한 결실을 얻는다냥!',
+      luckyItem: '동그란 뿔테 안경 & 민트 캔디 (세이지 그린)',
+      emoji: '🐱',
+      avatar: 'images/cats/scottish.png',
+      svgFallback: 'images/cats/cat-taurus.svg'
     }
   };
 
-  function getGuardianCatType(chartData) {
-    if (chartData && chartData.sun && chartData.sun.key && guardianCatArchetypes[chartData.sun.key]) {
-      return guardianCatArchetypes[chartData.sun.key];
+  // 키 매핑 별칭 사전 (별칭 및 한글 별자리명 지원)
+  const archetypeAliasMap = {
+    'british': 'taurus',
+    'persian': 'cancer',
+    'tuxedo': 'leo',
+    'cheese': 'aries',
+    'russianblue': 'libra',
+    'calico': 'gemini',
+    'siamese': 'virgo',
+    'blackcat': 'scorpio',
+    'bengal': 'sagittarius',
+    'norwegian': 'capricorn',
+    'sphynx': 'aquarius',
+    'turkish': 'pisces',
+    'munchkin': 'munchkin',
+    'ragdoll': 'ragdoll',
+    'mainecoon': 'mainecoon',
+    'scottish': 'scottish',
+    '양자리': 'aries', '황소자리': 'taurus', '쌍둥이자리': 'gemini', '게자리': 'cancer',
+    '사자자리': 'leo', '처녀자리': 'virgo', '천칭자리': 'libra', '전갈자리': 'scorpio',
+    '사수자리': 'sagittarius', '염소자리': 'capricorn', '물병자리': 'aquarius', '물고기자리': 'pisces'
+  };
+
+  function getGuardianCatType(keyOrData) {
+    if (!keyOrData) {
+      return guardianCatArchetypes['sagittarius'];
     }
-    if (typeof chartData === 'string' && guardianCatArchetypes[chartData.toLowerCase()]) {
-      return guardianCatArchetypes[chartData.toLowerCase()];
+    // 객체인 경우 (차트 데이터)
+    if (typeof keyOrData === 'object') {
+      if (keyOrData.guardianCatId) {
+        return getGuardianCatType(keyOrData.guardianCatId);
+      }
+      if (keyOrData.sun && keyOrData.sun.key) {
+        return getGuardianCatType(keyOrData.sun.key);
+      }
+    }
+    // 문자열인 경우
+    if (typeof keyOrData === 'string') {
+      const k = keyOrData.toLowerCase().trim();
+      if (guardianCatArchetypes[k]) return guardianCatArchetypes[k];
+      const alias = archetypeAliasMap[k];
+      if (alias && guardianCatArchetypes[alias]) return guardianCatArchetypes[alias];
     }
     return guardianCatArchetypes['sagittarius'];
+  }
+
+  function getZodiacFromDate(month, day) {
+    if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return 'aries';
+    if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return 'taurus';
+    if ((month === 5 && day >= 21) || (month === 6 && day <= 21)) return 'gemini';
+    if ((month === 6 && day >= 22) || (month === 7 && day <= 22)) return 'cancer';
+    if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return 'leo';
+    if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return 'virgo';
+    if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return 'libra';
+    if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return 'scorpio';
+    if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return 'sagittarius';
+    if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return 'capricorn';
+    if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return 'aquarius';
+    if ((month === 2 && day >= 19) || (month === 3 && day <= 20)) return 'pisces';
+    return 'aries';
+  }
+
+  function detectZodiacKeyFromQuery(text) {
+    if (!text) return null;
+    const t = text.toLowerCase();
+
+    // 1. 별자리 한글 키워드
+    if (t.includes('양자리')) return 'aries';
+    if (t.includes('황소자리')) return 'taurus';
+    if (t.includes('쌍둥이자리')) return 'gemini';
+    if (t.includes('게자리')) return 'cancer';
+    if (t.includes('사자자리')) return 'leo';
+    if (t.includes('처녀자리')) return 'virgo';
+    if (t.includes('천칭자리')) return 'libra';
+    if (t.includes('전갈자리')) return 'scorpio';
+    if (t.includes('사수자리')) return 'sagittarius';
+    if (t.includes('염소자리')) return 'capricorn';
+    if (t.includes('물병자리')) return 'aquarius';
+    if (t.includes('물고기자리')) return 'pisces';
+
+    // 2. 수호냥이 이름/품종 키워드
+    if (t.includes('브리티시') || t.includes('미식냥')) return 'taurus';
+    if (t.includes('페르시안') || t.includes('달빛냥')) return 'cancer';
+    if (t.includes('턱시도') || t.includes('사자냥')) return 'leo';
+    if (t.includes('치즈태비') || t.includes('화성냥')) return 'aries';
+    if (t.includes('러시안블루') || t.includes('귀족냥') || t.includes('얼음냥')) return 'libra';
+    if (t.includes('삼색이') || t.includes('수성냥')) return 'gemini';
+    if (t.includes('샴') || t.includes('책사냥')) return 'virgo';
+    if (t.includes('올블랙') || t.includes('마법냥') || t.includes('검은고양이')) return 'scorpio';
+    if (t.includes('벵갈') || t.includes('탐험냥')) return 'sagittarius';
+    if (t.includes('노르웨이') || t.includes('야망냥')) return 'capricorn';
+    if (t.includes('스핑크스') || t.includes('외계냥')) return 'aquarius';
+    if (t.includes('터키시') || t.includes('힐러냥')) return 'pisces';
+    if (t.includes('먼치킨') || t.includes('요정냥')) return 'munchkin';
+    if (t.includes('랙돌')) return 'ragdoll';
+    if (t.includes('메인쿤') || t.includes('거인냥')) return 'mainecoon';
+    if (t.includes('스코티시') || t.includes('폴드')) return 'scottish';
+
+    // 3. "x월 x일" 패턴 검사
+    const mdMatch = text.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
+    if (mdMatch) {
+      const m = parseInt(mdMatch[1], 10);
+      const d = parseInt(mdMatch[2], 10);
+      if (m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+        return getZodiacFromDate(m, d);
+      }
+    }
+
+    return null;
+  }
+
+  function pickDynamicCatKey(seedText) {
+    const keys = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+    let hash = 0;
+    const str = (seedText || '') + new Date().toDateString();
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0;
+    }
+    const index = Math.abs(hash) % keys.length;
+    return keys[index];
   }
 
   // 초기화 실행
@@ -634,9 +827,8 @@ Mercury Conjunction Saturn (14°18')`;
     }
 
     if (!chartResult.sun && !chartResult.moon && !chartResult.ascendant) {
-      chartResult.sun = zodiacMap['taurus'];
-      chartResult.moon = zodiacMap['capricorn'];
-      chartResult.ascendant = zodiacMap['virgo'];
+      alert('Astro-Seek 데이터에서 별자리를 감지하지 못했다냥! [생년월일 직접 입력] 탭을 이용해보라옹! 🐾');
+      return;
     }
 
     savedChartData = chartResult;
@@ -1130,7 +1322,16 @@ Mercury Conjunction Saturn (14°18')`;
         responseText = autoDetectNotice + responseText;
       }
 
-      const guardianCat = getGuardianCatType(savedChartData);
+      // 수호 냥이 성격 유형 결정:
+      // 1순위: Gemini API 또는 서버리스가 반환한 맞춤 수호 냥이 ID (resData.guardianCatId)
+      // 2순위: 사용자 질문 내용에서 직접 감지된 별자리/생년월일
+      // 3순위: 등록된 차트 데이터의 태양궁
+      // 4순위: 질문 내용 기반의 고유한 동적 해시 매칭
+      let catTypeKey = resData.guardianCatId 
+        || detectZodiacKeyFromQuery(query) 
+        || (savedChartData && savedChartData.sun && savedChartData.sun.key)
+        || pickDynamicCatKey(query);
+      const guardianCat = getGuardianCatType(catTypeKey);
       const cardId = 'gcc-chat-' + Date.now();
       const cardHtml = generateGuardianCatCardHtml(guardianCat, cardId);
 
@@ -1156,7 +1357,10 @@ Mercury Conjunction Saturn (14°18')`;
     } catch (err) {
       console.error(err);
       typingIndicator.classList.add('hidden');
-      const guardianCat = getGuardianCatType(savedChartData);
+      let catTypeKey = detectZodiacKeyFromQuery(query) 
+        || (savedChartData && savedChartData.sun && savedChartData.sun.key)
+        || pickDynamicCatKey(query);
+      const guardianCat = getGuardianCatType(catTypeKey);
       const cardId = 'gcc-offline-' + Date.now();
       const cardHtml = generateGuardianCatCardHtml(guardianCat, cardId);
       const offlineHtml = `
@@ -1970,17 +2174,21 @@ Mercury Conjunction Saturn (14°18')`;
   // 16. 수호 냥이 성격 유형 (MBTI 스타일) & 바이럴 이미지 저장 / 카카오톡 공유
   // ==========================================
   function generateGuardianCatCardHtml(catData, cardId) {
-    const avatarSrc = catData.avatar || ('images/cats/cat-' + (catData.signKey || 'sagittarius') + '.svg');
+    const avatarSrc = catData.avatar || ('images/cats/' + (catData.catId || 'cheese') + '.png');
+    const svgFallback = catData.svgFallback || ('images/cats/cat-' + (catData.signKey || 'sagittarius') + '.svg');
     return `
       <div class="guardian-cat-card-container">
-        <div class="guardian-cat-card" id="${cardId}" data-cat-sign="${catData.signKey}">
+        <div class="guardian-cat-card" id="${cardId}" data-cat-id="${catData.catId || catData.signKey}" data-cat-sign="${catData.signKey}">
           <div class="gcc-header">
             <span class="gcc-badge">✨ 묘성 은하 공인 우주 지문 ✨</span>
             <span class="gcc-source">냥성술 상담소 | cat-astro.xyz</span>
           </div>
           <div class="gcc-character-section">
             <div class="gcc-avatar-orb">
-              <img src="${avatarSrc}" alt="${catData.title}" class="gcc-avatar-img">
+              <img src="${avatarSrc}" 
+                   alt="${catData.title}" 
+                   class="gcc-avatar-img"
+                   onerror="if(this.src && !this.src.endsWith('${svgFallback}') && !this.dataset.fallbackTried){this.dataset.fallbackTried='true';this.src='${svgFallback}';}else{this.onerror=null;this.src='images/luna-astrologer.jpg';}">
               <span class="gcc-emoji-tag">${catData.emoji}</span>
             </div>
             <div class="gcc-type-label">나의 수호 냥이 성격 유형</div>
@@ -2081,6 +2289,22 @@ Mercury Conjunction Saturn (14°18')`;
         throw new Error('html2canvas 라이브러리를 불러오지 못했습니다.');
       }
 
+      // 카드 내 이미지(아바타 등) 로드 완료 대기
+      const imgs = Array.from(cardEl.querySelectorAll('img'));
+      await Promise.all(imgs.map(img => {
+        if (img.complete && img.naturalWidth !== 0) return Promise.resolve();
+        return new Promise(resolve => {
+          img.addEventListener('load', resolve, { once: true });
+          img.addEventListener('error', resolve, { once: true });
+          setTimeout(resolve, 1500);
+        });
+      }));
+
+      // 웹폰트 로딩 대기
+      if (document.fonts && document.fonts.ready) {
+        try { await document.fonts.ready; } catch(e) {}
+      }
+
       const canvas = await html2canvas(cardEl, {
         scale: 2.5,
         useCORS: true,
@@ -2129,6 +2353,20 @@ Mercury Conjunction Saturn (14°18')`;
       let imageFile = null;
       if (cardEl && typeof html2canvas !== 'undefined') {
         try {
+          const imgs = Array.from(cardEl.querySelectorAll('img'));
+          await Promise.all(imgs.map(img => {
+            if (img.complete && img.naturalWidth !== 0) return Promise.resolve();
+            return new Promise(resolve => {
+              img.addEventListener('load', resolve, { once: true });
+              img.addEventListener('error', resolve, { once: true });
+              setTimeout(resolve, 1500);
+            });
+          }));
+
+          if (document.fonts && document.fonts.ready) {
+            try { await document.fonts.ready; } catch(e) {}
+          }
+
           const canvas = await html2canvas(cardEl, {
             scale: 2,
             useCORS: true,
@@ -2308,8 +2546,11 @@ Mercury Conjunction Saturn (14°18')`;
         let cat = getGuardianCatType(savedChartData);
         if (targetId) {
           const cardEl = document.getElementById(targetId);
-          if (cardEl && cardEl.dataset.catSign) {
-            cat = guardianCatArchetypes[cardEl.dataset.catSign] || cat;
+          if (cardEl) {
+            const catKey = cardEl.dataset.catId || cardEl.dataset.catSign;
+            if (catKey) {
+              cat = getGuardianCatType(catKey);
+            }
           }
         }
         shareGuardianCat(cat, targetId);
