@@ -52,6 +52,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
   <!-- html2pdf.js 클라이언트 사이드 PDF 생성 라이브러리 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- html2canvas 라이브러리 (인스타/갤러리 공유용 결과 카드 이미지 생성) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <!-- Google AdSense 사이트 소유권 확인 및 자동 광고 스크립트 -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4288550549497984"
@@ -143,6 +145,33 @@
               <div class="big3-item">
                 <span class="big3-label">⬆️ 상승궁 (첫인상)</span>
                 <span class="big3-val" id="val-asc">-</span>
+              </div>
+            </div>
+
+            <!-- 수호 냥이 성격 유형 (MBTI 스타일) 사이드바 위젯 -->
+            <div class="guardian-cat-summary-box hidden" id="guardian-cat-summary-box">
+              <div class="guardian-cat-summary-header">
+                <span class="guardian-cat-summary-badge">👑 나의 수호 냥이 성격 유형</span>
+              </div>
+              <div class="guardian-cat-summary-body">
+                <div class="guardian-cat-avatar-wrap">
+                  <span class="guardian-cat-icon-lg" id="gc-summary-icon">🦁</span>
+                </div>
+                <div class="guardian-cat-info">
+                  <div class="guardian-cat-title" id="gc-summary-title">우주를 호령하는 턱시도 사자냥</div>
+                  <div class="guardian-cat-subtitle" id="gc-summary-subtitle">ENTJ 스타일 - 카리스마 묘황</div>
+                </div>
+              </div>
+              <p class="guardian-cat-summary-quote" id="gc-summary-quote">
+                "내가 가는 곳이 곧 무대이자 중심이다냥! 당당한 자존감과 눈부신 아우라의 리더!"
+              </p>
+              <div class="guardian-cat-action-btns">
+                <button type="button" class="btn-card-action btn-save-image" id="btn-save-summary-card" title="결과 카드 이미지로 저장">
+                  📸 카드 이미지 저장
+                </button>
+                <button type="button" class="btn-card-action btn-share-kakao" id="btn-share-summary-card" title="카카오톡 공유하기">
+                  💬 카톡 공유하기
+                </button>
               </div>
             </div>
           </div>
@@ -1185,9 +1214,14 @@
     </div>
   </div>
 
+  <!-- 토스트 알림 컨테이너 -->
+  <div id="toast-container" class="toast-container"></div>
+
   <!-- 천체력 계산 엔진 및 메인 스크립트 로드 -->
   <script src="astronomy.js"></script>
   <script src="dossier.js"></script>
+  <!-- 카카오톡 공유 공식 SDK (JavaScript SDK v2) -->
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2mFxE6YZnGotaGeCw1aMGTguihbb1oUke+0KS3VtKWu" crossorigin="anonymous"></script>
   <script src="script.js"></script>
 </body>
 </html>

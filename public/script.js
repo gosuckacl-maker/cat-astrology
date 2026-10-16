@@ -78,12 +78,159 @@ document.addEventListener('DOMContentLoaded', () => {
     'pisces': { name: '물고기자리', symbol: '♓', element: '물', trait: '꿈속 은하수를 유영하는 낭만주의 힐러' }
   };
 
+  // 수호 냥이 성격 유형 (MBTI 스타일 고양이 칭호) 매핑 사전
+  const guardianCatArchetypes = {
+    'aries': {
+      signKey: 'aries',
+      signName: '양자리',
+      title: '장난기 넘치는 치즈태비 화성냥',
+      subtitle: 'ESTP 스타일 - 직진 본능 불도저 대장묘',
+      summary: '망설임 따윈 없다냥! 사냥감이 보이면 앞발부터 번개처럼 뻗는 용맹무쌍한 모험가!',
+      planet: '화성 (Mars) - 불꽃같은 투지와 돌파력',
+      luckyAdvice: '넘어지는 것을 두려워하지 말라옹. 한 번의 도약이 새로운 은하를 연다냥!',
+      luckyItem: '붉은색 스카프 & 매콤한 스낵 (코랄 레드)',
+      emoji: '🦁'
+    },
+    'taurus': {
+      signKey: 'taurus',
+      signName: '황소자리',
+      title: '고급 츄르를 음미하는 브리티시 미식냥',
+      subtitle: 'ISFP 스타일 - 안락한 방석 위의 힐링 귀족묘',
+      summary: '햇살 드는 창가와 최고급 츄르만 있다면 천국이다냥. 은은한 품격과 확고한 취향의 소유자!',
+      planet: '금성 (Venus) - 아름다움과 풍요로운 감각',
+      luckyAdvice: '조급하게 서두를 필요 없다냥. 묵묵히 다져온 집사의 기반이 곧 큰 결실을 맺는다옹!',
+      luckyItem: '포근한 무릎 담요 & 로즈 골드 (에메랄드 그린)',
+      emoji: '🍰'
+    },
+    'gemini': {
+      signKey: 'gemini',
+      signName: '쌍둥이자리',
+      title: '호기심 많은 삼색이 수성냥',
+      subtitle: 'ENTP 스타일 - 24시간 뇌섹미 재간둥이묘',
+      summary: '깃털 장난감 하나에도 우주의 비밀을 읽어낸다냥! 재치 넘치는 입담과 번뜩이는 아이디어의 천재!',
+      planet: '수성 (Mercury) - 빛의 속도로 회전하는 지성과 소통',
+      luckyAdvice: '마음속에 떠오른 흥미로운 아이디어를 주변에 속삭여보라옹. 기적 같은 기회가 찾아온다냥!',
+      luckyItem: '무선 이어폰 & 비비드 옐로우 (스카이 블루)',
+      emoji: '⚡'
+    },
+    'cancer': {
+      signKey: 'cancer',
+      signName: '게자리',
+      title: '도도하고 섬세한 페르시안 달빛냥',
+      subtitle: 'INFJ 스타일 - 집사 영혼의 수호천사 감성묘',
+      summary: '겉은 도도한 얼음 공주 같아도, 내 사람에게는 밤새 골골송을 들려주는 다정 끝판왕!',
+      planet: '달 (Moon) - 깊은 무의식과 무한한 공감 치유력',
+      luckyAdvice: '지친 마음을 따스하게 그루밍해주라옹. 집사가 편안해야 세상도 빛난다냥!',
+      luckyItem: '은은한 캔들 & 오팔 실버 (진주빛 화이트)',
+      emoji: '🌙'
+    },
+    'leo': {
+      signKey: 'leo',
+      signName: '사자자리',
+      title: '우주를 호령하는 턱시도 사자냥',
+      subtitle: 'ENTJ 스타일 - 캣타워 꼭대기의 카리스마 묘황',
+      summary: '내가 가는 곳이 곧 무대이자 중심이다냥! 당당한 자존감과 눈부신 아우라로 좌중을 압도하는 리더!',
+      planet: '태양 (Sun) - 꺼지지 않는 절대 생명력과 영광',
+      luckyAdvice: '스스로의 빛을 의심하지 말라옹. 당당하게 고개를 들면 우주가 집사를 따른다냥!',
+      luckyItem: '볼드한 골드 링 & 선셋 앰버 (임페리얼 골드)',
+      emoji: '👑'
+    },
+    'virgo': {
+      signKey: 'virgo',
+      signName: '처녀자리',
+      title: '완벽한 그루밍의 샴 고양이 책사냥',
+      subtitle: 'INTJ 스타일 - 오차율 0%의 날카로운 분석묘',
+      summary: '먼지 한 톨도 용납할 수 없다냥! 뛰어난 직관과 치밀한 계획으로 위기를 기회로 바꾸는 영리한 참모!',
+      planet: '수성 (Mercury) - 정밀한 분별력과 실용적 지혜',
+      luckyAdvice: '작은 디테일에 집착하기보다 전체 그림을 보라옹. 이미 집사는 충분히 완벽하다냥!',
+      luckyItem: '만년필 & 가죽 다이어리 (딥 네이비)',
+      emoji: '📜'
+    },
+    'libra': {
+      signKey: 'libra',
+      signName: '천칭자리',
+      title: '우아한 발걸음의 러시안블루 귀족냥',
+      subtitle: 'ENFJ 스타일 - 황금비율의 평화주의 조화묘',
+      summary: '다툼은 하수의 방식이다냥! 은빛 실크 털을 휘날리며 모두를 매료시키는 사교계의 평화 대사!',
+      planet: '금성 (Venus) - 조화로운 관계성과 세련된 미의식',
+      luckyAdvice: '선택의 기로에서 마음의 저울이 기우는 쪽을 믿으라옹. 집사의 심미안은 언제나 옳다냥!',
+      luckyItem: '플로럴 향수 & 로맨틱 라벤더 (파우더 핑크)',
+      emoji: '⚖️'
+    },
+    'scorpio': {
+      signKey: 'scorpio',
+      signName: '전갈자리',
+      title: '어둠 속을 꿰뚫는 올블랙 마법냥',
+      subtitle: 'INTJ 스타일 - 백발백중 육감의 신비주의 통찰묘',
+      summary: '조용한 눈빛 속에 깊은 은하를 품고 있다냥. 한 번 마음을 준 인연은 지옥 끝까지 지켜내는 의리파!',
+      planet: '명왕성 (Pluto) - 파괴와 재생, 불굴의 잠재력',
+      luckyAdvice: '과거의 낡은 허물을 벗어던지라옹. 집사의 진정한 부활은 지금부터 시작이다냥!',
+      luckyItem: '오닉스 원석 참 & 미드나잇 블랙 (버건디 레드)',
+      emoji: '🔮'
+    },
+    'sagittarius': {
+      signKey: 'sagittarius',
+      signName: '사수자리',
+      title: '은하수를 방랑하는 벵갈 탐험냥',
+      subtitle: 'ENTP 스타일 - 자유로운 영혼의 우주 방랑묘',
+      summary: '좁은 방안에만 갇혀 살 순 없다냥! 끝없는 호기심과 낙천적인 미소로 미지의 세계를 개척하는 탐험가!',
+      planet: '목성 (Jupiter) - 무한한 확장과 천운의 축복',
+      luckyAdvice: '더 넓은 시야로 미래를 바라보라옹. 사소한 걸림돌은 가볍게 뛰어넘을 수 있다냥!',
+      luckyItem: '여행용 백팩 & 일렉트릭 퍼플 (사파이어 블루)',
+      emoji: '🏹'
+    },
+    'capricorn': {
+      signKey: 'capricorn',
+      signName: '염소자리',
+      title: '캣타워 정상에 오른 노르웨이숲 야망냥',
+      subtitle: 'ISTJ 스타일 - 묵묵한 인내의 불굴 끈기묘',
+      summary: '눈보라가 쳐도 내 발걸음은 멈추지 않는다냥. 굳은 의지와 실력으로 정상의 깃발을 꽂는 대기만성형!',
+      planet: '토성 (Saturn) - 시간과 훈련을 통해 벼려낸 진짜 실력',
+      luckyAdvice: '집사가 흘린 땀방울은 단 한 방울도 헛되지 않다옹. 머지않아 압도적인 보상이 찾아온다냥!',
+      luckyItem: '클래식 아날로그 시계 & 차콜 그레이 (포레스트 그린)',
+      emoji: '🏔️'
+    },
+    'aquarius': {
+      signKey: 'aquarius',
+      signName: '물병자리',
+      title: '외계 전파를 수신하는 스핑크스 외계냥',
+      subtitle: 'INTP 스타일 - 4차원 천재 혁신묘',
+      summary: '남들과 똑같이 사는 건 지루하다냥! 시대를 10년 앞서가는 번뜩이는 통찰과 독창성의 아이콘!',
+      planet: '천왕성 (Uranus) - 패러다임을 뒤흔드는 혁신과 독창성',
+      luckyAdvice: '남들의 편견에 맞추려 하지 말라옹. 집사의 엉뚱함이야말로 세상을 바꿀 슈퍼 파워다냥!',
+      luckyItem: '스마트 웨어러블 기기 & 네온 아쿠아 (메탈릭 실버)',
+      emoji: '🛸'
+    },
+    'pisces': {
+      signKey: 'pisces',
+      signName: '물고기자리',
+      title: '꿈속 은하수를 유영하는 터키시앙고라 힐러냥',
+      subtitle: 'INFP 스타일 - 영혼을 적시는 낭만 예술묘',
+      summary: '눈송이처럼 맑고 순수한 영혼의 소유자다냥. 온 세상을 품는 무조건적인 사랑과 예술적 감수성의 화신!',
+      planet: '해왕성 (Neptune) - 무한한 상상력과 신비로운 영감',
+      luckyAdvice: '집사의 맑은 직관을 믿으라옹. 논리로 설명할 수 없는 기적이 집사를 향해 헤엄쳐오고 있다냥!',
+      luckyItem: '수채화 드로잉 엽서 & 파스텔 라일락 (오션 틸)',
+      emoji: '🌊'
+    }
+  };
+
+  function getGuardianCatType(chartData) {
+    if (chartData && chartData.sun && chartData.sun.key && guardianCatArchetypes[chartData.sun.key]) {
+      return guardianCatArchetypes[chartData.sun.key];
+    }
+    if (typeof chartData === 'string' && guardianCatArchetypes[chartData.toLowerCase()]) {
+      return guardianCatArchetypes[chartData.toLowerCase()];
+    }
+    return guardianCatArchetypes['sagittarius'];
+  }
+
   // 초기화 실행
   initStarfield();
   initSoundUI();
   initCatBlinking();
   initChartSystem();
   initQuotaSystem();
+  initGuardianCatShareSystem();
 
   // ==========================================
   // 1. 별빛 캔버스 (Starfield Canvas)
@@ -498,10 +645,12 @@ Mercury Conjunction Saturn (14°18')`;
   }
 
   function updateChartDisplayUI(data) {
+    const summaryBox = document.getElementById('guardian-cat-summary-box');
     if (!data || (!data.sun && !data.moon && !data.ascendant)) {
       headerChartStatus.textContent = 'Astro-Seek 차트 등록';
       chartEmptyState.classList.remove('hidden');
       big3Grid.classList.add('hidden');
+      if (summaryBox) summaryBox.classList.add('hidden');
       return;
     }
 
@@ -519,6 +668,10 @@ Mercury Conjunction Saturn (14°18')`;
     valSun.textContent = data.sun ? `${data.sun.symbol} ${data.sun.name}` : '-';
     valMoon.textContent = data.moon ? `${data.moon.symbol} ${data.moon.name}` : '-';
     valAsc.textContent = data.ascendant ? `${data.ascendant.symbol} ${data.ascendant.name}` : '-';
+
+    // 수호 냥이 성격 유형 위젯 업데이트
+    const guardianCat = getGuardianCatType(data);
+    updateGuardianCatSummaryUI(guardianCat);
   }
 
   // ==========================================
@@ -963,14 +1116,50 @@ Mercury Conjunction Saturn (14°18')`;
         responseText = autoDetectNotice + responseText;
       }
 
+      const guardianCat = getGuardianCatType(savedChartData);
+      const cardId = 'gcc-chat-' + Date.now();
+      const cardHtml = generateGuardianCatCardHtml(guardianCat, cardId);
+
+      const finalHtml = `
+        ${cardHtml}
+        <div class="astrology-response-content">
+          ${responseText}
+        </div>
+        <div class="gcc-actions-bar text-result-actions">
+          <button type="button" class="btn-card-action btn-save-image" data-card-target="${cardId}">
+            📸 결과 카드 이미지로 저장
+          </button>
+          <button type="button" class="btn-card-action btn-share-kakao" data-card-target="${cardId}">
+            💬 카카오톡 공유하기
+          </button>
+        </div>
+      `;
+
       typingIndicator.classList.add('hidden');
-      appendAstrologerMessage(responseText);
+      appendAstrologerMessage(finalHtml);
       setCatMood('점성술의 계시를 전했다냥! ✨');
       playBellChime();
     } catch (err) {
       console.error(err);
       typingIndicator.classList.add('hidden');
-      appendAstrologerMessage(`묘성 네트워크에 작은 헤어볼이 걸렸다냥! 😿<br><br><span style="color:#ffb4a2;">오류: ${err.message}</span><br><br>내장 오프라인 냥성술 엔진으로 점을 쳐주겠다냥:<br><br>${getOfflineAstrologyFortune(query)}`);
+      const guardianCat = getGuardianCatType(savedChartData);
+      const cardId = 'gcc-offline-' + Date.now();
+      const cardHtml = generateGuardianCatCardHtml(guardianCat, cardId);
+      const offlineHtml = `
+        ${cardHtml}
+        <div class="astrology-response-content">
+          묘성 네트워크에 작은 헤어볼이 걸렸다냥! 😿<br><br><span style="color:#ffb4a2;">오류: ${err.message}</span><br><br>내장 오프라인 냥성술 엔진으로 점을 쳐주겠다냥:<br><br>${getOfflineAstrologyFortune(query)}
+        </div>
+        <div class="gcc-actions-bar text-result-actions">
+          <button type="button" class="btn-card-action btn-save-image" data-card-target="${cardId}">
+            📸 결과 카드 이미지로 저장
+          </button>
+          <button type="button" class="btn-card-action btn-share-kakao" data-card-target="${cardId}">
+            💬 카카오톡 공유하기
+          </button>
+        </div>
+      `;
+      appendAstrologerMessage(offlineHtml);
       setCatMood('잠시 숨을 고르는 중이다냥...');
     } finally {
       isGenerating = false;
@@ -1751,6 +1940,304 @@ Mercury Conjunction Saturn (14°18')`;
         closeModal(aboutModal);
       }
     });
+  }
+
+  // ==========================================
+  // 16. 수호 냥이 성격 유형 (MBTI 스타일) & 바이럴 이미지 저장 / 카카오톡 공유
+  // ==========================================
+  function generateGuardianCatCardHtml(catData, cardId) {
+    return `
+      <div class="guardian-cat-card-container">
+        <div class="guardian-cat-card" id="${cardId}" data-cat-sign="${catData.signKey}">
+          <div class="gcc-header">
+            <span class="gcc-badge">✨ 묘성 은하 공인 우주 지문 ✨</span>
+            <span class="gcc-source">냥성술 상담소 | cat-astro.xyz</span>
+          </div>
+          <div class="gcc-character-section">
+            <div class="gcc-avatar-orb">
+              <img src="images/luna-astrologer.jpg" alt="${catData.title}" class="gcc-avatar-img">
+              <span class="gcc-emoji-tag">${catData.emoji}</span>
+            </div>
+            <div class="gcc-type-label">나의 수호 냥이 성격 유형</div>
+            <h3 class="gcc-cat-name">${catData.title}</h3>
+            <div class="gcc-mbti-pill">${catData.subtitle}</div>
+          </div>
+          <div class="gcc-quote-box">
+            <p class="gcc-quote-text">"${catData.summary}"</p>
+          </div>
+          <div class="gcc-pillars-grid">
+            <div class="gcc-pillar">
+              <span class="pillar-label">🪐 수호 행성</span>
+              <span class="pillar-val">${catData.planet}</span>
+            </div>
+            <div class="gcc-pillar">
+              <span class="pillar-label">🍀 행운의 아이템/색상</span>
+              <span class="pillar-val">${catData.luckyItem}</span>
+            </div>
+            <div class="gcc-pillar full-width">
+              <span class="pillar-label">🌟 오늘의 행운 조언</span>
+              <p class="pillar-advice">"${catData.luckyAdvice}"</p>
+            </div>
+          </div>
+          <div class="gcc-footer">
+            <span class="gcc-footer-stamp">🐾 대점성술사 루나 13세 공인</span>
+            <span class="gcc-footer-url">cat-astro.xyz</span>
+          </div>
+        </div>
+        <div class="gcc-actions-bar">
+          <button type="button" class="btn-card-action btn-save-image" data-card-target="${cardId}">
+            📸 결과 카드 이미지로 저장
+          </button>
+          <button type="button" class="btn-card-action btn-share-kakao" data-card-target="${cardId}">
+            💬 카카오톡 공유하기
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  function updateGuardianCatSummaryUI(catData) {
+    const summaryBox = document.getElementById('guardian-cat-summary-box');
+    const iconEl = document.getElementById('gc-summary-icon');
+    const titleEl = document.getElementById('gc-summary-title');
+    const subtitleEl = document.getElementById('gc-summary-subtitle');
+    const quoteEl = document.getElementById('gc-summary-quote');
+
+    if (!summaryBox || !catData) return;
+
+    if (iconEl) iconEl.textContent = catData.emoji;
+    if (titleEl) titleEl.textContent = catData.title;
+    if (subtitleEl) subtitleEl.textContent = catData.subtitle;
+    if (quoteEl) quoteEl.textContent = `"${catData.summary}"`;
+
+    summaryBox.classList.remove('hidden');
+  }
+
+  function showToast(message, duration = 3200) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      container.className = 'toast-container';
+      document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.innerHTML = `<span>✨</span><span>${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('fade-out');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 350);
+    }, duration);
+  }
+
+  async function saveCardAsImage(targetId, title) {
+    const cardEl = document.getElementById(targetId);
+    if (!cardEl) return;
+
+    const btn = document.querySelector(`button[data-card-target="${targetId}"].btn-save-image`) || document.getElementById('btn-save-summary-card');
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.innerHTML = '이미지 생성 중... ⏳';
+      btn.disabled = true;
+    }
+
+    try {
+      if (typeof html2canvas === 'undefined') {
+        throw new Error('html2canvas 라이브러리를 불러오지 못했습니다.');
+      }
+
+      const canvas = await html2canvas(cardEl, {
+        scale: 2.5,
+        useCORS: true,
+        backgroundColor: '#0c0919',
+        logging: false,
+        allowTaint: true
+      });
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const safeTitle = (title || '수호냥이').replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `고양이점성술_수호냥이_${safeTitle}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      showToast('📸 수호 냥이 카드가 갤러리에 저장되었다냥! 🐾');
+    } catch (err) {
+      console.error('Image capture error:', err);
+      showToast('😿 이미지 저장 중 오류가 발생했다냥. 잠시 후 다시 시도하라옹.');
+    } finally {
+      if (btn) {
+        btn.innerHTML = originalText || '📸 결과 카드 이미지로 저장';
+        btn.disabled = false;
+      }
+    }
+  }
+
+  async function shareGuardianCat(catData) {
+    const cat = catData || getGuardianCatType(savedChartData);
+    const shareTitle = `[별빛 냥성술] 나의 수호 냥이 성격 유형: ${cat.title}`;
+    const shareDesc = `"${cat.summary}"\n\n🪐 수호 행성: ${cat.planet}\n🍀 행운의 아이템: ${cat.luckyItem}\n\n👉 내 생년월일시로 수호 냥이 알아보기: https://cat-astro.xyz`;
+    const shareUrl = 'https://cat-astro.xyz';
+
+    // 1. 카카오톡 공식 JavaScript SDK 연동 (앱 키가 활성화된 경우)
+    if (window.Kakao && typeof window.Kakao.isInitialized === 'function' && window.Kakao.isInitialized()) {
+      try {
+        window.Kakao.Share.sendDefault({
+          objectType: 'feed',
+          content: {
+            title: `나의 수호 냥이: ${cat.title}`,
+            description: cat.summary,
+            imageUrl: 'https://cat-astro.xyz/images/luna-astrologer.jpg',
+            link: {
+              mobileWebUrl: shareUrl,
+              webUrl: shareUrl,
+            },
+          },
+          buttons: [
+            {
+              title: '내 수호 냥이 알아보기 🐾',
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+          ],
+        });
+        showToast('💬 카카오톡 공유 창을 열었다냥! 🐾');
+        return;
+      } catch (kErr) {
+        console.warn('Kakao Share failed, falling back:', kErr);
+      }
+    }
+
+    // 2. 모바일 브라우저 표준 Web Share API (카카오톡, 인스타그램 등 앱 선택창 호출)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: `${shareTitle}\n\n${cat.summary}\n\n🪐 수호 행성: ${cat.planet}\n🍀 행운 아이템: ${cat.luckyItem}`,
+          url: shareUrl
+        });
+        showToast('✨ 공유가 완료되었다냥! 🐾');
+        return;
+      } catch (sErr) {
+        if (sErr.name !== 'AbortError') {
+          console.warn('navigator.share failed, fallback to copy:', sErr);
+        } else {
+          return;
+        }
+      }
+    }
+
+    // 3. 클립보드 복사 폴백
+    copyToClipboard(`${shareTitle}\n\n${shareDesc}`, '✨ 결과 링크가 복사되었다냥! 카카오톡이나 인스타에 붙여넣어 공유하라옹 🐾');
+  }
+
+  function copyToClipboard(text, msg) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(msg || '클립보드에 복사되었다냥! 🐾');
+      }).catch(() => fallbackCopy(text, msg));
+    } else {
+      fallbackCopy(text, msg);
+    }
+  }
+
+  function fallbackCopy(text, msg) {
+    const t = document.createElement('textarea');
+    t.value = text;
+    t.style.position = 'fixed';
+    t.style.left = '-9999px';
+    document.body.appendChild(t);
+    t.focus();
+    t.select();
+    try {
+      document.execCommand('copy');
+      showToast(msg || '클립보드에 복사되었다냥! 🐾');
+    } catch (e) {
+      showToast('주소를 직접 복사해달라옹: https://cat-astro.xyz');
+    }
+    document.body.removeChild(t);
+  }
+
+  async function saveSidebarSummaryCard() {
+    const cat = getGuardianCatType(savedChartData);
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'fixed';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.top = '0';
+    tempContainer.style.width = '380px';
+    tempContainer.innerHTML = generateGuardianCatCardHtml(cat, 'gcc-temp-export');
+    document.body.appendChild(tempContainer);
+
+    try {
+      await saveCardAsImage('gcc-temp-export', cat.title);
+    } finally {
+      document.body.removeChild(tempContainer);
+    }
+  }
+
+  function initGuardianCatShareSystem() {
+    // 사이드바 수호 냥이 버튼 리스너 바인딩
+    const btnSaveSummary = document.getElementById('btn-save-summary-card');
+    const btnShareSummary = document.getElementById('btn-share-summary-card');
+
+    if (btnSaveSummary) {
+      btnSaveSummary.addEventListener('click', (e) => {
+        e.preventDefault();
+        saveSidebarSummaryCard();
+      });
+    }
+
+    if (btnShareSummary) {
+      btnShareSummary.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cat = getGuardianCatType(savedChartData);
+        shareGuardianCat(cat);
+      });
+    }
+
+    // 동적 생성된 결과 카드 내 액션 버튼 클릭 위임
+    document.addEventListener('click', (e) => {
+      const saveBtn = e.target.closest('.btn-save-image');
+      if (saveBtn) {
+        e.preventDefault();
+        const targetId = saveBtn.getAttribute('data-card-target');
+        if (targetId) {
+          const cardEl = document.getElementById(targetId);
+          const catTitle = cardEl ? cardEl.querySelector('.gcc-cat-name')?.textContent : '운세카드';
+          saveCardAsImage(targetId, catTitle);
+        }
+        return;
+      }
+
+      const shareBtn = e.target.closest('.btn-share-kakao');
+      if (shareBtn) {
+        e.preventDefault();
+        const targetId = shareBtn.getAttribute('data-card-target');
+        let cat = getGuardianCatType(savedChartData);
+        if (targetId) {
+          const cardEl = document.getElementById(targetId);
+          if (cardEl && cardEl.dataset.catSign) {
+            cat = guardianCatArchetypes[cardEl.dataset.catSign] || cat;
+          }
+        }
+        shareGuardianCat(cat);
+        return;
+      }
+    });
+
+    // 카카오 JavaScript SDK 초기화 템플릿 (카카오 개발자 키 설정 시 자동 활성화)
+    const KAKAO_JS_KEY = ''; // 카카오 디벨로퍼스 JavaScript 키 입력 위치
+    if (window.Kakao && KAKAO_JS_KEY && typeof window.Kakao.init === 'function' && !window.Kakao.isInitialized()) {
+      window.Kakao.init(KAKAO_JS_KEY);
+    }
   }
 });
 
