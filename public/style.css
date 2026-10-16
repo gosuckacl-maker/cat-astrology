@@ -189,45 +189,80 @@ body {
 }
 
 .cat-avatar-wrapper {
-  width: 200px;
-  height: 210px;
+  width: 220px;
+  height: 220px;
   cursor: pointer;
-  transition: transform 0.3s ease;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.65));
+  position: relative;
+  margin-bottom: 4px;
 }
 
 .cat-avatar-wrapper:hover {
-  transform: scale(1.04);
+  transform: scale(1.04) translateY(-3px);
 }
 
-.cat-svg {
+.cat-portrait-frame {
   width: 100%;
   height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid rgba(255, 209, 102, 0.65);
+  box-shadow: 0 0 25px rgba(138, 92, 246, 0.5), inset 0 0 15px rgba(255, 209, 102, 0.2);
+  background: radial-gradient(circle at 50% 50%, #2b1754 0%, #0d071e 100%);
+  animation: portrait-breathe 4s infinite ease-in-out;
+  transition: all 0.35s ease;
 }
 
-/* 고양이 애니메이션 */
-.cat-tail {
-  transform-origin: 45px 180px;
-  animation: tail-wag 4s infinite ease-in-out;
+.cat-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-@keyframes tail-wag {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(-8deg); }
+.cat-avatar-wrapper:hover .cat-portrait-img {
+  transform: scale(1.08);
 }
 
-#crystal-orb {
-  animation: orb-breathe 3s infinite ease-in-out;
+.cat-portrait-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 85%, rgba(138, 92, 246, 0.2) 0%, transparent 65%);
+  box-shadow: inset 0 0 20px rgba(255, 209, 102, 0.15);
 }
 
-@keyframes orb-breathe {
+.cat-sparkle-pill {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(14, 11, 28, 0.88);
+  border: 1px solid rgba(255, 209, 102, 0.6);
+  color: #ffd166;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 12px;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+@keyframes portrait-breathe {
   0%, 100% {
-    r: 24;
-    filter: drop-shadow(0 0 10px rgba(138, 92, 246, 0.8));
+    box-shadow: 0 0 20px rgba(138, 92, 246, 0.4), 0 0 35px rgba(76, 201, 240, 0.2);
+    border-color: rgba(255, 209, 102, 0.65);
   }
   50% {
-    r: 25.5;
-    filter: drop-shadow(0 0 20px rgba(212, 181, 255, 0.95));
+    box-shadow: 0 0 32px rgba(157, 78, 221, 0.75), 0 0 50px rgba(255, 209, 102, 0.45);
+    border-color: rgba(255, 209, 102, 0.95);
   }
 }
 
@@ -584,6 +619,14 @@ body {
   font-size: 18px;
   flex-shrink: 0;
   box-shadow: 0 0 10px rgba(255, 209, 102, 0.3);
+  overflow: hidden;
+}
+
+.avatar-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .user-row .avatar-mini {
@@ -2482,7 +2525,498 @@ textarea#chart-raw-input:focus {
   }
 }
 
-/* 반응형 모바일 디자인 */
+/* ========================================== */
+/* 애드센스 승인용 정통 점성학 정보성 콘텐츠 섹션 */
+/* ========================================== */
+.astrology-guide-section {
+  margin-top: 36px;
+  margin-bottom: 24px;
+  padding: 32px 26px;
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-magic);
+}
+
+.guide-section-header {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 30px auto;
+}
+
+.guide-section-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--accent-gold);
+  background: rgba(255, 209, 102, 0.12);
+  border: 1px solid rgba(255, 209, 102, 0.35);
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.guide-section-title {
+  font-size: 23px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.guide-section-desc {
+  font-size: 14px;
+  color: #cbbde2;
+  line-height: 1.6;
+}
+
+.guide-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+.guide-card {
+  background: rgba(18, 13, 38, 0.78);
+  border: 1px solid rgba(186, 144, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+.guide-card:hover {
+  border-color: rgba(255, 209, 102, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.guide-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.guide-card-icon {
+  font-size: 32px;
+  line-height: 1;
+  background: rgba(157, 78, 221, 0.18);
+  padding: 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.guide-card-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+}
+
+.guide-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.guide-card-body {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #ded6f2;
+}
+
+.guide-card-body p {
+  margin-bottom: 12px;
+}
+
+.guide-sub-heading {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #fff;
+  margin: 16px 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.guide-highlight-box {
+  background: rgba(255, 209, 102, 0.08);
+  border: 1px dashed rgba(255, 209, 102, 0.35);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #fff1c4;
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.zodiac-elements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.element-block {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.element-fire { border-left: 3px solid #ff70a6; }
+.element-earth { border-left: 3px solid #06d6a0; }
+.element-air { border-left: 3px solid #4cc9f0; }
+.element-water { border-left: 3px solid #9d4edd; }
+
+.element-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.element-signs {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  color: #d1c4e9;
+}
+
+.sign-item {
+  line-height: 1.5;
+}
+
+.guide-big3-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.big3-summary-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(186, 144, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.b3-badge {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 4px;
+}
+
+.big3-summary-item p {
+  font-size: 12px;
+  color: #d8ceee;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+.guide-house-bullets {
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: #cfc2e6;
+  margin-top: 6px;
+}
+
+.guide-house-bullets li {
+  margin-bottom: 3px;
+}
+
+/* ========================================== */
+/* 푸터 (Footer) */
+/* ========================================== */
+.app-footer {
+  margin-top: 20px;
+  margin-bottom: 24px;
+  padding: 28px 24px 18px 24px;
+  background: rgba(14, 10, 28, 0.85);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+.footer-brand-col {
+  flex: 1 1 340px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.footer-logo-icon {
+  font-size: 20px;
+}
+
+.footer-logo-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  letter-spacing: 0.5px;
+}
+
+.footer-slogan {
+  font-size: 13px;
+  color: #baaed3;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.footer-contact-info {
+  font-size: 12px;
+  color: #9f91be;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-site-link,
+.footer-mail-link {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-site-link:hover,
+.footer-mail-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footer-sep {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.footer-links-col {
+  flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-nav-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2d9f3;
+}
+
+.footer-nav-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--accent-gold);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-link-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 209, 102, 0.15);
+}
+
+.footer-dot {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 11px;
+}
+
+.footer-disclaimer {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #8c7ea8;
+  margin-top: 4px;
+}
+
+.footer-bottom-bar {
+  padding-top: 14px;
+  text-align: center;
+}
+
+.copyright-text {
+  font-size: 11.5px;
+  color: #83759e;
+  line-height: 1.5;
+}
+
+/* 법적 고지 모달 전용 스타일 */
+.legal-modal-card {
+  max-width: 640px;
+  width: 100%;
+}
+
+.legal-modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 22px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #ded6f2;
+}
+
+.legal-effective-date {
+  font-size: 12px;
+  color: var(--accent-cyan);
+  margin-bottom: 14px;
+}
+
+.legal-section {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.legal-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.legal-section h4 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+
+.legal-section p {
+  margin-bottom: 8px;
+}
+
+.legal-section ul {
+  padding-left: 20px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.legal-section li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+.legal-highlight-section {
+  background: rgba(157, 78, 221, 0.12);
+  border: 1px solid rgba(157, 78, 221, 0.35);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.legal-contact-box {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 8px;
+  font-size: 12.5px;
+}
+
+.legal-link {
+  color: var(--accent-cyan);
+  text-decoration: underline;
+}
+
+.legal-link:hover {
+  color: #fff;
+}
+
+.about-hero-box {
+  text-align: center;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(157, 78, 221, 0.2), rgba(76, 201, 240, 0.15));
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.about-hero-emoji {
+  font-size: 38px;
+  margin-bottom: 6px;
+}
+
+.about-hero-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 4px;
+}
+
+.about-hero-desc {
+  font-size: 12.5px;
+  color: #e3d9f8;
+  font-style: italic;
+}
+
+.about-contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+
+.about-contact-row {
+  display: flex;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.ac-label {
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 80px;
+}
+
+.ac-val {
+  color: #f0ecfc;
+}
+
+/* ========================================== */
+/* 모바일 반응형 완벽 대응 미디어 쿼리 */
+/* ========================================== */
 @media (max-width: 900px) {
   .inline-chart-grid {
     grid-template-columns: 1fr;
@@ -2507,5 +3041,173 @@ textarea#chart-raw-input:focus {
 
   .form-row {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  .app-container {
+    padding: 8px 12px;
+    max-width: 100vw;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .header-left {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .user-quota-badge {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-height: 40px;
+  }
+
+  .icon-btn {
+    min-height: 42px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .chat-panel {
+    height: 560px;
+    min-height: 450px;
+  }
+
+  .quick-chips-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px 4px;
+  }
+
+  .quick-chips {
+    flex-wrap: nowrap;
+  }
+
+  .chip {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .message-row {
+    max-width: 94%;
+  }
+
+  .chat-input-area {
+    padding: 10px 12px;
+  }
+
+  .chat-form {
+    gap: 8px;
+  }
+
+  #user-input {
+    min-height: 46px;
+    font-size: 16px; /* iOS 사파리 포커스 시 자동 확대 방지 */
+    padding: 10px 14px;
+  }
+
+  .btn-send {
+    min-height: 46px;
+    padding: 0 16px;
+  }
+
+  .input-inline-date,
+  .input-inline-time,
+  .select-inline-city,
+  .btn-inline-calc {
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: 16px;
+  }
+
+  .modal-body {
+    max-height: calc(88vh - 120px);
+    padding: 16px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .astrology-guide-section {
+    padding: 24px 16px;
+  }
+
+  .guide-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header h1 {
+    font-size: 18px;
+  }
+
+  .app-header .subtitle {
+    font-size: 11px;
+  }
+
+  .cat-avatar-wrapper {
+    width: 140px;
+    height: 140px;
+  }
+
+  .chat-panel {
+    height: 500px;
+  }
+
+  .guide-section-title {
+    font-size: 19px;
+  }
+
+  .guide-card {
+    padding: 16px;
+  }
+
+  .footer-nav-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .footer-dot {
+    display: none;
   }
 }

@@ -218,36 +218,44 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   function initCatBlinking() {
     const eyes = document.querySelectorAll('.cat-eyes');
-    function blink() {
-      eyes.forEach(eye => {
-        eye.style.transformOrigin = '100px 98px';
-        eye.style.transform = 'scaleY(0.1)';
-      });
-      setTimeout(() => {
-        eyes.forEach(eye => eye.style.transform = 'scaleY(1)');
-      }, 150);
+    if (eyes.length > 0) {
+      function blink() {
+        eyes.forEach(eye => {
+          eye.style.transformOrigin = '100px 98px';
+          eye.style.transform = 'scaleY(0.1)';
+        });
+        setTimeout(() => {
+          eyes.forEach(eye => eye.style.transform = 'scaleY(1)');
+        }, 150);
 
-      const nextBlink = Math.random() * 4000 + 3000;
-      setTimeout(blink, nextBlink);
+        const nextBlink = Math.random() * 4000 + 3000;
+        setTimeout(blink, nextBlink);
+      }
+      setTimeout(blink, 2000);
     }
-    setTimeout(blink, 2000);
 
-    catAvatar.addEventListener('click', () => {
-      playCatMeow();
-      setCatMood('골골골... 집사의 손길이 느껴진다옹! ✨');
-      triggerOrbGlow('#ff70a6');
-    });
+    if (catAvatar) {
+      catAvatar.addEventListener('click', () => {
+        playCatMeow();
+        setCatMood('골골골... 집사의 손길이 느껴진다옹! ✨');
+        triggerOrbGlow('#ff70a6');
+      });
+    }
   }
 
   function setCatMood(text) {
-    catMoodText.textContent = text;
+    if (catMoodText) catMoodText.textContent = text;
   }
 
   function triggerOrbGlow(color = '#8a5cf6') {
-    crystalOrb.style.filter = `drop-shadow(0 0 25px ${color})`;
-    setTimeout(() => {
-      crystalOrb.style.filter = '';
-    }, 1200);
+    if (crystalOrb) {
+      crystalOrb.style.boxShadow = `0 0 35px ${color}, inset 0 0 20px ${color}`;
+      crystalOrb.style.borderColor = color;
+      setTimeout(() => {
+        crystalOrb.style.boxShadow = '';
+        crystalOrb.style.borderColor = '';
+      }, 1400);
+    }
   }
 
   // ==========================================
@@ -990,7 +998,7 @@ Mercury Conjunction Saturn (14°18')`;
     const row = document.createElement('div');
     row.className = 'message-row astrologer-row';
     row.innerHTML = `
-      <div class="avatar-mini">🐾</div>
+      <div class="avatar-mini"><img src="images/luna-astrologer.jpg" alt="루나" onerror="this.outerHTML='🐾'"></div>
       <div class="message-bubble astrologer-bubble">
         <div class="speaker-name">대점성술사 루나</div>
         <div class="message-text">${htmlContent}</div>
@@ -1683,4 +1691,66 @@ Mercury Conjunction Saturn (14°18')`;
       }
     });
   }
+
+  // ==========================================
+  // 15. 구글 애드센스 승인용 법적 모달 (개인정보처리방침, 이용약관, 소개 및 문의)
+  // ==========================================
+  initLegalModals();
+
+  function initLegalModals() {
+    const privacyModal = document.getElementById('privacy-modal');
+    const termsModal = document.getElementById('terms-modal');
+    const aboutModal = document.getElementById('about-modal');
+
+    const btnOpenPrivacy = document.getElementById('btn-open-privacy');
+    const btnOpenTerms = document.getElementById('btn-open-terms');
+    const btnOpenAbout = document.getElementById('btn-open-about');
+
+    const btnClosePrivacy = document.getElementById('btn-close-privacy');
+    const btnClosePrivacyFooter = document.getElementById('btn-close-privacy-footer');
+    const btnCloseTerms = document.getElementById('btn-close-terms');
+    const btnCloseTermsFooter = document.getElementById('btn-close-terms-footer');
+    const btnCloseAbout = document.getElementById('btn-close-about');
+    const btnCloseAboutFooter = document.getElementById('btn-close-about-footer');
+
+    function openModal(modal) {
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeModal(modal) {
+      if (modal) modal.classList.add('hidden');
+    }
+
+    if (btnOpenPrivacy) btnOpenPrivacy.addEventListener('click', () => openModal(privacyModal));
+    if (btnOpenTerms) btnOpenTerms.addEventListener('click', () => openModal(termsModal));
+    if (btnOpenAbout) btnOpenAbout.addEventListener('click', () => openModal(aboutModal));
+
+    if (btnClosePrivacy) btnClosePrivacy.addEventListener('click', () => closeModal(privacyModal));
+    if (btnClosePrivacyFooter) btnClosePrivacyFooter.addEventListener('click', () => closeModal(privacyModal));
+
+    if (btnCloseTerms) btnCloseTerms.addEventListener('click', () => closeModal(termsModal));
+    if (btnCloseTermsFooter) btnCloseTermsFooter.addEventListener('click', () => closeModal(termsModal));
+
+    if (btnCloseAbout) btnCloseAbout.addEventListener('click', () => closeModal(aboutModal));
+    if (btnCloseAboutFooter) btnCloseAboutFooter.addEventListener('click', () => closeModal(aboutModal));
+
+    // 오버레이 배경 클릭 시 닫기
+    [privacyModal, termsModal, aboutModal].forEach(modal => {
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal(modal);
+        });
+      }
+    });
+
+    // ESC 키 입력 시 열린 법적 모달 닫기
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal(privacyModal);
+        closeModal(termsModal);
+        closeModal(aboutModal);
+      }
+    });
+  }
 });
+

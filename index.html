@@ -2,8 +2,50 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>고양이 점성술사 루나 - Astro-Seek 정밀 점성술 상담소</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>별빛 냥성술 상담소 - Astro-Seek 정밀 점성술 & 대점성술사 루나</title>
+  <meta name="description" content="생년월일시 기반 정통 서양 점성술 Astro-Seek 차트 계산 및 대점성술사 루나의 1:1 맞춤 무료 운세 상담. Big 3(태양·달·상승궁), 2026 신년운세, 재물운, 시나스트리 궁합 무료 리포트 제공.">
+  <meta name="keywords" content="점성술, 별자리 운세, 사주, 고양이 점성술, Astro-Seek, 네이탈 차트, 출생 차트, 상승궁, 달자리, 2026 운세, 궁합, 시나스트리, Big 3">
+  <meta name="author" content="별빛 냥성술 상담소">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://cat-astro.xyz">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cat-astro.xyz/">
+  <meta property="og:title" content="별빛 냥성술 상담소 - 대점성술사 루나의 신비로운 우주 지문 분석">
+  <meta property="og:description" content="생년월일시로 알아보는 나만의 정밀 출생 차트와 Big 3(태양·달·상승궁) 분석! 루나와 대화하며 마음의 위로와 운의 흐름을 확인하세요.">
+  <meta property="og:image" content="https://cat-astro.xyz/images/luna-astrologer.jpg">
+  <meta property="og:site_name" content="별빛 냥성술 상담소">
+  <meta property="og:locale" content="ko_KR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://cat-astro.xyz/">
+  <meta name="twitter:title" content="별빛 냥성술 상담소 - 대점성술사 루나의 점성술 상담">
+  <meta name="twitter:description" content="생년월일시 기반 정밀 천체 궤도 계산과 따뜻한 고양이 점성술사의 1:1 운세 상담소.">
+  <meta name="twitter:image" content="https://cat-astro.xyz/images/luna-astrologer.jpg">
+
+  <!-- JSON-LD 구조화 데이터 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "별빛 냥성술 상담소",
+    "url": "https://cat-astro.xyz",
+    "description": "생년월일시 기반 Astro-Seek 정밀 점성술 차트 계산 및 대점성술사 루나의 1:1 맞춤 운세 상담 서비스",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "All",
+    "inLanguage": "ko",
+    "author": {
+      "@type": "Organization",
+      "name": "별빛 냥성술 연구소",
+      "email": "gosuckacl@gmail.com",
+      "url": "https://cat-astro.xyz"
+    }
+  }
+  </script>
+
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,93 +96,13 @@
       <!-- 좌측: 고양이 점성술사 인터랙션 패널 -->
       <section class="astrologer-panel">
         <div class="cat-stage">
-          <!-- 냥성술사 SVG 아바타 -->
-          <div class="cat-avatar-wrapper" id="cat-avatar" title="루나를 쓰다듬어 보세요!">
-            <svg viewBox="0 0 200 220" class="cat-svg">
-              <defs>
-                <linearGradient id="hatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#4a154b" />
-                  <stop offset="50%" stop-color="#2d1154" />
-                  <stop offset="100%" stop-color="#190730" />
-                </linearGradient>
-                <linearGradient id="orbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#d4b5ff" />
-                  <stop offset="50%" stop-color="#8a5cf6" />
-                  <stop offset="100%" stop-color="#2c1a6d" />
-                </linearGradient>
-                <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur stdDeviation="6" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-              </defs>
-
-              <!-- 배경 후광 -->
-              <circle cx="100" cy="115" r="75" fill="#ffd166" opacity="0.12" filter="url(#glow)"/>
-
-              <!-- 꼬리 -->
-              <path class="cat-tail" d="M 45 180 Q 20 150 25 120 Q 30 110 38 125" fill="none" stroke="#2a273b" stroke-width="12" stroke-linecap="round"/>
-
-              <!-- 몸통 -->
-              <path d="M 55 200 C 55 140, 145 140, 145 200 Z" fill="#2a273b"/>
-              <!-- 로브/망토 -->
-              <path d="M 60 200 C 60 150, 140 150, 140 200 Z" fill="#3b2063" stroke="#ffd166" stroke-width="1.5"/>
-              <circle cx="100" cy="155" r="4" fill="#ffd166"/>
-              <path d="M 100 159 L 100 175" stroke="#ffd166" stroke-width="1"/>
-
-              <!-- 고양이 귀 -->
-              <polygon points="60,85 75,40 95,75" fill="#2a273b"/>
-              <polygon points="65,80 75,50 90,75" fill="#ffb4a2"/>
-              <polygon points="105,75 125,40 140,85" fill="#2a273b"/>
-              <polygon points="110,75 125,50 135,80" fill="#ffb4a2"/>
-
-              <!-- 고양이 얼굴 -->
-              <circle cx="100" cy="100" r="42" fill="#2a273b"/>
-
-              <!-- 이마의 초승달 문양 -->
-              <path d="M 97 72 A 7 7 0 0 0 103 84 A 6 6 0 0 1 97 72" fill="#ffd166" filter="url(#glow)"/>
-
-              <!-- 신비로운 눈동자 -->
-              <g class="cat-eyes">
-                <ellipse cx="84" cy="98" rx="8" ry="9" fill="#06d6a0"/>
-                <ellipse cx="84" cy="98" rx="2.5" ry="8" fill="#111" class="cat-pupil"/>
-                <circle cx="86" cy="94" r="2.5" fill="#ffffff"/>
-
-                <ellipse cx="116" cy="98" rx="8" ry="9" fill="#06d6a0"/>
-                <ellipse cx="116" cy="98" rx="2.5" ry="8" fill="#111" class="cat-pupil"/>
-                <circle cx="118" cy="94" r="2.5" fill="#ffffff"/>
-              </g>
-
-              <!-- 코와 입 -->
-              <polygon points="98,107 102,107 100,110" fill="#ffb4a2"/>
-              <path d="M 96 112 Q 100 115 100 110 Q 100 115 104 112" fill="none" stroke="#ffb4a2" stroke-width="1.8" stroke-linecap="round"/>
-
-              <!-- 볼터치 -->
-              <circle cx="75" cy="108" r="5" fill="#ff70a6" opacity="0.4"/>
-              <circle cx="125" cy="108" r="5" fill="#ff70a6" opacity="0.4"/>
-
-              <!-- 수염 -->
-              <line x1="55" y1="105" x2="72" y2="107" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
-              <line x1="53" y1="113" x2="71" y2="112" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
-              <line x1="145" y1="105" x2="128" y2="107" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
-              <line x1="147" y1="113" x2="129" y2="112" stroke="#bbb" stroke-width="1.2" stroke-linecap="round"/>
-
-              <!-- 마법 모자 -->
-              <path d="M 60 70 Q 100 78 140 70 Q 100 62 60 70 Z" fill="#ffd166"/>
-              <path d="M 70 68 L 100 8 L 130 68 Z" fill="url(#hatGrad)"/>
-              <polygon points="100,6 97,14 105,11 95,11 103,14" fill="#ffd166" filter="url(#glow)"/>
-              <circle cx="100" cy="8" r="3" fill="#ffd166"/>
-
-              <!-- 발 앞 모으기 -->
-              <ellipse cx="88" cy="188" rx="8" ry="6" fill="#ffffff"/>
-              <ellipse cx="112" cy="188" rx="8" ry="6" fill="#ffffff"/>
-
-              <!-- 마법 수정구슬 테이블 & 구슬 -->
-              <ellipse cx="100" cy="210" rx="45" ry="12" fill="#1b122e" stroke="#ffd166" stroke-width="1"/>
-              <!-- 신비로운 수정구슬 -->
-              <circle id="crystal-orb" cx="100" cy="188" r="24" fill="url(#orbGrad)" filter="url(#glow)" opacity="0.95"/>
-              <circle cx="93" cy="180" r="7" fill="#ffffff" opacity="0.45"/>
-              <circle cx="90" cy="177" r="3" fill="#ffffff" opacity="0.75"/>
-            </svg>
+          <!-- 냥성술사 고화질 일러스트 아바타 -->
+          <div class="cat-avatar-wrapper" id="cat-avatar" title="대점성술사 루나를 쓰다듬어 보세요!">
+            <div class="cat-portrait-frame" id="crystal-orb">
+              <img src="images/luna-astrologer.jpg" alt="대점성술사 루나 13세" class="cat-portrait-img" id="cat-portrait-img">
+              <div class="cat-portrait-glow"></div>
+              <div class="cat-sparkle-pill">✨ 묘성 은하 대점성술사 🔮</div>
+            </div>
           </div>
 
           <!-- 기분 말풍선/상태 -->
@@ -311,7 +273,7 @@
         <div class="chat-messages" id="chat-messages">
           <!-- 환영 메시지 -->
           <div class="message-row astrologer-row">
-            <div class="avatar-mini">🐾</div>
+            <div class="avatar-mini"><img src="images/luna-astrologer.jpg" alt="루나" onerror="this.outerHTML='🐾'"></div>
             <div class="message-bubble astrologer-bubble">
               <div class="speaker-name">대점성술사 루나</div>
               <div class="message-text">
@@ -386,7 +348,194 @@
       </section>
     </main>
 
-    <!-- 모달 1: 토스/카카오페이 마이크로 결제창 -->
+    <!-- ========================================== -->
+    <!-- 구글 애드센스 승인용 정통 점성학 정보성 콘텐츠 섹션 -->
+    <!-- ========================================== -->
+    <section class="astrology-guide-section" id="astrology-guide">
+      <div class="guide-section-header">
+        <span class="guide-section-pill">COSMIC ASTROLOGY GUIDE</span>
+        <h2 class="guide-section-title">✨ 대점성술사 루나의 서양 점성학과 냥성술 정밀 가이드</h2>
+        <p class="guide-section-desc">
+          천문 데이터(NASA JPL 및 Astro-Seek 천체력 알고리즘)와 2,000년 정통 헬레니즘 서양 점성학(Hellenistic Astrology)의 원리로 해석하는 당신만의 고유한 우주 지문
+        </p>
+      </div>
+
+      <div class="guide-cards-grid">
+        <!-- 가이드 카드 1: 냥성술이란? -->
+        <article class="guide-card" id="guide-intro">
+          <div class="guide-card-header">
+            <div class="guide-card-icon">🐾🔮</div>
+            <div>
+              <span class="guide-card-tag">원리와 배경</span>
+              <h3 class="guide-card-title">냥성술(고양이 점성술)이란 무엇인가요?</h3>
+            </div>
+          </div>
+          <div class="guide-card-body">
+            <p>
+              <strong>냥성술(Feline Astrology)</strong>은 광활한 우주의 천체 운행 법칙과 고양이 특유의 예리한 직관(Sixth Sense), 그리고 따뜻한 힐링 에너지를 결합한 독창적인 점성학적 카운슬링 체계입니다.
+            </p>
+            <h4 class="guide-sub-heading">🪐 NASA 천문 데이터와 Astro-Seek 정밀 에페메리스</h4>
+            <p>
+              단순한 12개 띠나 태양 별자리 중심의 단순 점성술을 넘어, 사용자가 태어난 정확한 <strong>생년월일·시간·위도/경도(좌표)</strong>를 바탕으로 당시 하늘의 실제 천체 위치를 계산합니다. NASA 제트추진연구소(JPL) 천체력 기반 정밀 알고리즘을 적용하여 태양, 달, 수성, 금성, 화성, 목성, 토성, 천왕성, 해왕성, 명왕성 등 <strong>10대 주요 행성의 황도 360도 경도 좌표</strong>를 0.01도 단위로 정밀하게 산출합니다.
+            </p>
+            <h4 class="guide-sub-heading">🐱 고양이의 시선으로 바라보는 영혼의 지도</h4>
+            <p>
+              고양이는 비바람이 치는 날에도 가장 아늑하고 따뜻한 양지를 찾아내어 낮잠을 청합니다. 냥성술은 집사(인간)들이 일상에서 겪는 스트레스, 인간관계의 갈등, 미래에 대한 불안 속에서도 타고난 본연의 잠재력(발톱)과 보드라운 마음(젤리)을 회복할 수 있도록 지혜로운 천체 궤도 처방전을 제시합니다.
+            </p>
+            <div class="guide-highlight-box">
+              <span class="highlight-emoji">✨</span>
+              <span><strong>정밀 하우스 체계:</strong> 본 상담소는 고전 서양 점성학에서 가장 신뢰받는 <strong>홀 사인 하우스(Whole Sign House System)</strong>를 채택하여 12개 하우스의 영역을 왜곡 없이 정확하게 도출합니다.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 가이드 카드 2: 12별자리 기본 가이드 -->
+        <article class="guide-card" id="guide-zodiac">
+          <div class="guide-card-header">
+            <div class="guide-card-icon">♈♓</div>
+            <div>
+              <span class="guide-card-tag">4원소 & 12궁</span>
+              <h3 class="guide-card-title">12별자리(Zodiac Signs) 4대 원소 완벽 가이드</h3>
+            </div>
+          </div>
+          <div class="guide-card-body">
+            <p>
+              황도 12궁(12 Zodiac Signs)은 우주를 구성하는 4대 근원 원소인 <strong>불(Fire), 흙(Earth), 공기(Air), 물(Water)</strong>의 에너지가 각각 세 가지 운동 양식(활동궁, 고정궁, 변통궁)으로 순환하는 주기입니다.
+            </p>
+            <div class="zodiac-elements-list">
+              <div class="element-block element-fire">
+                <div class="element-title">🔥 불의 별자리 (Fire: 열정과 개척의 영혼)</div>
+                <div class="element-signs">
+                  <div class="sign-item"><strong>양자리 (3.21 ~ 4.19):</strong> 지배성 화성. 두려움 없는 용기와 첫 발걸음을 내딛는 대장 고양이. 순수한 행동력과 추진력의 상징.</div>
+                  <div class="sign-item"><strong>사자자리 (7.23 ~ 8.22):</strong> 지배성 태양. 캣타워 꼭대기에서 빛나는 위풍당당한 묘황. 자기표현과 당당한 자존감, 따뜻한 리더십.</div>
+                  <div class="sign-item"><strong>사수자리 (11.23 ~ 12.21):</strong> 지배성 목성. 창밖 너머 은하수를 동경하는 자유로운 탐험가 고양이. 철학적 시야와 낙천주의.</div>
+                </div>
+              </div>
+
+              <div class="element-block element-earth">
+                <div class="element-title">🌿 흙의 별자리 (Earth: 안정과 성실의 영혼)</div>
+                <div class="element-signs">
+                  <div class="sign-item"><strong>황소자리 (4.20 ~ 5.20):</strong> 지배성 금성. 따스한 햇살 방석과 프리미엄 츄르를 음미하는 미식가 고양이. 물질적 풍요와 오감의 평화.</div>
+                  <div class="sign-item"><strong>처녀자리 (8.23 ~ 9.22):</strong> 지배성 수성. 한 올의 털도 놓치지 않는 완벽한 그루밍의 책사 고양이. 정밀한 분석력과 실용적인 배려.</div>
+                  <div class="sign-item"><strong>염소자리 (12.22 ~ 1.19):</strong> 지배성 토성. 가장 험준한 절벽도 묵묵히 기어오르는 인내의 끈기묘. 뼈를 깎는 노력과 사회적 성취.</div>
+                </div>
+              </div>
+
+              <div class="element-block element-air">
+                <div class="element-title">💨 공기의 별자리 (Air: 지성과 소통의 영혼)</div>
+                <div class="element-signs">
+                  <div class="sign-item"><strong>쌍둥이자리 (5.21 ~ 6.21):</strong> 지배성 수성. 깃털 장난감 하나에도 눈을 반짝이는 지적 호기심의 천재묘. 빠른 정보 습득과 다재다능한 대화.</div>
+                  <div class="sign-item"><strong>천칭자리 (9.23 ~ 10.22):</strong> 지배성 금성. 우아한 걸음걸이와 공정한 균형미를 사랑하는 귀족 고양이. 세련된 매너와 인간관계의 조화.</div>
+                  <div class="sign-item"><strong>물병자리 (1.20 ~ 2.18):</strong> 지배성 천왕성. 캣휠 위에서 우주 신호를 수신하는 독창적 미래파 고양이. 고정관념을 깨는 혁신과 평등주의.</div>
+                </div>
+              </div>
+
+              <div class="element-block element-water">
+                <div class="element-title">💧 물의 별자리 (Water: 감수성과 치유의 영혼)</div>
+                <div class="element-signs">
+                  <div class="sign-item"><strong>게자리 (6.22 ~ 7.22):</strong> 지배성 달. 포근한 담요처럼 집사의 슬픔을 가장 먼저 감싸 안아주는 수호묘. 깊은 가족애와 보호 본능.</div>
+                  <div class="sign-item"><strong>전갈자리 (10.23 ~ 11.22):</strong> 지배성 명왕성. 어둠 속에서도 영혼의 진실을 꿰뚫어보는 마성의 통찰묘. 불굴의 재생력과 흔들리지 않는 충성심.</div>
+                  <div class="sign-item"><strong>물고기자리 (2.19 ~ 3.20):</strong> 지배성 해왕성. 꿈속 은하수 바다를 유영하며 만물을 치유하는 힐러 고양이. 무조건적인 공감과 예술적 영감.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 가이드 카드 3: 출생 차트 Natal Chart 해석 팁 -->
+        <article class="guide-card" id="guide-natal">
+          <div class="guide-card-header">
+            <div class="guide-card-icon">☀️🌙</div>
+            <div>
+              <span class="guide-card-tag">Big 3 & 12하우스</span>
+              <h3 class="guide-card-title">출생 차트(Natal Chart) 핵심 해석 팁</h3>
+            </div>
+          </div>
+          <div class="guide-card-body">
+            <p>
+              출생 차트(네이탈 차트)는 당신이 첫 숨을 들이마신 순간, 하늘에 찍힌 <strong>영혼의 우주 지문</strong>입니다. 전체 차트 중에서도 삶의 핵심 뼈대를 이루는 요소를 이해하면 자신을 훨씬 깊이 통찰할 수 있습니다.
+            </p>
+            <h4 class="guide-sub-heading">🌟 삼위일체 Big 3: 태양, 달, 상승궁</h4>
+            <div class="guide-big3-summary">
+              <div class="big3-summary-item">
+                <div class="b3-badge">☀️ 태양 (Sun)</div>
+                <p><strong>의식과 생명력, 인생의 나침반:</strong> 내가 세상에 어떤 존재로 빛나고자 하는가? 성인이 된 후 지향하는 가치관과 자아실현의 목적지를 나타냅니다.</p>
+              </div>
+              <div class="big3-summary-item">
+                <div class="b3-badge">🌙 달 (Moon)</div>
+                <p><strong>무의식과 본능, 내면의 안식처:</strong> 혼자 있을 때 느끼는 진솔한 감정 상태. 스트레스를 받았을 때 어떻게 안정을 되찾는지, 애정 결핍과 정서적 욕구를 주관합니다.</p>
+              </div>
+              <div class="big3-summary-item">
+                <div class="b3-badge">⬆️ 상승궁 (Ascendant)</div>
+                <p><strong>첫인상과 세상과 만나는 가면(Persona):</strong> 태어난 순간 동쪽 지평선에 떠오르던 별자리로, 나의 외모적 분위기, 체질, 타인이 나를 처음 보았을 때 풍기는 아우라를 결정합니다.</p>
+              </div>
+            </div>
+
+            <h4 class="guide-sub-heading">🏛️ 인생의 12가지 무대: 하우스(Houses) 시스템</h4>
+            <p>
+              출생 차트는 12개의 방(House)으로 나뉘며, 각 방은 삶의 고유한 현장을 의미합니다:
+            </p>
+            <ul class="guide-house-bullets">
+              <li><strong>1하우스 (자기 자신):</strong> 정체성, 건강, 외모적 아우라</li>
+              <li><strong>2하우스 (재물과 자원):</strong> 경제적 능력, 돈을 버는 재능, 물질적 가치관</li>
+              <li><strong>3하우스 (소통과 지성):</strong> 일상 대화, 학습 능력, 형제/자매 및 가까운 여행</li>
+              <li><strong>4하우스 (가정과 뿌리):</strong> 심리적 안식처, 부모님, 부동산과 내면의 토양</li>
+              <li><strong>5하우스 (창조와 즐거움):</strong> 연애의 설렘, 취미 생활, 창작 활동과 자녀운</li>
+              <li><strong>6하우스 (노동과 일상 건강):</strong> 직장 내 실무, 일상 루틴, 체질 관리와 반려동물</li>
+              <li><strong>7하우스 (반려자 & 동반자):</strong> 연인 및 결혼 상대, 1:1 비즈니스 파트너십</li>
+              <li><strong>8하우스 (변혁과 공동 자산):</strong> 상속, 투자, 깊은 심리적 결합과 재탄생</li>
+              <li><strong>9하우스 (고등 학문과 철학):</strong> 해외여행, 인생관, 전문 자격 및 영적 탐구</li>
+              <li><strong>10하우스 (사회적 명예 & 커리어):</strong> 사회적 평판, 천직(직업적 성공), 성취</li>
+              <li><strong>11하우스 (공동체와 비전):</strong> 친구 네트워크, 사회적 이상, 장기적 희망</li>
+              <li><strong>12하우스 (영성과 휴식):</strong> 보이지 않는 잠재의식, 치유, 명상과 숙명적 카르마</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 하단 푸터 (AdSense 규정 준수 법적 링크 및 고객지원) -->
+    <!-- ========================================== -->
+    <footer class="app-footer">
+      <div class="footer-inner">
+        <div class="footer-brand-col">
+          <div class="footer-logo">
+            <span class="footer-logo-icon">✨🐾</span>
+            <span class="footer-logo-title">별빛 냥성술 상담소</span>
+          </div>
+          <p class="footer-slogan">
+            생년월일시 기반 정밀 천체 궤도 계산 & 대점성술사 루나의 따뜻한 우주 카운슬링
+          </p>
+          <div class="footer-contact-info">
+            <span>공식 웹사이트: <a href="https://cat-astro.xyz" class="footer-site-link">cat-astro.xyz</a></span>
+            <span class="footer-sep">|</span>
+            <span>고객지원 & 제휴 문의: <a href="mailto:gosuckacl@gmail.com" class="footer-mail-link">gosuckacl@gmail.com</a></span>
+          </div>
+        </div>
+
+        <div class="footer-links-col">
+          <div class="footer-nav-title">법적 고지 & 안내</div>
+          <nav class="footer-nav-links">
+            <button type="button" class="footer-link-btn" id="btn-open-privacy">개인정보처리방침</button>
+            <span class="footer-dot">•</span>
+            <button type="button" class="footer-link-btn" id="btn-open-terms">이용약관</button>
+            <span class="footer-dot">•</span>
+            <button type="button" class="footer-link-btn" id="btn-open-about">소개 및 문의</button>
+          </nav>
+          <div class="footer-disclaimer">
+            <p>
+              ※ 별빛 냥성술 상담소에서 제공하는 모든 운세, 점성술 차트 분석 및 힐링 리포트는 서양 점성학(Astrology) 원리에 기초한 심리적 위로 및 오락(Entertainment) 카운슬링 목적으로 제공됩니다.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom-bar">
+        <p class="copyright-text">
+          &copy; 2026 별빛 냥성술 상담소 (Starlight Cat Astrology). All rights reserved. Powered by NASA Ephemeris & Astro-Seek System.
+        </p>
+      </div>
+    </footer>
     <div class="modal-overlay hidden" id="payment-modal">
       <div class="modal-card checkout-modal-card">
         <div class="modal-header">
@@ -832,6 +981,201 @@
         <div class="modal-footer card-actions">
           <button id="btn-reshuffle" class="btn-secondary" title="하루 1회 무료, 이후 🎬 15초 광고 시청 후 재추첨">다시 뽑기 🔀</button>
           <button id="btn-copy-card" class="btn-primary">부적 글귀 복사하기 📋</button>
+        </div>
+    <!-- 모달: 개인정보처리방침 (AdSense 필수: 쿠키 및 DART 쿠키, 로컬스토리지 안내) -->
+    <div class="modal-overlay hidden" id="privacy-modal">
+      <div class="modal-card legal-modal-card">
+        <div class="modal-header">
+          <h3>📜 개인정보처리방침 (Privacy Policy)</h3>
+          <button class="modal-close" id="btn-close-privacy">&times;</button>
+        </div>
+        <div class="modal-body legal-modal-body">
+          <p class="legal-effective-date">최종 개정일자: 2026년 1월 1일</p>
+
+          <section class="legal-section">
+            <h4>제1조 (목적)</h4>
+            <p>
+              '별빛 냥성술 상담소'(이하 '서비스', URL: https://cat-astro.xyz)는 이용자의 자유와 권리 보호를 위해 「개인정보 보호법」 및 관계 법령이 정한 바를 준수하며, 적법하게 개인정보를 처리하고 안전하게 관리하기 위해 본 개인정보처리방침을 수립·공개합니다.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h4>제2조 (수집하는 개인정보 항목 및 이용 목적)</h4>
+            <p>본 서비스는 회원가입 없이 이용 가능한 비회원 기반 웹 서비스이며, 다음과 같은 최소한의 정보를 처리합니다:</p>
+            <ul>
+              <li><strong>점성술 차트 계산 정보:</strong> 출생일시(생년월일 및 시간), 출생 도시. (※ 해당 정보는 브라우저 단에서 천체 궤도를 계산하는 즉시 사용되며, 별도의 회원 데이터베이스에 영구 보관되지 않습니다.)</li>
+              <li><strong>서비스 이용 및 쿼터 관리:</strong> 브라우저 고유 랜덤 식별자(UUID, <code>luna_web_uid</code>), 무료 질문 잔여 횟수, 광고 시청 보상 이력.</li>
+              <li><strong>자동 생성 접속 정보:</strong> IP 주소, 접속 일시, 브라우저 종류 및 OS 정보, 쿠키(Cookie).</li>
+            </ul>
+          </section>
+
+          <section class="legal-section legal-highlight-section">
+            <h4>제3조 (구글 애드센스 및 제3자 광고 사업자 쿠키 사용 안내)</h4>
+            <p>
+              본 서비스는 지속 가능하고 품질 높은 무료 점성학 콘텐츠 제공을 위해 <strong>구글 애드센스(Google AdSense)</strong> 및 제3자 광고 네트워크를 게재하고 있습니다.
+            </p>
+            <ul>
+              <li>Google을 포함한 제3자 공급업체는 쿠키(Cookie)를 사용하여 이용자의 본 사이트 방문 또는 인터넷상의 다른 웹사이트 방문 기록을 바탕으로 광고를 게재합니다.</li>
+              <li>Google은 광고 쿠키(DoubleClick DART 쿠키 등)를 사용하여 Google 및 파트너 웹사이트 방문 기록을 기반으로 이용자에게 가장 적합한 관심사 기반 맞춤형 광고를 제공합니다.</li>
+              <li>
+                <strong>맞춤 광고 거부 방법:</strong> 이용자는 <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" class="legal-link">Google 광고 설정(https://adssettings.google.com)</a>을 방문하여 개인 맞춤 광고에 사용되는 광고 쿠키 설정을 언제든지 사용 중지(Opt-out)할 수 있습니다.
+              </li>
+              <li>
+                또한, <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" class="legal-link">www.aboutads.info</a>에 방문하여 제3자 광고 공급업체의 맞춤 광고용 쿠키 수집을 일괄 차단하실 수 있습니다.
+              </li>
+            </ul>
+          </section>
+
+          <section class="legal-section">
+            <h4>제4조 (로컬 브라우저 저장소 LocalStorage 사용)</h4>
+            <p>
+              본 서비스는 웹사이트 성능 향상과 비회원 이용 편의를 위해 브라우저의 로컬 저장소(LocalStorage)를 활용합니다. 저장 항목은 비로그인 고유 식별자(UUID), 효과음 켜기/끄기 설정, 최근 차트 계산 데이터의 임시 캐시에 한정되며, 사용자는 브라우저 캐시 삭제를 통해 언제든지 이를 초기화할 수 있습니다.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h4>제5조 (개인정보의 제3자 제공 및 위탁)</h4>
+            <p>
+              본 서비스는 이용자의 동의 없이 개인정보를 외부에 유출하거나 판매하지 않습니다. 단, 법률의 특별한 규정이 있거나 수사 목적으로 법령에 정해진 절차에 따라 수사기관의 요구가 있는 경우는 예외로 합니다.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h4>제6조 (개인정보 보호책임자 및 고객지원)</h4>
+            <p>서비스 이용 중 발생하는 개인정보 보호 관련 민원, 문의사항 및 권리 행사는 아래의 담당자에게 문의해 주시면 신속하게 조치하겠습니다.</p>
+            <div class="legal-contact-box">
+              <p><strong>개인정보 보호책임자:</strong> 별빛 냥성술 상담소 운영팀</p>
+              <p><strong>공식 문의 이메일:</strong> <a href="mailto:gosuckacl@gmail.com" class="legal-link">gosuckacl@gmail.com</a></p>
+              <p><strong>응답 안내:</strong> 문의 접수 후 평일 기준 24~48시간 이내 회신</p>
+            </div>
+          </section>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-close-privacy-footer" class="btn-primary">확인 및 닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달: 이용약관 (Terms of Service) -->
+    <div class="modal-overlay hidden" id="terms-modal">
+      <div class="modal-card legal-modal-card">
+        <div class="modal-header">
+          <h3>📜 서비스 이용약관 (Terms of Service)</h3>
+          <button class="modal-close" id="btn-close-terms">&times;</button>
+        </div>
+        <div class="modal-body legal-modal-body">
+          <p class="legal-effective-date">최종 개정일자: 2026년 1월 1일</p>
+
+          <section class="legal-section">
+            <h4>제1조 (목적)</h4>
+            <p>
+              본 약관은 '별빛 냥성술 상담소'(이하 '회사' 또는 '서비스')가 웹사이트(https://cat-astro.xyz)를 통해 제공하는 점성학 차트 계산, AI 운세 상담 및 디지털 콘텐츠 서비스의 이용 조건 및 절차, 이용자와 서비스의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
+            </p>
+          </section>
+
+          <section class="legal-section legal-highlight-section">
+            <h4>제2조 (서비스의 성격 및 책임의 한계 / 면책 공지)</h4>
+            <ul>
+              <li>본 서비스가 제공하는 모든 출생 차트 분석, Big 3 해석, 2026년 운세 및 궁합 분석은 <strong>정통 서양 점성학(Astrology) 이론과 천문 알고리즘에 기초한 심리적 위로 및 오락(Entertainment) 서비스</strong>입니다.</li>
+              <li>본 서비스의 풀이 결과는 의학적 치료, 법률적 분쟁 해결, 재정적 투자 결정 등의 전문적 판단을 대신할 수 없습니다.</li>
+              <li>이용자가 본 서비스의 해석을 바탕으로 내린 개인의 의사결정 및 행동 결과에 대해 서비스 운영자는 어떠한 법적·경제적 책임도 지지 않습니다.</li>
+            </ul>
+          </section>
+
+          <section class="legal-section">
+            <h4>제3조 (서비스 이용 및 질문 횟수)</h4>
+            <ul>
+              <li>기본적으로 비회원 방문자에게 무료 질문 기회가 부여되며, 잔여 횟수가 소진된 경우 안내되는 10초 스폰서 광고 시청을 통해 추가 질문권을 무료로 충전하여 이용할 수 있습니다.</li>
+              <li>마이크로 결제(심층 리포트, 소장용 PDF 등) 상품은 디지털 콘텐츠의 특성상 결제 및 분석 결과가 화면에 노출되거나 생성이 완료된 후에는 단순 변심에 의한 청약철회(환불)가 제한될 수 있습니다. 시스템 장애로 인해 분석 결과가 출력되지 않은 경우에는 전액 환불 조치합니다.</li>
+            </ul>
+          </section>
+
+          <section class="legal-section">
+            <h4>제4조 (지식재산권의 귀속)</h4>
+            <p>
+              본 서비스 내에 게시된 모든 텍스트, 캐릭터 일러스트(대점성술사 루나 등), 디자인 UI, 점성학 리포트 생성 로직의 지식재산권은 '별빛 냥성술 상담소'에 귀속되며, 사전 서면 동의 없이 이를 무단 복제, 배포, 상업적으로 크롤링하거나 2차 가공할 수 없습니다.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h4>제5조 (분쟁 해결 및 관할)</h4>
+            <p>
+              본 약관은 대한민국 법률에 따라 규율되고 해석되며, 서비스 이용과 관련하여 분쟁이 발생하는 경우 관할 법원은 민사소송법상의 관할 법원으로 합니다.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h4>제6조 (문의 및 고객지원)</h4>
+            <p>
+              약관 관련 문의나 서비스 오류 제보는 <a href="mailto:gosuckacl@gmail.com" class="legal-link">gosuckacl@gmail.com</a>으로 접수해 주시기 바랍니다.
+            </p>
+          </section>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-close-terms-footer" class="btn-primary">확인 및 닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모달: 소개 및 문의 (About & Contact) -->
+    <div class="modal-overlay hidden" id="about-modal">
+      <div class="modal-card legal-modal-card">
+        <div class="modal-header">
+          <h3>✨ 소개 및 고객지원 (About & Contact)</h3>
+          <button class="modal-close" id="btn-close-about">&times;</button>
+        </div>
+        <div class="modal-body legal-modal-body">
+          <div class="about-hero-box">
+            <div class="about-hero-emoji">🐱🪐✨</div>
+            <h4 class="about-hero-title">별빛 냥성술 상담소에 오신 것을 환영합니다!</h4>
+            <p class="about-hero-desc">
+              "지친 하루를 끝마치고 올려다본 밤하늘, 당신의 별은 오늘도 고요하게 빛나고 있습니다."
+            </p>
+          </div>
+
+          <section class="legal-section">
+            <h4>🌟 서비스 비전과 철학</h4>
+            <p>
+              <strong>별빛 냥성술 상담소 (Starlight Cat Astrology)</strong>는 끝없는 경쟁과 번아웃에 지친 현대인들에게 따스한 위로와 명쾌한 영혼의 통찰을 전하기 위해 설립되었습니다. 고대 그리스 헬레니즘 시대부터 이어져 온 <strong>정통 서양 점성학(Astrology)</strong>의 정교한 천체 역학과, 자유롭고 사랑스러운 <strong>고양이 특유의 힐링 지혜</strong>를 융합하여 누구에게나 쉽고 친근한 상담을 제공합니다.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h4>🔭 기술 및 천체력 엔진 소개</h4>
+            <ul>
+              <li><strong>NASA JPL Ephemeris 기반 계산:</strong> NASA의 정밀 천체 궤도 데이터를 활용하여 10대 행성(태양, 달, 수성, 금성, 화성, 목성, 토성, 천왕성, 해왕성, 명왕성)의 황도 경도를 0.01도 단위로 정밀하게 추적합니다.</li>
+              <li><strong>Astro-Seek 호환 Whole Sign 하우스 체계:</strong> 전 세계 점성가들이 신뢰하는 고전 서양 점성술의 표준 12하우스 체계를 채택하여 오차 없는 출생 천체도를 구성합니다.</li>
+              <li><strong>대점성술사 루나 AI 페르소나:</strong> 대화형 AI 기술을 접목하여 단순한 결과 표기 이상의 감성적인 1:1 맞춤 카운슬링 경험을 구현하였습니다.</li>
+            </ul>
+          </section>
+
+          <section class="legal-section">
+            <h4>📬 고객지원 및 제휴 문의</h4>
+            <p>
+              서비스 이용 중 발생한 불편사항, 버그 제보, 점성학 콘텐츠 피드백, 제휴 및 비즈니스 협업 제안은 언제든지 아래 공식 창구로 연락 주시기 바랍니다.
+            </p>
+            <div class="about-contact-card">
+              <div class="about-contact-row">
+                <span class="ac-label">서비스명:</span>
+                <span class="ac-val">별빛 냥성술 상담소 (cat-astro.xyz)</span>
+              </div>
+              <div class="about-contact-row">
+                <span class="ac-label">운영자:</span>
+                <span class="ac-val">별빛 냥성술 연구소 운영팀</span>
+              </div>
+              <div class="about-contact-row">
+                <span class="ac-label">공식 이메일:</span>
+                <span class="ac-val"><a href="mailto:gosuckacl@gmail.com" class="legal-link">gosuckacl@gmail.com</a></span>
+              </div>
+              <div class="about-contact-row">
+                <span class="ac-label">응답 시간:</span>
+                <span class="ac-val">상시 접수 (평일 기준 24~48시간 이내 회신)</span>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-close-about-footer" class="btn-primary">확인 및 닫기</button>
         </div>
       </div>
     </div>
