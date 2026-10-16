@@ -654,6 +654,7 @@ Mercury Conjunction Saturn (14°18')`;
       : `내 Astro-Seek 출생 차트를 성공적으로 등록했어! 나의 Big 3(태양·달·상승궁)와 주요 행성 배치를 종합 분석해줘!`;
       
     handleSendMessage(introPrompt);
+    scrollToChatView();
   }
 
   function updateChartDisplayUI(data) {
@@ -1029,6 +1030,7 @@ Mercury Conjunction Saturn (14°18')`;
 
         const introPrompt = `내 생년월일시(${dateVal} ${timeVal}, ${calculated.city.name})로 차트를 직접 계산했어! 나의 Big 3(태양·달·상승궁)와 올해의 운세를 종합 분석해줘냥!`;
         handleSendMessage(introPrompt);
+        scrollToChatView();
       }
     }
   });
@@ -1212,6 +1214,16 @@ Mercury Conjunction Saturn (14°18')`;
 
   function scrollToBottom() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function scrollToChatView() {
+    setTimeout(() => {
+      const chatPanel = document.querySelector('.chat-panel');
+      if (chatPanel) {
+        chatPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 120);
   }
 
   function getCurrentTime() {
@@ -2098,64 +2110,117 @@ Mercury Conjunction Saturn (14°18')`;
     }
   }
 
-  async function shareGuardianCat(catData) {
+  async function shareGuardianCat(catData, targetId) {
     const cat = catData || getGuardianCatType(savedChartData);
     const shareTitle = `[별빛 냥성술] 나의 수호 냥이 성격 유형: ${cat.title}`;
-    const shareDesc = `"${cat.summary}"\n\n🪐 수호 행성: ${cat.planet}\n🍀 행운의 아이템: ${cat.luckyItem}\n\n👉 내 생년월일시로 수호 냥이 알아보기: https://cat-astro.xyz`;
+    const shareDesc = `🔮 나의 수호 냥이 성격 유형: ${cat.title}\n"${cat.summary}"\n\n🪐 수호 행성: ${cat.planet}\n🍀 행운의 아이템: ${cat.luckyItem}\n\n👉 내 생년월일시로 수호 냥이 알아보기: https://cat-astro.xyz`;
     const shareUrl = 'https://cat-astro.xyz';
 
-    // 1. 카카오톡 공식 JavaScript SDK 연동 (앱 키가 활성화된 경우)
-    if (window.Kakao && typeof window.Kakao.isInitialized === 'function' && window.Kakao.isInitialized()) {
-      try {
-        window.Kakao.Share.sendDefault({
-          objectType: 'feed',
-          content: {
-            title: `나의 수호 냥이: ${cat.title}`,
-            description: cat.summary,
-            imageUrl: 'https://cat-astro.xyz/images/luna-astrologer.jpg',
-            link: {
-              mobileWebUrl: shareUrl,
-              webUrl: shareUrl,
-            },
-          },
-          buttons: [
-            {
-              title: '내 수호 냥이 알아보기 🐾',
+    const cardEl = (targetId && document.getElementById(targetId)) || document.querySelector('.guardian-cat-card');
+    const shareBtn = (targetId && document.querySelector(`button[data-card-target="${targetId}"].btn-share-kakao`)) || document.getElementById('btn-share-summary-card');
+    const originalText = shareBtn ? shareBtn.innerHTML : '';
+
+    if (shareBtn) {
+      shareBtn.innerHTML = '카톡 공유 준비 중... ⏳';
+      shareBtn.disabled = true;
+    }
+
+    try {
+      let imageFile = null;
+      if (cardEl && typeof html2canvas !== 'undefined') {
+        try {
+          const canvas = await html2canvas(cardEl, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#0c0919',
+            logging: false,
+            allowTaint: true
+          });
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+          if (blob) {
+            const safeSign = (cat.signKey || 'fortune').replace(/[^a-zA-Z0-9_-]/g, '');
+            imageFile = new File([blob], `고양이점성술_수호냥이_${safeSign}.png`, { type: 'image/png' });
+          }
+        } catch (cErr) {
+          console.warn('Canvas export for share failed:', cErr);
+        }
+      }
+
+      // 1. 카카오톡 공식 JavaScript SDK 연동 (앱 키가 활성화된 경우)
+      if (window.Kakao && typeof window.Kakao.isInitialized === 'function' && window.Kakao.isInitialized()) {
+        try {
+          window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+              title: `나의 수호 냥이: ${cat.title}`,
+              description: cat.summary,
+              imageUrl: `https://cat-astro.xyz/images/cats/cat-${cat.signKey || 'sagittarius'}.svg`,
               link: {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl,
               },
             },
-          ],
-        });
-        showToast('💬 카카오톡 공유 창을 열었다냥! 🐾');
-        return;
-      } catch (kErr) {
-        console.warn('Kakao Share failed, falling back:', kErr);
-      }
-    }
-
-    // 2. 모바일 브라우저 표준 Web Share API (카카오톡, 인스타그램 등 앱 선택창 호출)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: shareTitle,
-          text: `${shareTitle}\n\n${cat.summary}\n\n🪐 수호 행성: ${cat.planet}\n🍀 행운 아이템: ${cat.luckyItem}`,
-          url: shareUrl
-        });
-        showToast('✨ 공유가 완료되었다냥! 🐾');
-        return;
-      } catch (sErr) {
-        if (sErr.name !== 'AbortError') {
-          console.warn('navigator.share failed, fallback to copy:', sErr);
-        } else {
+            buttons: [
+              {
+                title: '내 수호 냥이 알아보기 🐾',
+                link: {
+                  mobileWebUrl: shareUrl,
+                  webUrl: shareUrl,
+                },
+              },
+            ],
+          });
+          showToast('💬 카카오톡 공유 창을 열었다냥! 🐾');
           return;
+        } catch (kErr) {
+          console.warn('Kakao Share failed, falling back:', kErr);
         }
       }
-    }
 
-    // 3. 클립보드 복사 폴백
-    copyToClipboard(`${shareTitle}\n\n${shareDesc}`, '✨ 결과 링크가 복사되었다냥! 카카오톡이나 인스타에 붙여넣어 공유하라옹 🐾');
+      // 2. 모바일 브라우저 표준 Web Share API: 카드 이미지 파일 + 텍스트를 카카오톡으로 직접 전송!
+      if (navigator.share) {
+        try {
+          if (imageFile && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+            await navigator.share({
+              files: [imageFile],
+              title: shareTitle,
+              text: `${shareTitle}\n\n"${cat.summary}"\n\n🪐 수호 행성: ${cat.planet}\n🍀 행운 아이템: ${cat.luckyItem}\n\n👉 내 생년월일시로 수호 냥이 알아보기: ${shareUrl}`
+            });
+            showToast('💬 카카오톡으로 카드 이미지와 내용이 전달되었다냥! 🐾');
+            return;
+          } else {
+            // 이미지 파일 직접 공유 미지원 시 텍스트 및 링크로 즉시 앱 선택창 호출
+            await navigator.share({
+              title: shareTitle,
+              text: `${shareTitle}\n\n"${cat.summary}"\n\n🪐 수호 행성: ${cat.planet}\n🍀 행운 아이템: ${cat.luckyItem}`,
+              url: shareUrl
+            });
+            showToast('💬 카카오톡 공유 창을 열었다냥! 🐾');
+            return;
+          }
+        } catch (sErr) {
+          if (sErr.name === 'AbortError') return; // 사용자가 창 닫음
+          console.warn('navigator.share failed:', sErr);
+        }
+      }
+
+      // 3. PC 환경 폴백: 이미지 자동 다운로드 + 카톡 공유 텍스트 클립보드 복사
+      if (imageFile) {
+        const dataUrl = URL.createObjectURL(imageFile);
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = imageFile.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      copyToClipboard(`${shareTitle}\n\n${shareDesc}`, '📸 카드 이미지가 저장되고 카톡 공유 문구가 복사되었다냥! 카카오톡 창에 바로 붙여넣기(Ctrl+V)하라옹 🐾');
+    } finally {
+      if (shareBtn) {
+        shareBtn.innerHTML = originalText || '💬 카카오톡 공유하기';
+        shareBtn.disabled = false;
+      }
+    }
   }
 
   function copyToClipboard(text, msg) {
@@ -2218,7 +2283,7 @@ Mercury Conjunction Saturn (14°18')`;
       btnShareSummary.addEventListener('click', (e) => {
         e.preventDefault();
         const cat = getGuardianCatType(savedChartData);
-        shareGuardianCat(cat);
+        shareGuardianCat(cat, null);
       });
     }
 
@@ -2247,7 +2312,7 @@ Mercury Conjunction Saturn (14°18')`;
             cat = guardianCatArchetypes[cardEl.dataset.catSign] || cat;
           }
         }
-        shareGuardianCat(cat);
+        shareGuardianCat(cat, targetId);
         return;
       }
     });
