@@ -1,0 +1,625 @@
+/* subpage.css - 별빛 냥성술 상담소 서브페이지 공통 스타일링 */
+:root {
+  --bg-dark: #0c0919;
+  --bg-card: rgba(26, 20, 53, 0.85);
+  --bg-card-subtle: rgba(20, 16, 42, 0.6);
+  --bg-card-border: rgba(186, 144, 255, 0.22);
+  --bg-card-border-glow: rgba(255, 209, 102, 0.4);
+  --accent-gold: #ffd166;
+  --accent-purple: #9d4edd;
+  --accent-mint: #06d6a0;
+  --accent-pink: #ff70a6;
+  --accent-cyan: #4cc9f0;
+  --text-main: #f0ecfc;
+  --text-muted: #b5a9cc;
+  --text-dim: #7f7396;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-magic: 0 10px 36px 0 rgba(77, 33, 145, 0.4);
+  --font-base: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Gaegu', cursive, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-base);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.75;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(157, 78, 221, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(76, 201, 240, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(255, 209, 102, 0.05) 0%, transparent 60%);
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-gold);
+}
+
+/* 상단 글로벌 네비게이션 (GNB) */
+.subpage-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12, 9, 25, 0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--bg-card-border);
+}
+
+.subpage-nav-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.subpage-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+.subpage-brand-cat {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-gold);
+  background: #1e153b;
+  object-fit: cover;
+}
+
+.subpage-brand-name {
+  color: var(--accent-gold);
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+
+.subpage-menu {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  list-style: none;
+}
+
+.subpage-menu-link {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.subpage-menu-link:hover,
+.subpage-menu-link.active {
+  color: var(--text-main);
+  background: rgba(157, 78, 221, 0.2);
+}
+
+.subpage-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #ffd166 0%, #f4a261 100%);
+  color: #1a102f;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(255, 209, 102, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.subpage-nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 209, 102, 0.5);
+  color: #120924;
+}
+
+/* 메인 컨테이너 */
+.subpage-container {
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+  flex: 1;
+}
+
+/* 빵부스러기 (Breadcrumb) */
+.subpage-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+
+.subpage-breadcrumb a {
+  color: var(--text-muted);
+}
+
+.subpage-breadcrumb a:hover {
+  color: var(--accent-gold);
+}
+
+.subpage-breadcrumb .sep {
+  color: var(--text-dim);
+}
+
+/* 히어로 섹션 */
+.zodiac-hero-card {
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  box-shadow: var(--shadow-magic);
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.zodiac-hero-card::after {
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(157, 78, 221, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.zodiac-avatar-box {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.zodiac-hero-cat-img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 3px solid var(--accent-gold);
+  background: #1b1236;
+  box-shadow: 0 0 24px rgba(255, 209, 102, 0.35);
+  display: block;
+}
+
+.zodiac-hero-info {
+  flex: 1;
+}
+
+.zodiac-hero-dates {
+  display: inline-block;
+  background: rgba(157, 78, 221, 0.25);
+  color: var(--accent-cyan);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(76, 201, 240, 0.3);
+}
+
+.zodiac-hero-title {
+  font-family: var(--font-display);
+  font-size: 38px;
+  color: var(--accent-gold);
+  line-height: 1.2;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.zodiac-hero-latin {
+  font-family: var(--font-base);
+  font-size: 18px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.zodiac-hero-sub {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.zodiac-meta-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-main);
+  font-size: 12.5px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.badge-pill strong {
+  color: var(--accent-gold);
+}
+
+/* 본문 섹션 구조 */
+.subpage-section {
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-lg);
+  padding: 28px 30px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.section-title {
+  font-size: 21px;
+  color: var(--accent-gold);
+  border-bottom: 1px solid rgba(186, 144, 255, 0.2);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title .title-badge {
+  background: rgba(157, 78, 221, 0.3);
+  color: var(--accent-cyan);
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.subpage-p {
+  color: var(--text-main);
+  font-size: 15px;
+  line-height: 1.85;
+  margin-bottom: 16px;
+}
+
+.subpage-p strong {
+  color: var(--accent-gold);
+}
+
+/* 콜아웃 박스 (명언 / 루나의 조언) */
+.luna-callout {
+  background: rgba(36, 25, 68, 0.7);
+  border-left: 4px solid var(--accent-gold);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 18px 22px;
+  margin: 18px 0;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: #f7f4ff;
+}
+
+.luna-callout-title {
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+/* 그리드 카드 (강점, 주의점, 궁합 등) */
+.content-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.info-box-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+}
+
+.info-box-card h4 {
+  color: var(--accent-cyan);
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.info-box-card ul {
+  padding-left: 20px;
+}
+
+.info-box-card li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.info-box-card li strong {
+  color: var(--text-main);
+}
+
+/* 행운 테이블 */
+.lucky-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 14px;
+}
+
+.lucky-table th,
+.lucky-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(186, 144, 255, 0.15);
+}
+
+.lucky-table th {
+  background: rgba(157, 78, 221, 0.15);
+  color: var(--accent-gold);
+  font-weight: 600;
+  width: 30%;
+}
+
+.lucky-table td {
+  color: var(--text-main);
+}
+
+/* 상담소 차트 전환 CTA 배너 */
+.subpage-cta-banner {
+  background: linear-gradient(135deg, rgba(74, 40, 124, 0.9) 0%, rgba(35, 27, 69, 0.95) 100%);
+  border: 2px solid var(--accent-gold);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  text-align: center;
+  box-shadow: var(--shadow-magic);
+  margin: 40px 0;
+}
+
+.cta-banner-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+
+.cta-banner-desc {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 640px;
+  margin: 0 auto 20px;
+  line-height: 1.7;
+}
+
+.cta-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffd166 0%, #f4a261 100%);
+  color: #120924;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 32px;
+  border-radius: 30px;
+  box-shadow: 0 6px 20px rgba(255, 209, 102, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-banner-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(255, 209, 102, 0.6);
+  color: #0b0517;
+}
+
+/* 12별자리 빠른 바로가기 그리드 */
+.zodiac-nav-grid-section {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--bg-card-border);
+}
+
+.zodiac-nav-grid-title {
+  font-size: 19px;
+  color: var(--accent-gold);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.zodiac-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.zodiac-quick-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.zodiac-quick-card:hover {
+  background: rgba(157, 78, 221, 0.25);
+  border-color: var(--accent-gold);
+  transform: translateY(-2px);
+}
+
+.zodiac-quick-cat-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-gold);
+  background: #17112e;
+}
+
+.zodiac-quick-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.zodiac-quick-dates {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* 법적 문서 전용 스타일 (개인정보처리방침, 이용약관, 소개) */
+.legal-page-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--bg-card-border);
+}
+
+.legal-page-title {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+
+.legal-page-updated {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.legal-article {
+  margin-bottom: 28px;
+}
+
+.legal-article h3 {
+  font-size: 17px;
+  color: var(--accent-cyan);
+  margin-bottom: 10px;
+}
+
+.legal-article p {
+  font-size: 14.5px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.legal-article ul {
+  padding-left: 22px;
+  margin-bottom: 10px;
+}
+
+.legal-article li {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+/* 푸터 */
+.subpage-footer {
+  background: rgba(10, 7, 20, 0.95);
+  border-top: 1px solid var(--bg-card-border);
+  padding: 36px 20px 24px;
+  margin-top: auto;
+}
+
+.subpage-footer-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.footer-nav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  list-style: none;
+  font-size: 13.5px;
+}
+
+.footer-nav-bar a {
+  color: var(--text-muted);
+}
+
+.footer-nav-bar a:hover {
+  color: var(--accent-gold);
+}
+
+.footer-legal-text {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.footer-copy {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .subpage-nav-inner {
+    flex-wrap: wrap;
+  }
+  .subpage-menu {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
+    padding-top: 6px;
+  }
+  .zodiac-hero-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px 20px;
+  }
+  .zodiac-hero-title {
+    justify-content: center;
+  }
+  .zodiac-meta-badges {
+    justify-content: center;
+  }
+  .subpage-section {
+    padding: 22px 18px;
+  }
+}
